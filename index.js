@@ -278,6 +278,9 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 					}
 				},
 				sender_action: 'typing_off'
+			}, (err, response) => {
+				if(err)
+					console.error(err);
 			});
 		}, 2400)
 	}, 3000);
