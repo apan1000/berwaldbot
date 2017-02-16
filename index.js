@@ -267,9 +267,10 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 								},
 								buttons: [
 									{
+										title: 'Läs mer',
 										type: 'web_url',
 										url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-										title: 'Läs mer'
+										webview_height_ratio: 'tall'
 									}
 								]
 							}
