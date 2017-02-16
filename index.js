@@ -245,7 +245,7 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 		setTimeout(() => {
 			console.log('Sending template...');
 			bot.reply(message, 'template');
-		}, 1000)
+		}, 2400)
 		// bot.reply(message, {
 		// 	attachment: {
 		// 		'type': 'template',
