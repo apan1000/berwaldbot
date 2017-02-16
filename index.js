@@ -251,13 +251,14 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 		setTimeout(() => {
 			console.log('Sending template...');
 			bot.reply(message, {
-				attachment: {
+				'attachment': {
 					'type': 'template',
 					'payload': {
 						'template_type': 'generic',
 						'elements': [
 							{
 								'title': 'Läs mer här',
+								'subtitle': 'Om Berwaldhallen',
 								'default_action': {
 									'type': 'web_url',
 									'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
@@ -274,7 +275,7 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 						]
 					}
 				},
-				sender_action: 'typing_off'
+				'sender_action': 'typing_off'
 			});
 		}, 2400)
 	}, 3000);
@@ -612,66 +613,66 @@ function getArtistInfo(name) {
 function sendArtistInfo(message, artist) {
 	bot.reply(message, {
 		attachment: {
-			'type': 'template',
-			'payload': {
-				'template_type': 'list',
-				'top_element_style': 'large',
-				'elements': [
+			type: 'template',
+			payload: {
+				template_type: 'list',
+				top_element_style: 'large',
+				elements: [
 					{
-						'title': artist.name.toUpperCase(),
-						'image_url': artist.images.length>1 ? artist.images[1].url : 'https://chatbot-test-1337.herokuapp.com/images/note.png',
-						'subtitle': 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
-						'default_action': {
-							'type': 'web_url',
-							'url': 'https://sverigesradio.se/berwaldhallen',
-							'messenger_extensions': true,
-							'webview_height_ratio': 'tall',
-							'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+						title: artist.name.toUpperCase(),
+						image_url: artist.images.length>1 ? artist.images[1].url : 'https://chatbot-test-1337.herokuapp.com/images/note.png',
+						subtitle: 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
+						default_action: {
+							type: 'web_url',
+							url: 'https://sverigesradio.se/berwaldhallen',
+							messenger_extensions: true,
+							webview_height_ratio: 'tall',
+							fallback_url: 'https://sverigesradio.se/berwaldhallen'
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Info & Bokning',
-								'type': 'web_url',
-								'url': 'https://sverigesradio.se/berwaldhallen',
-								'messenger_extensions': true,
-								'webview_height_ratio': 'tall',
-								'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+								title: 'Info & Bokning',
+								type: 'web_url',
+								url: 'https://sverigesradio.se/berwaldhallen',
+								messenger_extensions: true,
+								webview_height_ratio: 'tall',
+								fallback_url: 'https://sverigesradio.se/berwaldhallen'
 							}
 						]
 					},
 					{
-						'title': 'Lyssna på Spotify',
-						'image_url': 'https://chatbot-test-1337.herokuapp.com/images/spotify.png',
-						'subtitle': artist.name,
-						'default_action': {
-							'type': 'web_url',
-							'url': artist.external_urls.spotify,
-							'webview_height_ratio': 'compact',
+						title: 'Lyssna på Spotify',
+						image_url: 'https://chatbot-test-1337.herokuapp.com/images/spotify.png',
+						subtitle: artist.name,
+						default_action: {
+							type: 'web_url',
+							url: artist.external_urls.spotify,
+							webview_height_ratio: 'compact',
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Lyssna',
-								'type': 'web_url',
-								'url': artist.external_urls.spotify,
-								'webview_height_ratio': 'compact',
+								title: 'Lyssna',
+								type: 'web_url',
+								url: artist.external_urls.spotify,
+								webview_height_ratio: 'compact',
 							}
 						]
 					},
 					{
-						'title': 'Läs mer på Wikipedia',
-						'image_url': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1122px-Wikipedia-logo-v2.svg.png',
-						'subtitle': artist.name,
-						'default_action': {
-							'type': 'web_url',
-							'url': 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
-							'webview_height_ratio': 'full',
+						title: 'Läs mer på Wikipedia',
+						image_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1122px-Wikipedia-logo-v2.svg.png',
+						subtitle: artist.name,
+						default_action: {
+							type: 'web_url',
+							url: 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
+							webview_height_ratio: 'full',
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Läs mer på Wikipedia',
-								'type': 'web_url',
-								'url': 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
-								'webview_height_ratio': 'full',
+								title: 'Läs mer på Wikipedia',
+								type: 'web_url',
+								url: 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
+								webview_height_ratio: 'full',
 							}
 						]
 					}
