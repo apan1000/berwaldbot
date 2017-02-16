@@ -235,7 +235,12 @@ controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, 
 });
 
 controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
-	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands.';
+	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, '+
+	'är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt '+
+	'utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios '+
+	'Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. '+
+	'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk '+
+	'musik och kultur utomlands.';
 
 	console.log('Sending about text...');
 	bot.reply(message, aboutText);
