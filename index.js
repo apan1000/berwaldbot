@@ -257,9 +257,9 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 						template_type: 'generic',
 						elements: [
 							{
-								title: 'Läs mer här',
+								title: 'Om Berwaldhallen',
 								image_url: 'http://ttimg.nu/100/event/lek.jpg',
-								subtitle: 'Om Berwaldhallen',
+								subtitle: 'Läs mer om Berwaldhallen här',
 								default_action: {
 									type: 'web_url',
 									url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
@@ -521,12 +521,8 @@ controller.hears(['shutdown'], 'message_received', function(bot, message) {
 
 controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'message_received', 
 	function(bot, message) {
-
-		var hostname = os.hostname();
-		var uptime = formatUptime(process.uptime());
-
 		bot.reply(message,
-			'🤖Jag är en bot🤖 Jag har varit igång i ' + uptime + ' på ' + hostname + '.');
+			'🤖Jag är BerwaldBoten🤖 Jag kan hjälpa dig med dina frågor om Berwaldhallen.');
 });
 
 controller.on('message_received', function(bot, message) {
