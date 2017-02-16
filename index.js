@@ -242,8 +242,10 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 
 	console.log('Start typing...')
 	bot.startTyping(message, () => {
-		console.log('Sending template...');
-		bot.reply(message, 'template');
+		setTimeout(() => {
+			console.log('Sending template...');
+			bot.reply(message, 'template');
+		}, 1000)
 		// bot.reply(message, {
 		// 	attachment: {
 		// 		'type': 'template',
