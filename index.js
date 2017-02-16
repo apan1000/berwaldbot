@@ -255,41 +255,34 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 			console.log('Sending template...');
 			bot.reply(message, reply_message);
 		}, 2400)
-	}, 1000)
-
+	}, 2000);
 	
-	bot.startTyping(message, () => {
-		setTimeout(() => {
-			console.log('Sending template...');
-			bot.reply(message, 'template');
-		}, 2400)
-		// bot.reply(message, {
-		// 	attachment: {
-		// 		'type': 'template',
-		// 		'payload': {
-		// 			'template_type': 'generic',
-		// 			'elements': [
-		// 				{
-		// 					'title': 'Läs mer här',
-		// 					'default_action': {
-		// 						'type': 'web_url',
-		// 						'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-		// 						'webview_height_ratio': 'tall',
-		// 						'fallback_url': 'https://sverigesradio.se/berwaldhallen'
-		// 					},
-		// 					'buttons': [
-		// 						{
-		// 							'type': 'web_url',
-		// 							'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-		// 							'title': 'Läs mer'
-		// 						}
-		// 					]
-		// 				}
-		// 			]
-		// 		}
-		// 	}
-		// });
-	});
+	// bot.reply(message, {
+	// 	attachment: {
+	// 		'type': 'template',
+	// 		'payload': {
+	// 			'template_type': 'generic',
+	// 			'elements': [
+	// 				{
+	// 					'title': 'Läs mer här',
+	// 					'default_action': {
+	// 						'type': 'web_url',
+	// 						'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+	// 						'webview_height_ratio': 'tall',
+	// 						'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+	// 					},
+	// 					'buttons': [
+	// 						{
+	// 							'type': 'web_url',
+	// 							'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+	// 							'title': 'Läs mer'
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		}
+	// 	}
+	// });
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
