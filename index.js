@@ -251,31 +251,32 @@ controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(b
 		setTimeout(() => {
 			console.log('Sending template...');
 			bot.reply(message, {
-				'attachment': {
-					'type': 'template',
-					'payload': {
-						'template_type': 'generic',
-						'elements': [
+				attachment: {
+					type: 'template',
+					payload: {
+						template_type: 'generic',
+						elements: [
 							{
-								'title': 'Läs mer här',
-								'subtitle': 'Om Berwaldhallen',
-								'default_action': {
-									'type': 'web_url',
-									'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-									'webview_height_ratio': 'tall'
+								title: 'Läs mer här',
+								image_url: 'http://ttimg.nu/100/event/lek.jpg',
+								subtitle: 'Om Berwaldhallen',
+								default_action: {
+									type: 'web_url',
+									url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+									webview_height_ratio: 'tall'
 								},
-								'buttons': [
+								buttons: [
 									{
-										'type': 'web_url',
-										'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-										'title': 'Läs mer'
+										type: 'web_url',
+										url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+										title: 'Läs mer'
 									}
 								]
 							}
 						]
 					}
 				},
-				'sender_action': 'typing_off'
+				sender_action: 'typing_off'
 			});
 		}, 2400)
 	}, 3000);
