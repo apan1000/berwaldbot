@@ -39,19 +39,25 @@ const express = require('express');
 // Postgres setting
 pg.defaults.ssl = true;
 
-const poolParams = url.parse(process.env.DATABASE_URL || 'postgres://localhost:5432/chatbot');
-const poolAuth = poolParams.auth.split(':');
+let pgPool;
 
-const poolConfig = {
-	user: poolAuth[0],
-	password: poolAuth[1],
-	host: poolParams.hostname,
-	port: poolParams.port,
-	database: poolParams.pathname.split('/')[1],
-	ssl: true
-};
+if(process.env.DATABASE_URL) {
+	const poolParams = url.parse(process.env.DATABASE_URL || 'postgres://localhost:5432/chatbot');
+	const poolAuth = poolParams.auth.split(':');
 
-const pgPool = new pg.Pool(poolConfig);
+	const poolConfig = {
+		user: poolAuth[0],
+		password: poolAuth[1],
+		host: poolParams.hostname,
+		port: poolParams.port,
+		database: poolParams.pathname.split('/')[1],
+		ssl: true
+	};
+
+	pgPool = new pg.Pool(poolConfig);
+} else {
+	pgPool = new pg.Pool();
+}
 
 pgPool.on('error', function(err, client) {
 	console.error('idle client error', err.message, err.stack)
@@ -231,40 +237,42 @@ controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, 
 controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
 	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands. Årligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här. Samtliga konserter sänds i Sveriges Radio, de flesta i P2, samt runtom och utanför Europa via EBU, European Broadcasting Union.';
 
+	console.log('Sending about text...');
 	bot.reply(message, aboutText);
 
-	bot.startTyping(message, () => {
-		setTimeout(() => {
-			bot.stopTyping(message, () => {
-				bot.reply(message, {
-					attachment: {
-						'type': 'template',
-						'payload': {
-							'template_type': 'generic',
-							'elements': [
-								{
-									'title': 'Läs mer här',
-									'default_action': {
-										'type': 'web_url',
-										'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-										'webview_height_ratio': 'tall',
-										'fallback_url': 'https://sverigesradio.se/berwaldhallen'
-									},
-									'buttons': [
-										{
-											'type': 'web_url',
-											'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-											'title': 'Läs mer'
-										}
-									]
-								}
-							]
-						}
-					}
-				});
-			});
-		}, 1000);
-	});
+	// console.log('Start typing...')
+	// bot.startTyping(message, () => {
+	// 	setTimeout(() => {
+	// 		bot.stopTyping(message, () => {
+	// 			bot.reply(message, {
+	// 				attachment: {
+	// 					'type': 'template',
+	// 					'payload': {
+	// 						'template_type': 'generic',
+	// 						'elements': [
+	// 							{
+	// 								'title': 'Läs mer här',
+	// 								'default_action': {
+	// 									'type': 'web_url',
+	// 									'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+	// 									'webview_height_ratio': 'tall',
+	// 									'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+	// 								},
+	// 								'buttons': [
+	// 									{
+	// 										'type': 'web_url',
+	// 										'url': 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+	// 										'title': 'Läs mer'
+	// 									}
+	// 								]
+	// 							}
+	// 						]
+	// 					}
+	// 				}
+	// 			});
+	// 		});
+	// 	}, 1000);
+	// });
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
