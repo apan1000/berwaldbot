@@ -653,7 +653,16 @@ controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'm
 
 controller.on('message_received', function(bot, message) {
 	console.log('Default message_received:\n',message,'\n');
-	bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+	
+	if(message.sticker_id) {
+		let msg = {
+			sticker_id = message.sticker_id
+		}
+		bot.reply(message, msg);
+	} else {
+		bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+	}
+	
 	return false;
 });
 
