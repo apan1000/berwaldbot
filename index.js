@@ -380,7 +380,7 @@ controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', 
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
 			convo.ask({
-				text: 'Här är våra uppkommande konserter.\n'+
+				text: 'Här är våra kommande konserter.\n'+
 						'Vilken vill du veta mer om?🤔', 
 				quick_replies: [{
 					content_type: 'text',
