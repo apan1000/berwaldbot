@@ -377,34 +377,59 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 });
 
 controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+	let concerts = ['Matthias Höfs', 'Mässa i orostid', 'Vägen till Pardiset'];
+	let quickReplies = [];
+	for(let concert of concerts) {
+		quickReplies.push(
+			{
+				content_type: 'text',
+				title: concert,
+				payload: concert
+			}
+		)
+	}
+	quickReplies.push({
+		content_type: 'text',
+		title: 'Ingen',
+		payload: 'ingen'
+	});
+
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
 			convo.ask({
 				text: 'Här är våra kommande konserter.\n'+
 						'Vilken vill du veta mer om?🤔', 
-				quick_replies: [{
-					content_type: 'text',
-					title: 'MATTHIAS HÖFS',
-					payload: 'MATTHIAS HÖFS'
-				}, {
-					content_type: 'text',
-					title: 'MÄSSA I OROSTID',
-					payload: 'MÄSSA I OROSTID'
-				}, {
-					content_type: 'text',
-					title: 'VÄGEN TILL PARADISET ',
-					payload: 'VÄGEN TILL PARADISET '
-				}]
-			}, function(response, convo) {
-				console.log('RESPONSE:',response);
-				bot.send(message, response.text);
-				convo.next();
-			});
+				quick_replies: quickReplies
+			}, [
+				{
+					pattern: new RegExp(concerts.join("|"), "i"),
+					callback: function(response, convo) {
+						// since no further messages are queued after this,
+						// the conversation will end naturally with status == 'completed'
+						convo.say(response.text);
+						convo.next();
+					}
+				},
+				{
+					pattern: /^(ingen)/i,
+					callback: function(response, convo) {
+						// stop the conversation. this will cause it to end with status == 'stopped'
+						convo.stop();
+					}
+				},
+				{
+					default: true,
+					callback: function(response, convo) {
+						convo.repeat();
+						convo.next();
+					}
+				}
+			]);
 
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					// this happens if the conversation ended prematurely for some reason
-					bot.reply(message, 'Jag gjorde något fel🙈 Försök gärna igen!');
+					bot.reply(message, 'Vi går vidare!');
 				}
 			});
 		}
