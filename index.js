@@ -655,7 +655,10 @@ controller.on('message_received', function(bot, message) {
 	console.log('Default message_received:\n',message,'\n');
 	
 	if(message.sticker_id) {
-		bot.reply(message, "😃😛");
+		if(message.sticker_id === 369239263222822)
+			bot.reply(message, '👍');
+		else
+			bot.reply(message, "😃😛");
 	} else {
 		bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
 	}
