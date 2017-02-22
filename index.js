@@ -652,6 +652,7 @@ controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'm
 });
 
 controller.on('message_received', function(bot, message) {
+	log('Default message_received:\n',message,'\n');
 	bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
 	return false;
 });
@@ -886,7 +887,7 @@ function getFacebookUserInfo(user) {
 			} else {
 				try {
 					var data = JSON.parse(body);
-					console.log(data);
+					console.log('User data:',data);
 					resolve(data);
 				} catch(e) {
 					reject(e);
