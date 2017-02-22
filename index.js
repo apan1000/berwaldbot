@@ -652,7 +652,7 @@ controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'm
 });
 
 controller.on('message_received', function(bot, message) {
-	log('Default message_received:\n',message,'\n');
+	console.log('Default message_received:\n',message,'\n');
 	bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
 	return false;
 });
