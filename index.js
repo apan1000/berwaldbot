@@ -852,7 +852,7 @@ function setNickname(user, nickname) {
 				} else { // User not in database
 					getFacebookUserInfo(user).then(data => {
 						client.query(
-						'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3 $4);',
+						'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3, $4);',
 						[user.nickname, data.first_name, data.last_name, user.id],
 						(err, res) => {
 							done();
