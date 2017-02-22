@@ -657,6 +657,10 @@ controller.on('message_received', function(bot, message) {
 	if(message.sticker_id) {
 		if(message.sticker_id === 369239263222822)
 			bot.reply(message, '👍');
+		else if(message.sticker_id === 369239343222814)
+			bot.reply(message, '👍👍');
+		else if(message.sticker_id === 369239383222810)
+			bot.reply(message, '😄👍👍👍');
 		else
 			bot.reply(message, "😃😛");
 	} else {
