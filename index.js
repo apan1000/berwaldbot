@@ -398,7 +398,7 @@ controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', 
 			}, function(response, convo) {
 				bot.startTyping(message, () => {
 					console.log('RESPONSE:',response);
-					bot.send(message, response);
+					bot.send(message, response.text);
 					convo.next();
 				}).catch(error => {
 					bot.stopTyping(message, () => {
