@@ -656,7 +656,7 @@ controller.on('message_received', function(bot, message) {
 	
 	if(message.sticker_id) {
 		let msg = {
-			sticker_id = message.sticker_id
+			sticker_id: message.sticker_id
 		}
 		bot.reply(message, msg);
 	} else {
