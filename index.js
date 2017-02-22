@@ -177,19 +177,24 @@ controller.hears(['^(Hjälp)'], 'message_received', function(bot, message) {
 		quick_replies: [
 			{
 				"content_type": "text",
-				"title": "Vem är du?",
-				"payload": "Vem är du?",
+				"title": "Kommande konserter",
+				"payload": "konsertinfo"
 			},
 			{
 				"content_type": "text",
 				"title": "Ge mig artistinfo",
-				"payload": "artistinfo",
+				"payload": "artistinfo"
 			},
 			{
 				"content_type": "text",
 				"title": "Om Berwaldhallen",
-				"payload": "berwaldhallen",
-			}
+				"payload": "berwaldhallen"
+			},
+			{
+				"content_type": "text",
+				"title": "Vem är du?",
+				"payload": "Vem är du?"
+			},
 		]
 	});
 });
@@ -214,6 +219,10 @@ controller.hears(['quick'], 'message_received', function(bot, message) {
 
 });
 
+controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
+	bot.reply(message, 'Fin webbadress :) Skulle säkert gått in och kollat om jag var en människa😞')
+});
+
 controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
@@ -234,13 +243,15 @@ controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, 
 	});
 });
 
-controller.hears(['^((om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
+controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
 	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, '+
 	'är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt '+
 	'utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios '+
 	'Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. '+
 	'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk '+
 	'musik och kultur utomlands.';
+
+	//Berwaldhallen är hemmascen för Sveriges Radios Symfoniorkester och Radiokören. Ensemblerna ger konserter varje vecka, vilka oftast sänds i Sveriges Radio P2 och dessutom ut till en mångmiljonpublik runt om i Europa.
 
 	console.log('Sending about text...');
 	bot.reply(message, aboutText);
@@ -311,16 +322,101 @@ controller.hears(['silent push'], 'message_received', function(bot, message) {
 		text: "This message will have a push notification on a mobile phone, but no sound notification",
 		notification_type: "SILENT_PUSH"
 	}
-	bot.reply(message, reply_message)
-})
+	bot.reply(message, reply_message);
+});
 
 controller.hears(['no push'], 'message_received', function(bot, message) {
 	reply_message = {
 		text: "This message will not have any push notification on a mobile phone",
 		notification_type: "NO_PUSH"
 	}
-	bot.reply(message, reply_message)
-})
+	bot.reply(message, reply_message);
+});
+
+controller.hears(['spotify'], 'message_received', function(bot, message) {
+	// var typing_message = {
+	// 	sender_action: 'typing_on'
+	// };
+	// bot.reply(message, typing_message);
+
+	// setTimeout(() => {
+	// 	console.log('Sending template...');
+	// 	bot.reply(message, {
+	// 		attachment: {
+	// 			type: 'template',
+	// 			payload: {
+	// 				template_type: 'generic',
+	// 				elements: [
+	// 					{
+	// 						title: 'Berwaldhallens Spotifylista',
+	// 						image_url: 'http://ttimg.nu/100/event/lek.jpg',
+	// 						subtitle: 'Lyssna på kommande konserter',
+	// 						default_action: {
+	// 							type: 'web_url',
+	// 							url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+	// 							webview_height_ratio: 'tall'
+	// 						},
+	// 						buttons: [
+	// 							{
+	// 								title: 'Lyssna',
+	// 								type: 'web_url',
+	// 								url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+	// 								webview_height_ratio: 'tall'
+	// 							}
+	// 						]
+	// 					}
+	// 				]
+	// 			}
+	// 		}
+	// 	}, (err, response) => {
+	// 		if(err)
+	// 			console.error(err);
+	// 	});
+	// });
+	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
+});
+
+controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+	bot.startConversation(message, function(err, convo) {
+		if (!err) {
+			convo.ask({
+				text: 'Här är våra uppkommande konserter.\n'+
+						'Vilken vill du veta mer om?🤔', 
+				quick_replies: [{
+					content_type: 'text',
+					title: 'MATTHIAS HÖFS',
+					payload: 'MATTHIAS HÖFS'
+				}, {
+					content_type: 'text',
+					title: 'MÄSSA I OROSTID',
+					payload: 'MÄSSA I OROSTID'
+				}, {
+					content_type: 'text',
+					title: 'VÄGEN TILL PARADISET ',
+					payload: 'VÄGEN TILL PARADISET '
+				}]
+			}, function(response, convo) {
+				bot.startTyping(message, () => {
+					console.log('RESPONSE:',response);
+					bot.send(message, response);
+					convo.next();
+				}).catch(error => {
+					bot.stopTyping(message, () => {
+						console.error(error);
+						convo.stop();
+					});
+				});
+			});
+
+			convo.on('end', function(convo) {
+				if (convo.status !== 'completed') {
+					// this happens if the conversation ended prematurely for some reason
+					bot.reply(message, 'Jag gjorde något fel🙈 Försök gärna igen!');
+				}
+			});
+		}
+	});
+});
 
 controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
 
@@ -476,9 +572,16 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 										console.error(error);
 									});
 
-									controller.storage.users.save(user, function(err, id) {
-										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + user.nickname + ' från och med nu.👍');
-									});
+									var typing_message = {
+										sender_action: 'typing_on'
+									};
+									bot.reply(message, typing_message);
+
+									setTimeout(() => {
+										controller.storage.users.save(user, function(err, id) {
+											bot.reply(message, 'Sådär. Jag kommer kalla dig ' + user.nickname + ' från och med nu.👍');
+										});
+									}, 750);
 								});
 
 							} else {
