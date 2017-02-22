@@ -396,16 +396,9 @@ controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', 
 					payload: 'VÄGEN TILL PARADISET '
 				}]
 			}, function(response, convo) {
-				bot.startTyping(message, () => {
-					console.log('RESPONSE:',response);
-					bot.send(message, response.text);
-					convo.next();
-				}).catch(error => {
-					bot.stopTyping(message, () => {
-						console.error(error);
-						convo.stop();
-					});
-				});
+				console.log('RESPONSE:',response);
+				bot.send(message, response.text);
+				convo.next();
 			});
 
 			convo.on('end', function(convo) {
