@@ -765,18 +765,14 @@ function sendArtistInfo(message, artist) {
 						default_action: {
 							type: 'web_url',
 							url: 'https://sverigesradio.se/berwaldhallen',
-							messenger_extensions: false,
-							webview_height_ratio: 'tall',
-							fallback_url: 'https://sverigesradio.se/berwaldhallen'
+							webview_height_ratio: 'tall'
 						},
 						buttons: [
 							{
 								title: 'Info & Bokning',
 								type: 'web_url',
 								url: 'https://sverigesradio.se/berwaldhallen',
-								messenger_extensions: false,
-								webview_height_ratio: 'tall',
-								fallback_url: 'https://sverigesradio.se/berwaldhallen'
+								webview_height_ratio: 'tall'
 							}
 						]
 					},
