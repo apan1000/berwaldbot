@@ -1,15 +1,4 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-           ______     ______     ______   __  __     __     ______
-          /\  == \   /\  __ \   /\__  _\ /\ \/ /    /\ \   /\__  _\
-          \ \  __<   \ \ \/\ \  \/_/\ \/ \ \  _"-.  \ \ \  \/_/\ \/
-           \ \_____\  \ \_____\    \ \_\  \ \_\ \_\  \ \_\    \ \_\
-            \/_____/   \/_____/     \/_/   \/_/\/_/   \/_/     \/_/
-
-
-This is a sample Facebook bot built with Botkit.
-
-This bot demonstrates many of the core features of Botkit:
-
 * Connect to Facebook's Messenger APIs
 * Receive messages based on "spoken" patterns
 * Reply to messages
@@ -28,32 +17,6 @@ This bot demonstrates many of the core features of Botkit:
     app_secret=<MY APP SECRET> page_token=<MY PAGE TOKEN> verify_token=<MY_VERIFY_TOKEN> node facebook_bot.js [--lt [--ltsubdomain LOCALTUNNEL_SUBDOMAIN]]
 
   Use the --lt option to make your bot available on the web through localtunnel.me.
-
-# USE THE BOT:
-
-  Find your bot inside Facebook to send it a direct message.
-
-  Say: "Hello"
-
-  The bot will reply "Hello!"
-
-  Say: "who are you?"
-
-  The bot will tell you its name, where it running, and for how long.
-
-  Say: "Call me <nickname>"
-
-  Tell the bot your nickname. Now you are friends.
-
-  Say: "who am I?"
-
-  The bot will tell you your nickname, if it knows one for you.
-
-  Say: "shutdown"
-
-  The bot will ask if you are sure, and then shut itself down.
-
-  Make sure to invite your bot into other channels using /invite @<my bot>!
 
 # EXTEND THE BOT:
 
@@ -603,7 +566,7 @@ function sendArtistInfo(message, artist) {
 						'default_action': {
 							'type': 'web_url',
 							'url': 'https://sverigesradio.se/berwaldhallen',
-							'messenger_extensions': true,
+							'messenger_extensions': false,
 							'webview_height_ratio': 'tall',
 							'fallback_url': 'https://sverigesradio.se/berwaldhallen'
 						},
@@ -612,7 +575,7 @@ function sendArtistInfo(message, artist) {
 								'title': 'Info & Bokning',
 								'type': 'web_url',
 								'url': 'https://sverigesradio.se/berwaldhallen',
-								'messenger_extensions': true,
+								'messenger_extensions': false,
 								'webview_height_ratio': 'tall',
 								'fallback_url': 'https://sverigesradio.se/berwaldhallen'
 							}
