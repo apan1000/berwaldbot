@@ -1,15 +1,6 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Connect to Facebook's Messenger APIs
-* Receive messages based on "spoken" patterns
-* Reply to messages
-* Use the conversation system to ask questions
-* Use the built in storage system to store and retrieve information
-  for a user.
-
 # RUN THE BOT:
-
   Follow the instructions here to set up your Facebook app and page:
-
     -> https://developers.facebook.com/docs/messenger-platform/implementation
 
   Run your bot from the command line:
@@ -18,16 +9,13 @@
 
   Use the --lt option to make your bot available on the web through localtunnel.me.
 
+  Make sure to invite your bot into other channels using /invite @<my bot>!
+
 # EXTEND THE BOT:
-
   Botkit has many features for building cool and useful bots!
-
   Read all about it here:
-
     -> http://howdy.ai/botkit
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 
 if (!process.env.page_token) {
 	console.log('Error: Specify page_token in environment');
@@ -56,19 +44,25 @@ const express = require('express');
 // Postgres setting
 pg.defaults.ssl = true;
 
-const poolParams = url.parse(process.env.DATABASE_URL || 'postgres://localhost:5432/chatbot');
-const poolAuth = poolParams.auth.split(':');
+let pgPool;
 
-const poolConfig = {
-	user: poolAuth[0],
-	password: poolAuth[1],
-	host: poolParams.hostname,
-	port: poolParams.port,
-	database: poolParams.pathname.split('/')[1],
-	ssl: true
-};
+if(process.env.DATABASE_URL) {
+	const poolParams = url.parse(process.env.DATABASE_URL || 'postgres://localhost:5432/chatbot');
+	const poolAuth = poolParams.auth.split(':');
 
-const pgPool = new pg.Pool(poolConfig);
+	const poolConfig = {
+		user: poolAuth[0],
+		password: poolAuth[1],
+		host: poolParams.hostname,
+		port: poolParams.port,
+		database: poolParams.pathname.split('/')[1],
+		ssl: true
+	};
+
+	pgPool = new pg.Pool(poolConfig);
+} else {
+	pgPool = new pg.Pool();
+}
 
 pgPool.on('error', function(err, client) {
 	console.error('idle client error', err.message, err.stack)
@@ -137,7 +131,7 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 	});
 });
 
-controller.api.thread_settings.greeting('Hi {{user_first_name}}, welcome to this bot.');
+controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
 controller.api.thread_settings.get_started('Get Started Payload');
 controller.api.thread_settings.menu([
 	{
@@ -182,6 +176,34 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 	});
 });
 
+controller.hears(['^(Hjälp)'], 'message_received', function(bot, message) {
+	bot.reply(message, {
+		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "berwaldhallen".',
+		quick_replies: [
+			{
+				"content_type": "text",
+				"title": "Kommande konserter",
+				"payload": "konsertinfo"
+			},
+			{
+				"content_type": "text",
+				"title": "Ge mig artistinfo",
+				"payload": "artistinfo"
+			},
+			{
+				"content_type": "text",
+				"title": "Om Berwaldhallen",
+				"payload": "berwaldhallen"
+			},
+			{
+				"content_type": "text",
+				"title": "Vem är du?",
+				"payload": "Vem är du?"
+			},
+		]
+	});
+});
+
 controller.hears(['quick'], 'message_received', function(bot, message) {
 
 	bot.reply(message, {
@@ -202,6 +224,10 @@ controller.hears(['quick'], 'message_received', function(bot, message) {
 
 });
 
+controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
+	bot.reply(message, 'Fin webbadress :) Skulle säkert gått in och kollat om jag var en människa😞')
+});
+
 controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
@@ -220,6 +246,64 @@ controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, 
 			});
 		}
 	});
+});
+
+controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
+	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, '+
+	'är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt '+
+	'utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios '+
+	'Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. '+
+	'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk '+
+	'musik och kultur utomlands.';
+
+	//Berwaldhallen är hemmascen för Sveriges Radios Symfoniorkester och Radiokören. Ensemblerna ger konserter varje vecka, vilka oftast sänds i Sveriges Radio P2 och dessutom ut till en mångmiljonpublik runt om i Europa.
+
+	console.log('Sending about text...');
+	bot.reply(message, aboutText);
+
+	setTimeout(() => {
+		var reply_message = {
+			sender_action: 'typing_on'
+		};
+
+		console.log('Start typing...');
+		bot.reply(message, reply_message);
+
+		setTimeout(() => {
+			console.log('Sending template...');
+			bot.reply(message, {
+				attachment: {
+					type: 'template',
+					payload: {
+						template_type: 'generic',
+						elements: [
+							{
+								title: 'Om Berwaldhallen',
+								image_url: 'http://ttimg.nu/100/event/lek.jpg',
+								subtitle: 'Läs mer om Berwaldhallen här',
+								default_action: {
+									type: 'web_url',
+									url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+									webview_height_ratio: 'tall'
+								},
+								buttons: [
+									{
+										title: 'Läs mer',
+										type: 'web_url',
+										url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
+										webview_height_ratio: 'tall'
+									}
+								]
+							}
+						]
+					}
+				}
+			}, (err, response) => {
+				if(err)
+					console.error(err);
+			});
+		}, 2400)
+	}, 3000);
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
@@ -243,16 +327,119 @@ controller.hears(['silent push'], 'message_received', function(bot, message) {
 		text: "This message will have a push notification on a mobile phone, but no sound notification",
 		notification_type: "SILENT_PUSH"
 	}
-	bot.reply(message, reply_message)
-})
+	bot.reply(message, reply_message);
+});
 
 controller.hears(['no push'], 'message_received', function(bot, message) {
 	reply_message = {
 		text: "This message will not have any push notification on a mobile phone",
 		notification_type: "NO_PUSH"
 	}
-	bot.reply(message, reply_message)
-})
+	bot.reply(message, reply_message);
+});
+
+controller.hears(['spotify'], 'message_received', function(bot, message) {
+	// var typing_message = {
+	// 	sender_action: 'typing_on'
+	// };
+	// bot.reply(message, typing_message);
+
+	// setTimeout(() => {
+	// 	console.log('Sending template...');
+	// 	bot.reply(message, {
+	// 		attachment: {
+	// 			type: 'template',
+	// 			payload: {
+	// 				template_type: 'generic',
+	// 				elements: [
+	// 					{
+	// 						title: 'Berwaldhallens Spotifylista',
+	// 						image_url: 'http://ttimg.nu/100/event/lek.jpg',
+	// 						subtitle: 'Lyssna på kommande konserter',
+	// 						default_action: {
+	// 							type: 'web_url',
+	// 							url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+	// 							webview_height_ratio: 'tall'
+	// 						},
+	// 						buttons: [
+	// 							{
+	// 								title: 'Lyssna',
+	// 								type: 'web_url',
+	// 								url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+	// 								webview_height_ratio: 'tall'
+	// 							}
+	// 						]
+	// 					}
+	// 				]
+	// 			}
+	// 		}
+	// 	}, (err, response) => {
+	// 		if(err)
+	// 			console.error(err);
+	// 	});
+	// });
+	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
+});
+
+controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+	let concerts = ['Matthias Höfs', 'Mässa i orostid', 'Vägen till Pardiset'];
+	let quickReplies = [];
+	for(let concert of concerts) {
+		quickReplies.push(
+			{
+				content_type: 'text',
+				title: concert,
+				payload: concert
+			}
+		)
+	}
+	quickReplies.push({
+		content_type: 'text',
+		title: 'Ingen',
+		payload: 'ingen'
+	});
+
+	bot.startConversation(message, function(err, convo) {
+		if (!err) {
+			convo.ask({
+				text: 'Här är våra kommande konserter.\n'+
+						'Vilken vill du veta mer om?🤔', 
+				quick_replies: quickReplies
+			}, [
+				{
+					pattern: new RegExp(concerts.join("|"), "i"),
+					callback: function(response, convo) {
+						// since no further messages are queued after this,
+						// the conversation will end naturally with status == 'completed'
+						convo.say(response.text);
+						convo.next();
+					}
+				},
+				{
+					pattern: /^(ingen)/i,
+					callback: function(response, convo) {
+						// stop the conversation. this will cause it to end with status == 'stopped'
+						convo.stop();
+					}
+				},
+				{
+					default: true,
+					callback: function(response, convo) {
+						convo.repeat();
+						convo.next();
+					}
+				}
+			]);
+
+			convo.on('end', function(convo) {
+				if (convo.status !== 'completed') {
+					// this happens if the conversation ended prematurely for some reason
+					bot.reply(message, 'Vi går vidare!');
+				}
+			});
+		}
+	});
+});
 
 controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
 
@@ -408,9 +595,16 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 										console.error(error);
 									});
 
-									controller.storage.users.save(user, function(err, id) {
-										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + user.nickname + ' från och med nu.👍');
-									});
+									var typing_message = {
+										sender_action: 'typing_on'
+									};
+									bot.reply(message, typing_message);
+
+									setTimeout(() => {
+										controller.storage.users.save(user, function(err, id) {
+											bot.reply(message, 'Sådär. Jag kommer kalla dig ' + user.nickname + ' från och med nu.👍');
+										});
+									}, 750);
 								});
 
 							} else {
@@ -458,16 +652,26 @@ controller.hears(['shutdown'], 'message_received', function(bot, message) {
 
 controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'message_received', 
 	function(bot, message) {
-
-		var hostname = os.hostname();
-		var uptime = formatUptime(process.uptime());
-
 		bot.reply(message,
-			'🤖Jag är en bot🤖 Jag har varit igång i ' + uptime + ' på ' + hostname + '.');
+			'🤖Jag är BerwaldBoten🤖 Jag kan hjälpa dig med dina frågor om Berwaldhallen.');
 });
 
 controller.on('message_received', function(bot, message) {
-	bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+	console.log('Default message_received:\n',message,'\n');
+	
+	if(message.sticker_id) {
+		if(message.sticker_id === 369239263222822)
+			bot.reply(message, '👍');
+		else if(message.sticker_id === 369239343222814)
+			bot.reply(message, '👍👍');
+		else if(message.sticker_id === 369239383222810)
+			bot.reply(message, '😄👍👍👍');
+		else
+			bot.reply(message, "😃😛");
+	} else {
+		bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+	}
+	
 	return false;
 });
 
@@ -554,66 +758,66 @@ function getArtistInfo(name) {
 function sendArtistInfo(message, artist) {
 	bot.reply(message, {
 		attachment: {
-			'type': 'template',
-			'payload': {
-				'template_type': 'list',
-				'top_element_style': 'large',
-				'elements': [
+			type: 'template',
+			payload: {
+				template_type: 'list',
+				top_element_style: 'large',
+				elements: [
 					{
-						'title': artist.name.toUpperCase(),
-						'image_url': artist.images.length>1 ? artist.images[1].url : 'https://chatbot-test-1337.herokuapp.com/images/note.png',
-						'subtitle': 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
-						'default_action': {
-							'type': 'web_url',
-							'url': 'https://sverigesradio.se/berwaldhallen',
-							'messenger_extensions': false,
-							'webview_height_ratio': 'tall',
-							'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+						title: artist.name.toUpperCase(),
+						image_url: artist.images.length>1 ? artist.images[1].url : 'https://chatbot-test-1337.herokuapp.com/images/note.png',
+						subtitle: 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
+						default_action: {
+							type: 'web_url',
+							url: 'https://sverigesradio.se/berwaldhallen',
+							messenger_extensions: false,
+							webview_height_ratio: 'tall',
+							fallback_url: 'https://sverigesradio.se/berwaldhallen'
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Info & Bokning',
-								'type': 'web_url',
-								'url': 'https://sverigesradio.se/berwaldhallen',
-								'messenger_extensions': false,
-								'webview_height_ratio': 'tall',
-								'fallback_url': 'https://sverigesradio.se/berwaldhallen'
+								title: 'Info & Bokning',
+								type: 'web_url',
+								url: 'https://sverigesradio.se/berwaldhallen',
+								messenger_extensions: false,
+								webview_height_ratio: 'tall',
+								fallback_url: 'https://sverigesradio.se/berwaldhallen'
 							}
 						]
 					},
 					{
-						'title': 'Lyssna på Spotify',
-						'image_url': 'https://chatbot-test-1337.herokuapp.com/images/spotify.png',
-						'subtitle': artist.name,
-						'default_action': {
-							'type': 'web_url',
-							'url': artist.external_urls.spotify,
-							'webview_height_ratio': 'compact',
+						title: 'Lyssna på Spotify',
+						image_url: 'https://chatbot-test-1337.herokuapp.com/images/spotify.png',
+						subtitle: artist.name,
+						default_action: {
+							type: 'web_url',
+							url: artist.external_urls.spotify,
+							webview_height_ratio: 'compact',
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Lyssna',
-								'type': 'web_url',
-								'url': artist.external_urls.spotify,
-								'webview_height_ratio': 'compact',
+								title: 'Lyssna',
+								type: 'web_url',
+								url: artist.external_urls.spotify,
+								webview_height_ratio: 'compact',
 							}
 						]
 					},
 					{
-						'title': 'Läs mer på Wikipedia',
-						'image_url': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1122px-Wikipedia-logo-v2.svg.png',
-						'subtitle': artist.name,
-						'default_action': {
-							'type': 'web_url',
-							'url': 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
-							'webview_height_ratio': 'full',
+						title: 'Läs mer på Wikipedia',
+						image_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1122px-Wikipedia-logo-v2.svg.png',
+						subtitle: artist.name,
+						default_action: {
+							type: 'web_url',
+							url: 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
+							webview_height_ratio: 'full',
 						},
-						'buttons': [
+						buttons: [
 							{
-								'title': 'Läs mer på Wikipedia',
-								'type': 'web_url',
-								'url': 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
-								'webview_height_ratio': 'full',
+								title: 'Läs mer på Wikipedia',
+								type: 'web_url',
+								url: 'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
+								webview_height_ratio: 'full',
 							}
 						]
 					}
@@ -667,7 +871,7 @@ function setNickname(user, nickname) {
 				} else { // User not in database
 					getFacebookUserInfo(user).then(data => {
 						client.query(
-						'INSERT INTO users (nickname, first_name, last_name, id) VALUES (($1), ($2), ($3) ($4));',
+						'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3, $4);',
 						[user.nickname, data.first_name, data.last_name, user.id],
 						(err, res) => {
 							done();
@@ -675,7 +879,7 @@ function setNickname(user, nickname) {
 								reject(err);
 							}
 
-							console.log("INSERT INTO users");
+							console.log("> INSERT INTO users, DONE");
 							user.first_name = data.first_name;
 							user.last_name = data.last_name;
 
@@ -701,7 +905,7 @@ function getFacebookUserInfo(user) {
 			} else {
 				try {
 					var data = JSON.parse(body);
-					console.log(data);
+					console.log('User data:',data);
 					resolve(data);
 				} catch(e) {
 					reject(e);
