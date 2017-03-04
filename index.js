@@ -1,4 +1,3 @@
-
 /*
 # RUN THE BOT:
   Follow the instructions here to set up your Facebook app and page:
@@ -35,6 +34,9 @@ const localtunnel = require('localtunnel');
 const pg = require('pg');
 const request = require('request');
 const express = require('express');
+const information = require('info.js');
+
+const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
 
 // Postgres setting
 pg.defaults.ssl = true;
@@ -244,61 +246,65 @@ controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, 
 });
 
 controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
-	let aboutText = 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, '+
-	'är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt '+
-	'utanför landets gränser. \nBerwaldhallen är hemmascen för de två ensemblerna Sveriges Radios '+
-	'Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. '+
-	'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk '+
-	'musik och kultur utomlands.';
+	const bwh = information.berwaldhallen;
+	const typing_message = {
+		sender_action: 'typing_on'
+	};
 
-	//Berwaldhallen är hemmascen för Sveriges Radios Symfoniorkester och Radiokören. Ensemblerna ger konserter varje vecka, vilka oftast sänds i Sveriges Radio P2 och dessutom ut till en mångmiljonpublik runt om i Europa.
+	console.log('Sending short text...');
+	bot.reply(message, bwh.shortDesc);
 
-	console.log('Sending about text...');
-	bot.reply(message, aboutText);
-
+	// Typing
 	setTimeout(() => {
-		var reply_message = {
-			sender_action: 'typing_on'
-		};
+		bot.reply(message, typing_message);
 
-		console.log('Start typing...');
-		bot.reply(message, reply_message);
-
+		// Long description
 		setTimeout(() => {
-			console.log('Sending template...');
-			bot.reply(message, {
-				attachment: {
-					type: 'template',
-					payload: {
-						template_type: 'generic',
-						elements: [
-							{
-								title: 'Om Berwaldhallen',
-								image_url: 'http://ttimg.nu/100/event/lek.jpg',
-								subtitle: 'Läs mer om Berwaldhallen här',
-								default_action: {
-									type: 'web_url',
-									url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-									webview_height_ratio: 'tall'
-								},
-								buttons: [
+			console.log('Sending long text...');
+			bot.reply(message, bwh.longDesc);
+
+			// Typing
+			setTimeout(() => {
+				bot.reply(message, typing_message);
+
+				// Template
+				setTimeout(() => {
+					console.log('Sending template...');
+					bot.reply(message, {
+						attachment: {
+							type: 'template',
+							payload: {
+								template_type: 'generic',
+								elements: [
 									{
-										title: 'Läs mer',
-										type: 'web_url',
-										url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848176',
-										webview_height_ratio: 'tall'
+										title: 'Om Berwaldhallen',
+										image_url: 'http://ttimg.nu/100/event/lek.jpg',
+										subtitle: 'Läs om Berwaldhallens historia',
+										default_action: {
+											type: 'web_url',
+											url: bwh.history_url,
+											webview_height_ratio: 'tall'
+										},
+										buttons: [
+											{
+												title: 'Berwaldhallens historia',
+												type: 'web_url',
+												url: bwh.history_url,
+												webview_height_ratio: 'tall'
+											}
+										]
 									}
 								]
 							}
-						]
-					}
-				}
-			}, (err, response) => {
-				if(err)
-					console.error(err);
-			});
-		}, 2400)
-	}, 3000);
+						}
+					}, (err, response) => {
+						if(err)
+							console.error(err);
+					});
+				}, 1000); // Template
+			}, 1000); // Typing
+		}, 3000); // Long description
+	}, 2000); // Typing
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
