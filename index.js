@@ -328,7 +328,7 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 										template_type: 'generic',
 										elements: [
 											{
-												title: 'Om Berwaldhallen',
+												title: 'Berwaldhallens historia',
 												image_url: 'http://ttimg.nu/100/event/lek.jpg',
 												subtitle: 'Läs om Berwaldhallens historia',
 												default_action: {
@@ -338,7 +338,7 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 												},
 												buttons: [
 													{
-														title: 'Berwaldhallens historia',
+														title: 'Historia',
 														type: 'web_url',
 														url: bwh.history_url,
 														webview_height_ratio: 'tall'
