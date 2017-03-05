@@ -11,8 +11,6 @@
     -> http://howdy.ai/botkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-// TODO: Ändra alla get/set grejer (pg-grejer) med controller.storage.users.get()/save()
-
 if (!process.env.page_token) {
 	console.log('Error: Specify page_token in environment');
 	process.exit(1);
@@ -36,8 +34,6 @@ const url = require('url');
 const commandLineArgs = require('command-line-args');
 const localtunnel = require('localtunnel');
 
-const pg = require('pg');
-
 const request = require('request');
 const express = require('express');
 
@@ -45,33 +41,6 @@ const schedule = require('node-schedule');
 const information = require('./info');
 
 const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
-
-// Postgres setting
-pg.defaults.ssl = true;
-
-let pgPool;
-
-if(process.env.DATABASE_URL) {
-	const poolParams = url.parse(process.env.DATABASE_URL || 'postgres://localhost:5432/chatbot');
-	const poolAuth = poolParams.auth.split(':');
-
-	const poolConfig = {
-		user: poolAuth[0],
-		password: poolAuth[1],
-		host: poolParams.hostname,
-		port: poolParams.port,
-		database: poolParams.pathname.split('/')[1],
-		ssl: true
-	};
-
-	pgPool = new pg.Pool(poolConfig);
-} else {
-	pgPool = new pg.Pool();
-}
-
-pgPool.on('error', function(err, client) {
-	console.error('idle client error', err.message, err.stack)
-});
 
 const ops = commandLineArgs([
 	{
@@ -353,11 +322,11 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 									console.error(err);
 							});
 						}, 1000); // Template
-					}, 1000); // Typing
-				}, 6000); // Long description 1
-			}, 3000); // Typing
+					}, 500); // Start typing
+				}, 7000); // Long description 1
+			}, 5000); // Start typing
 		}, 6000); // Long description 0
-	}, 2500); // Typing
+	}, 2500); // Start typing
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
@@ -590,10 +559,6 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 		}).catch(error => {
 			console.error(error);
 		});
-
-		// controller.storage.users.save(user, function(err, id) {
-		// 	bot.reply(message, 'Okej, jag ska kalla dig ' + user.nickname + ' från och med nu.');
-		// });
 	});
 });
 
@@ -626,13 +591,6 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 				});
 			}
 
-			// getUser(user.id).then(result => {
-			// 	user = result;
-			// }).catch(err => {
-			// 	console.error('No user information:',err);
-			// });
-
-			// if(!user.hasOwnProperty('nickname')) {
 			bot.startConversation(message, function(err, convo) {
 				if (!err) {
 					convo.say('Jag vet inte vad du vill bli kallad än!');
@@ -697,9 +655,6 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 					});
 				}
 			});
-			// } else { // User gotten from database
-			// 	bot.reply(message, 'Du heter ' + user.nickname + '😉')
-			// }
 		}
 	});
 });
@@ -928,55 +883,6 @@ function setNickname(user, nickname) {
 
 			resolve(user);
 		});
-
-		// pgPool.connect((err, client, done) => {
-		// 	if (err) reject(done(err));
-
-		// 	client.query('SELECT first_name, last_name FROM users WHERE id=($1);', [user.id], (err, res) => {
-		// 		if (err) {
-		// 			reject(err);
-		// 		}
-
-		// 		console.log("> SELECT :", res);
-
-		// 		if (res.rows.length === 1) { // User found in database
-		// 			user.first_name = res.rows[0].first_name;
-		// 			user.last_name = res.rows[0].last_name;
-
-		// 			client.query(
-		// 				'UPDATE users SET nickname=($1) WHERE id=($2);',
-		// 				[user.nickname, user.id],
-		// 				(err, res) => {
-		// 					done();
-		// 					if (err) {
-		// 						reject(err);
-		// 					}
-		// 					console.log("UPDATE users");
-		// 					resolve(user);
-		// 			});
-		// 		} else { // User not in database
-		// 			getFacebookUserInfo(user).then(data => {
-		// 				client.query(
-		// 				'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3, $4);',
-		// 				[user.nickname, data.first_name, data.last_name, user.id],
-		// 				(err, res) => {
-		// 					done();
-		// 					if (err) {
-		// 						reject(err);
-		// 					}
-
-		// 					console.log("> INSERT INTO users, DONE");
-		// 					user.first_name = data.first_name;
-		// 					user.last_name = data.last_name;
-
-		// 					resolve(user);
-		// 				});
-		// 			}).catch(e => {
-		// 				reject(e);
-		// 			});
-		// 		}
-		// 	});
-		// });
 	});
 }
 
@@ -1010,30 +916,5 @@ function getUser(userId) {
 
 			resolve(user);
 		});
-
-		// pgPool.connect((err, client, done) => {
-		// 	if (err) reject(done(err));
-
-		// 	client.query('SELECT * FROM users WHERE id=($1);', [userId], (err, res) => {
-		// 		if (err) {
-		// 			console.error('Query problems');
-		// 			reject(err);
-		// 		}
-
-		// 		if (res.rows.length === 1) { // User found in database
-		// 			let user = res.rows[0];
-					
-		// 			controller.storage.users.save(user, function(err, id) {
-		// 				if(err) {
-		// 					console.error('Save problems');
-		// 					reject(err);
-		// 				}
-		// 			});
-		// 			resolve(user);
-		// 		} else { // User not in database
-		// 			reject(new Error('no user found'));
-		// 		}
-		// 	});
-		// });
 	});
 }
