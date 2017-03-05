@@ -597,6 +597,8 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 					first_message: message
 				};
 
+				user.first_message.referral = '';
+
 				getFacebookUserInfo(user).then(data => {
 					user.first_name = data.first_name;
 					user.last_name = data.last_name;
