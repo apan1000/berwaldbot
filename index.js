@@ -354,10 +354,10 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 							});
 						}, 1000); // Template
 					}, 1000); // Typing
-				}, 3000); // Long description 1
-			}, 2000); // Typing
-		}, 3000); // Long description 0
-	}, 2000); // Typing
+				}, 6000); // Long description 1
+			}, 3000); // Typing
+		}, 6000); // Long description 0
+	}, 2500); // Typing
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
