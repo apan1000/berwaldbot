@@ -111,10 +111,19 @@ const infoDate = new Date(2017, 3, 5, 10);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('Time to send information! Woohoo!.');
 	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
-	firstMessages = [];// Hämta från databasen
-	for(let message of firstMessages) {
-		bot.startConversation();
-	}
+
+	// TODO: Skicka info om konsert
+	const users = controller.storage.users.all(function(err, users) {
+		if(err) {
+			bot.reply(message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Fråga mig gärna om den :)');
+			return console.error('error getting users', err);
+		}
+
+		users.forEach((user) => {
+			//TODO: start conversation
+			bot.startConversation();
+		});
+	});
 });
 
 controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
@@ -186,7 +195,7 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 
 controller.hears(['hjälp'], 'message_received', function(bot, message) {
 	bot.reply(message, {
-		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "berwaldhallen".',
+		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "om berwaldhallen".',
 		quick_replies: [
 			{
 				"content_type": "text",
@@ -233,7 +242,7 @@ controller.hears(['quick'], 'message_received', function(bot, message) {
 });
 
 controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
-	bot.reply(message, 'Fin webbadress :) Skulle säkert gått in och kollat om jag var en människa😞')
+	bot.reply(message, 'Fin webbadress :) Skulle säkert gått in och kollat om jag var en människa😞');
 });
 
 controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, message) {
@@ -339,7 +348,7 @@ controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_receive
 		let userNames = 'Alla användare:';
 		users.forEach((user) => {
 			userNames += ' ' + user.first_name;
-		})
+		});
 
 		bot.reply(message, userNames);
 	});
@@ -404,64 +413,8 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
 });
 
-controller.hears(['konsertinfo$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
-	let concerts = ['Matthias Höfs', 'Mässa i orostid', 'Vägen till Pardiset'];
-	let quickReplies = [];
-	for(let concert of concerts) {
-		quickReplies.push(
-			{
-				content_type: 'text',
-				title: concert,
-				payload: concert
-			}
-		)
-	}
-	quickReplies.push({
-		content_type: 'text',
-		title: 'Ingen',
-		payload: 'ingen'
-	});
-
-	bot.startConversation(message, function(err, convo) {
-		if (!err) {
-			convo.ask({
-				text: 'Här är våra kommande konserter.\n'+
-						'Vilken vill du veta mer om?🤔', 
-				quick_replies: quickReplies
-			}, [
-				{
-					pattern: new RegExp(concerts.join("|"), "i"),
-					callback: function(response, convo) {
-						// since no further messages are queued after this,
-						// the conversation will end naturally with status == 'completed'
-						convo.say(response.text);
-						convo.next();
-					}
-				},
-				{
-					pattern: /^(ingen)/i,
-					callback: function(response, convo) {
-						// stop the conversation. this will cause it to end with status == 'stopped'
-						convo.stop();
-					}
-				},
-				{
-					default: true,
-					callback: function(response, convo) {
-						convo.repeat();
-						convo.next();
-					}
-				}
-			]);
-
-			convo.on('end', function(convo) {
-				if (convo.status !== 'completed') {
-					// this happens if the conversation ended prematurely for some reason
-					bot.reply(message, 'Vi går vidare!');
-				}
-			});
-		}
-	});
+controller.hears(['konsert$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+	bot.startConversation(message, askConcert);
 });
 
 controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
@@ -904,4 +857,179 @@ function getUser(userId) {
 			resolve(user);
 		});
 	});
+}
+
+function askConcert(response, convo) {
+	let concert = information.concert;
+	let quickReplies = [
+		{
+			content_type: 'text',
+			title: concert.name,
+			payload: concert.name
+		},
+		{
+			content_type: 'text',
+			title: '🚫Ingen🚫',
+			payload: 'stopp'
+		}
+	];
+
+	convo.ask({
+		text: 'Här är dina kommande konserter. (Jag vet bara om Solistprisvinnaren😉)\n'+
+				'Vilken vill du veta mer om?🤔', 
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: new RegExp(concert.name, 'i'),
+			callback: function(response, convo) {
+				convo.say(response.text);
+				askConcertInfo(response, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			callback: function(response, convo) {
+				// stop the conversation. this will cause it to end with status == 'stopped'
+				convo.stop();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.repeat();
+				convo.next();
+			}
+		}
+	]);
+
+	convo.on('end', function(convo) {
+		if (convo.status !== 'completed') {
+			// this happens if the conversation ended prematurely for some reason
+			bot.reply(message, 'Vi går vidare!');
+		}
+	});
+}
+
+function askConcertInfo(response, convo) {
+	let quickReplies = [
+		{
+			content_type: 'text',
+			title: 'Generell info',
+			payload: 'info'
+		},
+		{
+			content_type: 'text',
+			title: 'Medverkande',
+			payload: 'medverkande'
+		},
+		{
+			content_type: 'text',
+			title: 'Program',
+			payload: 'program'
+		}
+	];
+
+	quickReplies.push({
+		content_type: 'text',
+		title: '🚫Ingen🚫',
+		payload: 'stopp'
+	});
+
+	convo.ask({
+		text: 'Vad vill du veta om konserten?', 
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: /^(om|info(rmation)?|)/i,
+			callback: function(response, convo) {
+				//TODO: fix
+				convo.next();
+			}
+		},
+		{
+			pattern: /^(medverkande|artister)/i,
+			callback: function(response, convo) {
+				askParticipants(response, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /^(stycken|låtar|verk|program)/i,
+			callback: function(response, convo) {
+				//TODO: fix
+				convo.next();
+			}
+		},
+		{
+			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			callback: function(response, convo) {
+				// stop the conversation. this will cause it to end with status == 'stopped'
+				convo.stop();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.repeat();
+				convo.next();
+			}
+		}
+	]);
+}
+
+function askParticipants(response, convo) {
+	let participantNames = [];
+	let participants = {};
+	for(let participant of information.concert.participants) {
+		participantNames.push(participant.name);
+		participants[participant.name] = participant;
+	}
+
+	let quickReplies = [];
+	for(let name of participantNames) {
+		quickReplies.push({
+			content_type: 'text',
+			title: name,
+			payload: name
+		});
+	}
+
+	quickReplies.push({
+		content_type: 'text',
+		title: '🚫Ingen🚫',
+		payload: 'stopp'
+	});
+
+	convo.ask({
+		text: 'De här personerna medverkar, tryck på den du vill veta mer om. :)',
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: new RegExp(participantNames.join('|'), 'i'),
+			callback: function(response, convo) {
+				//TODO: fix
+				sendParticipantInfo(participants[response.text], convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			callback: function(response, convo) {
+				// stop the conversation. this will cause it to end with status == 'stopped'
+				convo.stop();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.repeat();
+				convo.next();
+			}
+		}
+	]);
+}
+
+function sendParticipantInfo(participant, convo) {
+	//TODO: fix
 }
