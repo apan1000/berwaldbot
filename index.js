@@ -42,7 +42,7 @@ const request = require('request');
 const express = require('express');
 
 const schedule = require('node-schedule');
-const information = require('info.js');
+const information = require('./info');
 
 const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
 
