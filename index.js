@@ -298,7 +298,7 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 										elements: [
 											{
 												title: 'Berwaldhallens historia',
-												image_url: 'http://ttimg.nu/100/event/lek.jpg',
+												image_url: 'https://static-cdn.sr.se/sida/images/3991/2624678_450_295.jpg',
 												subtitle: 'Läs om Berwaldhallens historia',
 												default_action: {
 													type: 'web_url',
@@ -343,20 +343,6 @@ controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_receive
 
 		bot.reply(message, userNames);
 	});
-
-	// pgPool.query('SELECT first_name FROM users;', (err, res) => {
-	// 	if (err) {
-	// 		bot.reply(message, 'Tyvärr kunde jag inte visa alla användare. Låt oss prata om något annat😊');
-	// 		return console.error('error running query', err);
-	// 	}
-
-	// 	let userNames = 'Alla användare:';
-	// 	res.rows.forEach((row) => {
-	// 		userNames += ' ' + row.first_name;
-	// 	})
-
-	// 	bot.reply(message, userNames);
-	// });
 });
 
 controller.hears(['silent push'], 'message_received', function(bot, message) {
@@ -690,7 +676,8 @@ controller.hears(['shutdown'], 'message_received', function(bot, message) {
 controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'message_received', 
 	function(bot, message) {
 		bot.reply(message,
-			'👾Jag är BerwaldBoten😶 Jag kan hjälpa dig med dina frågor om Berwaldhallen.');
+			'👾Jag är BerwaldBoten😶 Jag kan hjälpa dig med dina frågor om Berwaldhallen.'
+		);
 });
 
 controller.on('message_received', function(bot, message) {
