@@ -11,6 +11,8 @@
     -> http://howdy.ai/botkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+// TODO: Ändra alla get/set grejer (pg-grejer) med controller.storage.users.get()/save()
+
 if (!process.env.page_token) {
 	console.log('Error: Specify page_token in environment');
 	process.exit(1);
@@ -27,13 +29,19 @@ if (!process.env.app_secret) {
 }
 
 const Botkit = require('./node_modules/botkit/lib/Botkit.js');
+const firebaseStorage = require('botkit-storage-firebase')({firebase_uri: 'https://berwaldboten.firebaseio.com/'});
 const os = require('os');
 const url = require('url');
+
 const commandLineArgs = require('command-line-args');
 const localtunnel = require('localtunnel');
+
 const pg = require('pg');
+
 const request = require('request');
 const express = require('express');
+
+const schedule = require('node-schedule');
 const information = require('info.js');
 
 const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
@@ -89,7 +97,8 @@ const controller = Botkit.facebookbot({
 	verify_token: process.env.verify_token,
 	app_secret: process.env.app_secret,
 	validate_requests: true, // Refuse any requests that don't come from FB on your receive webhook, must provide FB_APP_SECRET in environment variables
-	receive_via_postback: true
+	receive_via_postback: true,
+	storage: firebaseStorage
 });
 
 const bot = controller.spawn({
@@ -128,13 +137,24 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 	});
 });
 
+// Send information message about the concert after specified date and time
+const infoDate = new Date(2017, 3, 5, 10);
+let j = schedule.scheduleJob(infoDate, function(){
+	console.log('Time to send information! Woohoo!.');
+	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
+	firstMessages = [];// Hämta från databasen
+	for(let message of firstMessages) {
+		bot.startConversation();
+	}
+});
+
 controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
 controller.api.thread_settings.get_started('Get Started Payload');
 controller.api.thread_settings.menu([
 	{
 		"type": "postback",
 		"title": "Hej",
-		"payload": "Hej Hej"
+		"payload": "Hej"
 	},
 	{
 		"type": "postback",
@@ -156,6 +176,26 @@ controller.api.thread_settings.menu([
 // });
 
 controller.hears(['^(Get Started)'], 'message_received', function(bot, message) {
+	let user = {
+		id: message.user,
+		first_message: message
+	};
+
+	getFacebookUserInfo(user).then(data => {
+		user.first_name = data.first_name;
+		user.last_name = data.last_name;
+
+		controller.storage.users.save(user, (err, id) => {
+			if (err) {
+				console.error('Error saving user:',err);
+			}
+
+			console.log('> INSERT INTO users, DONE');
+		});
+	}).catch(e => {
+		console.error(e);
+	});
+
 	bot.reply(message, {
 		text: 'Hej och välkommen till Berwaldhallens chatbot! Du kan välja ett av alternativen här under eller skriva \'hjälp\' för mer information.',
 		quick_replies: [
@@ -173,7 +213,7 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 	});
 });
 
-controller.hears(['^(Hjälp)'], 'message_received', function(bot, message) {
+controller.hears(['hjälp'], 'message_received', function(bot, message) {
 	bot.reply(message, {
 		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "berwaldhallen".',
 		quick_replies: [
@@ -308,19 +348,33 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
-	pgPool.query('SELECT first_name FROM users;', (err, res) => {
-		if (err) {
+	const users = controller.storage.users.all(function(err, users) {
+		if(err) {
 			bot.reply(message, 'Tyvärr kunde jag inte visa alla användare. Låt oss prata om något annat😊');
-			return console.error('error running query', err);
+			return console.error('error getting users', err);
 		}
 
 		let userNames = 'Alla användare:';
-		res.rows.forEach((row) => {
-			userNames += ' ' + row.first_name;
+		users.forEach((user) => {
+			userNames += ' ' + user.first_name;
 		})
 
 		bot.reply(message, userNames);
 	});
+
+	// pgPool.query('SELECT first_name FROM users;', (err, res) => {
+	// 	if (err) {
+	// 		bot.reply(message, 'Tyvärr kunde jag inte visa alla användare. Låt oss prata om något annat😊');
+	// 		return console.error('error running query', err);
+	// 	}
+
+	// 	let userNames = 'Alla användare:';
+	// 	res.rows.forEach((row) => {
+	// 		userNames += ' ' + row.first_name;
+	// 	})
+
+	// 	bot.reply(message, userNames);
+	// });
 });
 
 controller.hears(['silent push'], 'message_received', function(bot, message) {
@@ -511,7 +565,7 @@ controller.hears(['^artistinfo (.*)', '^artist (.*)'], 'message_received', funct
 controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', function(bot, message) {
 	var name = message.match[1];
 	controller.storage.users.get(message.user, function(err, user) {
-		if (!user) {
+		if(!user) {
 			user = {
 				id: message.user,
 			};
@@ -519,14 +573,14 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 
 		// Insert into database
 		setNickname(user, name).then(newUser => {
-			user = newUser;
+			bot.reply(message, 'Okej, jag ska kalla dig ' + newUser.nickname + ' från och med nu.');
 		}).catch(error => {
 			console.error(error);
 		});
 
-		controller.storage.users.save(user, function(err, id) {
-			bot.reply(message, 'Okej, jag ska kalla dig ' + user.nickname + ' från och med nu.');
-		});
+		// controller.storage.users.save(user, function(err, id) {
+		// 	bot.reply(message, 'Okej, jag ska kalla dig ' + user.nickname + ' från och med nu.');
+		// });
 	});
 });
 
@@ -535,90 +589,102 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 		if (user && user.nickname) {
 			bot.reply(message, 'Du heter ' + user.nickname + '😉');
 		} else {
-			user = {
-				id: message.user
-			};
+			if(!user) {
+				user = {
+					id: message.user,
+					first_message: message
+				};
 
-			getUser(user.id).then(result => {
-				user = result;
-			}).catch(err => {
-				console.error('No user information:',err);
-			});
+				getFacebookUserInfo(user).then(data => {
+					user.first_name = data.first_name;
+					user.last_name = data.last_name;
 
-			if(!user.hasOwnProperty('nickname')) {
-				bot.startConversation(message, function(err, convo) {
-					if (!err) {
-						convo.say('Jag vet inte vad du vill bli kallad än!');
-						convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
-							convo.ask('Ska jag kalla dig `' + response.text + '`❓', [
-								{
-									pattern: bot.utterances.yes,
-									callback: function(response, convo) {
-										// since no further messages are queued after this,
-										// the conversation will end naturally with status == 'completed'
-										convo.next();
-									}
-								},
-								{
-									pattern: bot.utterances.no,
-									callback: function(response, convo) {
-										// stop the conversation. this will cause it to end with status == 'stopped'
-										convo.stop();
-									}
-								},
-								{
-									default: true,
-									callback: function(response, convo) {
-										convo.repeat();
-										convo.next();
-									}
-								}
-							]);
+					controller.storage.users.save(user, (err, id) => {
+						if (err) {
+							console.error('Error saving user:',err);
+						}
 
-							convo.next();
-
-						}, { 'key': 'nickname' }); // store the results in a field called nickname
-
-						convo.on('end', function(convo) {
-							if (convo.status === 'completed') {
-								bot.reply(message, 'Okej! Uppdaterar min databas...🤖');
-
-								controller.storage.users.get(message.user, function(err, user) {
-									if (!user) {
-										user = {
-											id: message.user,
-										};
-									}
-
-									setNickname(user, convo.extractResponse('nickname')).then(newUser => {
-										user = newUser;
-									}).catch(error => {
-										console.error(error);
-									});
-
-									var typing_message = {
-										sender_action: 'typing_on'
-									};
-									bot.reply(message, typing_message);
-
-									setTimeout(() => {
-										controller.storage.users.save(user, function(err, id) {
-											bot.reply(message, 'Sådär. Jag kommer kalla dig ' + user.nickname + ' från och med nu.👍');
-										});
-									}, 750);
-								});
-
-							} else {
-								// this happens if the conversation ended prematurely for some reason
-								bot.reply(message, 'Okej! Strunt samma.😌');
-							}
-						});
-					}
+						console.log('> INSERT INTO users, DONE');
+					});
+				}).catch(e => {
+					console.error(e);
 				});
-			} else { // User gotten from database
-				bot.reply(message, 'Du heter ' + user.nickname + '😉')
 			}
-			
+
+			// getUser(user.id).then(result => {
+			// 	user = result;
+			// }).catch(err => {
+			// 	console.error('No user information:',err);
+			// });
+
+			// if(!user.hasOwnProperty('nickname')) {
+			bot.startConversation(message, function(err, convo) {
+				if (!err) {
+					convo.say('Jag vet inte vad du vill bli kallad än!');
+					convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
+						convo.ask('Ska jag kalla dig `' + response.text + '`❓', [
+							{
+								pattern: bot.utterances.yes,
+								callback: function(response, convo) {
+									// since no further messages are queued after this,
+									// the conversation will end naturally with status == 'completed'
+									convo.next();
+								}
+							},
+							{
+								pattern: bot.utterances.no,
+								callback: function(response, convo) {
+									// stop the conversation. this will cause it to end with status == 'stopped'
+									convo.stop();
+								}
+							},
+							{
+								default: true,
+								callback: function(response, convo) {
+									convo.repeat();
+									convo.next();
+								}
+							}
+						]);
+
+						convo.next();
+
+					}, { 'key': 'nickname' }); // store the results in a field called nickname
+
+					convo.on('end', function(convo) {
+						if (convo.status === 'completed') {
+							bot.reply(message, 'Okej! Uppdaterar min databas...💻');
+							var typing_message = {
+								sender_action: 'typing_on'
+							};
+							bot.reply(message, typing_message);
+
+							controller.storage.users.get(message.user, function(err, user) {
+								if(!user) {
+									user = {
+										id: message.user,
+									};
+								}
+
+								setNickname(user, convo.extractResponse('nickname')).then(newUser => {
+									setTimeout(() => {
+										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍');
+									}, 750);
+								}).catch(error => {
+									console.error(error);
+								});
+							});
+
+						} else {
+							// this happens if the conversation ended prematurely for some reason
+							bot.reply(message, 'Okej! Strunt samma.😌');
+						}
+					});
+				}
+			});
+			// } else { // User gotten from database
+			// 	bot.reply(message, 'Du heter ' + user.nickname + '😉')
+			// }
 		}
 	});
 });
@@ -654,7 +720,7 @@ controller.hears(['shutdown'], 'message_received', function(bot, message) {
 controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'message_received', 
 	function(bot, message) {
 		bot.reply(message,
-			'🤖Jag är BerwaldBoten🤖 Jag kan hjälpa dig med dina frågor om Berwaldhallen.');
+			'👾Jag är BerwaldBoten😶 Jag kan hjälpa dig med dina frågor om Berwaldhallen.');
 });
 
 controller.on('message_received', function(bot, message) {
@@ -840,64 +906,72 @@ function setNickname(user, nickname) {
 	user.nickname = nickname;
 
 	return new Promise((resolve, reject) => {
-		pgPool.connect((err, client, done) => {
-			if (err) reject(done(err));
+		controller.storage.users.save(user, function(err, id) {
+			if(err) {
+				reject(err);
+			}
 
-			client.query('SELECT first_name, last_name FROM users WHERE id=($1);', [user.id], (err, res) => {
-				if (err) {
-					reject(err);
-				}
-
-				console.log("> SELECT :", res);
-
-				if (res.rows.length === 1) { // User found in database
-					user.first_name = res.rows[0].first_name;
-					user.last_name = res.rows[0].last_name;
-
-					client.query(
-						'UPDATE users SET nickname=($1) WHERE id=($2);',
-						[user.nickname, user.id],
-						(err, res) => {
-							done();
-							if (err) {
-								reject(err);
-							}
-							console.log("UPDATE users");
-							resolve(user);
-					});
-				} else { // User not in database
-					getFacebookUserInfo(user).then(data => {
-						client.query(
-						'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3, $4);',
-						[user.nickname, data.first_name, data.last_name, user.id],
-						(err, res) => {
-							done();
-							if (err) {
-								reject(err);
-							}
-
-							console.log("> INSERT INTO users, DONE");
-							user.first_name = data.first_name;
-							user.last_name = data.last_name;
-
-							resolve(user);
-						});
-					}).catch(e => {
-						reject(e);
-					});
-				}
-			});
+			resolve(user);
 		});
+
+		// pgPool.connect((err, client, done) => {
+		// 	if (err) reject(done(err));
+
+		// 	client.query('SELECT first_name, last_name FROM users WHERE id=($1);', [user.id], (err, res) => {
+		// 		if (err) {
+		// 			reject(err);
+		// 		}
+
+		// 		console.log("> SELECT :", res);
+
+		// 		if (res.rows.length === 1) { // User found in database
+		// 			user.first_name = res.rows[0].first_name;
+		// 			user.last_name = res.rows[0].last_name;
+
+		// 			client.query(
+		// 				'UPDATE users SET nickname=($1) WHERE id=($2);',
+		// 				[user.nickname, user.id],
+		// 				(err, res) => {
+		// 					done();
+		// 					if (err) {
+		// 						reject(err);
+		// 					}
+		// 					console.log("UPDATE users");
+		// 					resolve(user);
+		// 			});
+		// 		} else { // User not in database
+		// 			getFacebookUserInfo(user).then(data => {
+		// 				client.query(
+		// 				'INSERT INTO users (nickname, first_name, last_name, id) VALUES ($1, $2, $3, $4);',
+		// 				[user.nickname, data.first_name, data.last_name, user.id],
+		// 				(err, res) => {
+		// 					done();
+		// 					if (err) {
+		// 						reject(err);
+		// 					}
+
+		// 					console.log("> INSERT INTO users, DONE");
+		// 					user.first_name = data.first_name;
+		// 					user.last_name = data.last_name;
+
+		// 					resolve(user);
+		// 				});
+		// 			}).catch(e => {
+		// 				reject(e);
+		// 			});
+		// 		}
+		// 	});
+		// });
 	});
 }
 
 function getFacebookUserInfo(user) {
 	return new Promise((resolve, reject) => {
 		request.get('https://graph.facebook.com/v2.8/'+
-		user.id+'?fields=first_name,last_name,profile_pic,locale,gender&access_token='+
-		process.env.page_token, (error, resp, body) => {
+		user.id+'?fields=first_name,last_name,profile_pic,locale,gender&access_token='+process.env.page_token,
+		(error, resp, body) => {
 			if (error) {
-				console.error('Could not get user information.');
+				console.error('Could not get user facebook information.');
 				reject(error);
 			} else {
 				try {
@@ -914,29 +988,37 @@ function getFacebookUserInfo(user) {
 
 function getUser(userId) {
 	return new Promise((resolve, reject) => {
-		pgPool.connect((err, client, done) => {
-			if (err) reject(done(err));
+		controller.storage.users.get(userId, function(err, user) {
+			if(err) {
+				reject(err);
+			}
 
-			client.query('SELECT * FROM users WHERE id=($1);', [userId], (err, res) => {
-				if (err) {
-					console.error('Query problems');
-					reject(err);
-				}
-
-				if (res.rows.length === 1) { // User found in database
-					let user = res.rows[0];
-					
-					controller.storage.users.save(user, function(err, id) {
-						if(err) {
-							console.error('Save problems');
-							reject(err);
-						}
-					});
-					resolve(user);
-				} else { // User not in database
-					reject(new Error('no user found'));
-				}
-			});
+			resolve(user);
 		});
+
+		// pgPool.connect((err, client, done) => {
+		// 	if (err) reject(done(err));
+
+		// 	client.query('SELECT * FROM users WHERE id=($1);', [userId], (err, res) => {
+		// 		if (err) {
+		// 			console.error('Query problems');
+		// 			reject(err);
+		// 		}
+
+		// 		if (res.rows.length === 1) { // User found in database
+		// 			let user = res.rows[0];
+					
+		// 			controller.storage.users.save(user, function(err, id) {
+		// 				if(err) {
+		// 					console.error('Save problems');
+		// 					reject(err);
+		// 				}
+		// 			});
+		// 			resolve(user);
+		// 		} else { // User not in database
+		// 			reject(new Error('no user found'));
+		// 		}
+		// 	});
+		// });
 	});
 }
