@@ -29,7 +29,7 @@ if (!process.env.app_secret) {
 }
 
 const Botkit = require('./node_modules/botkit/lib/Botkit.js');
-const firebaseStorage = require('botkit-storage-firebase')({firebase_uri: 'https://berwaldboten.firebaseio.com/'});
+const firebaseStorage = require('botkit-storage-firebase')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
 const os = require('os');
 const url = require('url');
 
