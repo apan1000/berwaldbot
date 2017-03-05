@@ -181,6 +181,8 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 		first_message: message
 	};
 
+	user.first_message.referral = ''; // Was undefined
+
 	getFacebookUserInfo(user).then(data => {
 		user.first_name = data.first_name;
 		user.last_name = data.last_name;
