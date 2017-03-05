@@ -300,52 +300,63 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 	setTimeout(() => {
 		bot.reply(message, typing_message);
 
-		// Long description
+		// Long description 0
 		setTimeout(() => {
 			console.log('Sending long text...');
-			bot.reply(message, bwh.longDesc);
+			bot.reply(message, bwh.longDesc[0]);
 
 			// Typing
 			setTimeout(() => {
 				bot.reply(message, typing_message);
 
-				// Template
+				// Long description 1
 				setTimeout(() => {
-					console.log('Sending template...');
-					bot.reply(message, {
-						attachment: {
-							type: 'template',
-							payload: {
-								template_type: 'generic',
-								elements: [
-									{
-										title: 'Om Berwaldhallen',
-										image_url: 'http://ttimg.nu/100/event/lek.jpg',
-										subtitle: 'Läs om Berwaldhallens historia',
-										default_action: {
-											type: 'web_url',
-											url: bwh.history_url,
-											webview_height_ratio: 'tall'
-										},
-										buttons: [
+					console.log('Sending long text...');
+					bot.reply(message, bwh.longDesc[0]);
+
+					// Typing
+					setTimeout(() => {
+						bot.reply(message, typing_message);
+
+						// Template
+						setTimeout(() => {
+							console.log('Sending template...');
+							bot.reply(message, {
+								attachment: {
+									type: 'template',
+									payload: {
+										template_type: 'generic',
+										elements: [
 											{
-												title: 'Berwaldhallens historia',
-												type: 'web_url',
-												url: bwh.history_url,
-												webview_height_ratio: 'tall'
+												title: 'Om Berwaldhallen',
+												image_url: 'http://ttimg.nu/100/event/lek.jpg',
+												subtitle: 'Läs om Berwaldhallens historia',
+												default_action: {
+													type: 'web_url',
+													url: bwh.history_url,
+													webview_height_ratio: 'tall'
+												},
+												buttons: [
+													{
+														title: 'Berwaldhallens historia',
+														type: 'web_url',
+														url: bwh.history_url,
+														webview_height_ratio: 'tall'
+													}
+												]
 											}
 										]
 									}
-								]
-							}
-						}
-					}, (err, response) => {
-						if(err)
-							console.error(err);
-					});
-				}, 1000); // Template
-			}, 1000); // Typing
-		}, 3000); // Long description
+								}
+							}, (err, response) => {
+								if(err)
+									console.error(err);
+							});
+						}, 1000); // Template
+					}, 1000); // Typing
+				}, 3000); // Long description 1
+			}, 2000); // Typing
+		}, 3000); // Long description 0
 	}, 2000); // Typing
 });
 
