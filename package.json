@@ -24,7 +24,7 @@
   "homepage": "https://github.com/apan1000/chatbot-test#readme",
   "dependencies": {
     "botkit": "^0.4.9",
-    "botkit-storage-firebase": "^1.0.0",
+    "botkit-storage-firebase": "git://github.com/esjay/botkit-storage-firebase.git",
     "node-schedule": "^1.2.0",
     "pg": "6.1.2"
   },
