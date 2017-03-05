@@ -312,7 +312,7 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 				// Long description 1
 				setTimeout(() => {
 					console.log('Sending long text...');
-					bot.reply(message, bwh.longDesc[0]);
+					bot.reply(message, bwh.longDesc[1]);
 
 					// Typing
 					setTimeout(() => {

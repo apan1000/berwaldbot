@@ -3,9 +3,9 @@
 module.exports = {
     berwaldhallen: {
         shortDesc: 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser.',
-        longDesc: ['Berwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands. Årligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här. Samtliga konserter sänds i Sveriges Radio, de flesta i P2, samt runtom och utanför Europa via EBU, European Broadcasting Union.',
+        longDesc: ['Berwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands.\nÅrligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här. Samtliga konserter sänds i Sveriges Radio, de flesta i P2, samt runtom och utanför Europa via EBU, European Broadcasting Union.',
 
-                'Tack vare Radiokören och Radiosymfonikerna kan Sveriges Radio erbjuda sina lyssnare ett kvalitativt kulturutbud. Genom direktsändning kan alla få tillgång till konstmusik av mycket hög kvalitet och musikupplevelser som annars skulle vara svåra att nå.'+
+                'Tack vare Radiokören och Radiosymfonikerna kan Sveriges Radio erbjuda sina lyssnare ett kvalitativt kulturutbud.\nGenom direktsändning kan alla få tillgång till konstmusik av mycket hög kvalitet och musikupplevelser som annars skulle vara svåra att nå.'+
                 '\n\nBerwaldhallen är även en efterfrågad konsertscen för externa arrangörer och utöver våra egna konserter och evenemang, äger årligen ett stort antal konserter, bolagsstämmor och andra evenemang, rum i Berwaldhallen.'
             ],
         website_url: 'https://sverigesradio.se',
