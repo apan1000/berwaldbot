@@ -1,5 +1,5 @@
 {
-  "name": "chatbot-test",
+  "name": "berwaldbot",
   "version": "1.0.0",
   "description": "Facebook Messenger chatbot test",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apan1000/chatbot-test.git"
+    "url": "git+https://github.com/apan1000/berwaldbot.git"
   },
   "keywords": [
     "chatbot",
@@ -19,14 +19,13 @@
   "author": "Fredrik Berglund",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/apan1000/chatbot-test/issues"
+    "url": "https://github.com/apan1000/berwaldbot/issues"
   },
-  "homepage": "https://github.com/apan1000/chatbot-test#readme",
+  "homepage": "https://github.com/apan1000/berwaldbot#readme",
   "dependencies": {
-    "botkit": "^0.4.9",
+    "botkit": "0.5.1",
     "botkit-storage-firebase": "git://github.com/esjay/botkit-storage-firebase.git",
-    "node-schedule": "^1.2.0",
-    "pg": "6.1.2"
+    "node-schedule": "^1.2.0"
   },
   "engines": {
     "node": "6.9.1"
