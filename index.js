@@ -259,10 +259,13 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
 	const ip = os.networkInterfaces();
-	console.log('>>>ip: ',ip);
-	dns.reverse(ip.eth0[0].address, (err,hostnames) => {
-		console.log('hostnames: ',hostnames);
-		bot.reply(message, 'name: '+hostnames[0]);
+	bot.reply(message, {
+		attachment: {
+			type:'image',
+			payload:{
+				url: ip.eth0[0].address+'/images/spotify.png'
+			}
+		}
 	});
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
