@@ -108,7 +108,7 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 });
 
 controller.middleware.receive.use(function(bot, message, next) {
-	clearAllTimeouts();
+	clearSavedTimeouts();
     next();
 });
 
@@ -818,7 +818,7 @@ function sendArtistInfo(message, artist) {
 	});
 }
 
-function clearAllTimeouts() {
+function clearSavedTimeouts() {
 	timeouts.forEach(clearTimeout);
 }
 
