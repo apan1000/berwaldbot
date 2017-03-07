@@ -259,7 +259,7 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
 	const ip = os.networkInterfaces();
-	console.log('>>>ip: '+ip)
+	console.log('>>>ip: ',ip);
 	let hostName = 'inget';
 	dns.reverse(ip[0], (err,hostnames) => {hostName=hostnames[0]});
 	bot.reply(message, 'name: '+hostName);
