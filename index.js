@@ -949,7 +949,7 @@ function askConcertInfo(response, convo) {
 		quick_replies: quickReplies
 	}, [
 		{
-			pattern: /^(om|info(rmation)?|)/i,
+			pattern: /^(om|info(rmation)?|mer)/i,
 			callback: function(response, convo) {
 				//TODO: fix
 				convo.say('Här var det info!');
@@ -1042,33 +1042,33 @@ function askParticipants(response, convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	convo.say('Kort text');
-	// convo.say({
-	// 	attachment: {
-	// 		type: 'template',
-	// 		payload: {
-	// 			template_type: 'generic',
-	// 			elements: [
-	// 				{
-	// 					title: participant.name,
-	// 					image_url: participant.image,
-	// 					subtitle: 'Gå till '+participant.name+'s hemsida.',
-	// 					default_action: {
-	// 						type: 'web_url',
-	// 						url: participant.website_url,
-	// 						webview_height_ratio: 'tall'
-	// 					},
-	// 					buttons: [
-	// 						{
-	// 							title: 'Mer info',
-	// 							type: 'web_url',
-	// 							url: participant.website_url,
-	// 							webview_height_ratio: 'tall'
-	// 						}
-	// 					]
-	// 				}
-	// 			]
-	// 		}
-	// 	}
-	// });
+	// convo.say('Kort text');
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: participant.name,
+						image_url: participant.image,
+						subtitle: 'Gå till '+participant.name+'s hemsida.',
+						default_action: {
+							type: 'web_url',
+							url: participant.website_url,
+							webview_height_ratio: 'tall'
+						},
+						buttons: [
+							{
+								title: 'Mer info',
+								type: 'web_url',
+								url: participant.website_url,
+								webview_height_ratio: 'tall'
+							}
+						]
+					}
+				]
+			}
+		}
+	});
 }
