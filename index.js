@@ -889,7 +889,7 @@ function askConcert(response, convo) {
 	}, [
 		{
 			pattern: new RegExp(concert.name, 'i'),
-			callback: askConcertInfo
+			callback: askConcertInfo(response, convo)
 		},
 		{
 			pattern: /^(stopp|nej|avsluta|ingen)/i,
@@ -953,7 +953,7 @@ function askConcertInfo(response, convo) {
 		},
 		{
 			pattern: /^(medverkande|artister)/i,
-			callback: askParticipants
+			callback: askParticipants(response, convo)
 		},
 		{
 			pattern: /^(stycken|låtar|verk|program)/i,
@@ -1008,11 +1008,7 @@ function askParticipants(response, convo) {
 	}, [
 		{
 			pattern: new RegExp(participantNames.join('|'), 'i'),
-			callback: function(response, convo) {
-				//TODO: fix
-				sendParticipantInfo(participants[response.text], convo);
-				convo.next();
-			}
+			callback: sendParticipantInfo(participants[response.text], convo)
 		},
 		{
 			pattern: /^(stopp|nej|avsluta|ingen)/i,
