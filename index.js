@@ -261,7 +261,7 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 	const ip = os.networkInterfaces();
 	console.log('>>>ip: ',ip);
 	let hostName = 'inget';
-	dns.reverse(ip[0], (err,hostnames) => {hostName=hostnames[0]});
+	dns.reverse(ip.eth0[0].address, (err,hostnames) => {hostName=hostnames[0]});
 	bot.reply(message, 'name: '+hostName);
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
