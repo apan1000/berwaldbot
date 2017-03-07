@@ -260,9 +260,9 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
 	const ip = os.networkInterfaces();
 	console.log('>>>ip: ',ip);
-	let hostName = 'inget';
-	dns.reverse(ip.eth0[0].address, (err,hostnames) => {hostName=hostnames[0]});
-	bot.reply(message, 'name: '+hostName);
+	dns.reverse(ip.eth0[0].address, (err,hostnames) => {
+		bot.reply(message, 'name: '+hostnames[0]);
+	});
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
