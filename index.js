@@ -263,7 +263,7 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 		attachment: {
 			type:'image',
 			payload:{
-				url: ip.eth0[0].address+'/images/spotify.png'
+				url: 'https://chatbot-test-1337.herokuapp.com'+'/images/spotify.png'
 			}
 		}
 	});
