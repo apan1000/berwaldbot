@@ -43,6 +43,7 @@ const information = require('./info');
 
 const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
 const timeouts = [];
+const images_url = 'http://www.csc.kth.se/~fberglun/exjobb/images/';
 
 const ops = commandLineArgs([
 	{
@@ -258,15 +259,6 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 });
 
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
-	const ip = os.networkInterfaces();
-	bot.reply(message, {
-		attachment: {
-			type:'image',
-			payload:{
-				url: 'https://chatbot-test-1337.herokuapp.com'+'/images/spotify.png'
-			}
-		}
-	});
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
@@ -763,7 +755,7 @@ function sendArtistInfo(message, artist) {
 				elements: [
 					{
 						title: artist.name.toUpperCase(),
-						image_url: artist.images.length>1 ? artist.images[1].url : 'https://chatbot-test-1337.herokuapp.com/images/note.png',
+						image_url: artist.images.length>1 ? artist.images[1].url : images_url+'note.png',
 						subtitle: 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
 						default_action: {
 							type: 'web_url',
@@ -781,7 +773,7 @@ function sendArtistInfo(message, artist) {
 					},
 					{
 						title: 'Lyssna på Spotify',
-						image_url: 'https://chatbot-test-1337.herokuapp.com/images/spotify.png',
+						image_url: images_url+'spotify.png',
 						subtitle: artist.name,
 						default_action: {
 							type: 'web_url',
