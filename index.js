@@ -1006,11 +1006,18 @@ function askParticipants(response, convo) {
 		});
 	}
 
-	quickReplies.push({
-		content_type: 'text',
-		title: '🚫Avsluta🚫',
-		payload: 'stopp'
-	});
+	quickReplies.push(
+		{
+			content_type: 'text',
+			title: '🔙 Bakåt',
+			payload: 'bakåt'
+		},
+		{
+			content_type: 'text',
+			title: '🚫Avsluta🚫',
+			payload: 'stopp'
+		}
+	);
 
 	convo.ask({
 		text: 'De här personerna medverkar, tryck på den du vill veta mer om. :)',
@@ -1021,6 +1028,13 @@ function askParticipants(response, convo) {
 			callback: function(response, convo) {
 				//TODO: fix
 				sendParticipantInfo(participants[response.text], convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /^bak(åt)?|tillbaka/i,
+			callback: function(response, convo) {
+				askConcertInfo(response, convo);
 				convo.next();
 			}
 		},
@@ -1042,7 +1056,6 @@ function askParticipants(response, convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	// convo.say('Kort text');
 	convo.say({
 		attachment: {
 			type: 'template',
