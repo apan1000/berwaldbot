@@ -1041,5 +1041,32 @@ function askParticipants(response, convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	//TODO: fix
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: participant.name,
+						image_url: participant.image,
+						subtitle: 'Gå till '+participant.name+'s hemsida.',
+						default_action: {
+							type: 'web_url',
+							url: participant.website_url,
+							webview_height_ratio: 'tall'
+						},
+						buttons: [
+							{
+								title: 'Mer info',
+								type: 'web_url',
+								url: participant.website_url,
+								webview_height_ratio: 'tall'
+							}
+						]
+					}
+				]
+			}
+		}
+	});
 }
