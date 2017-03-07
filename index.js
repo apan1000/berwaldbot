@@ -892,7 +892,7 @@ function askConcert(response, convo) {
 			callback: function(response, convo) {
 				convo.say('Javisst :)');
 				askConcertInfo(response, convo);
-				// convo.next();
+				convo.next();
 			}
 		},
 		{
@@ -952,6 +952,7 @@ function askConcertInfo(response, convo) {
 			pattern: /^(om|info(rmation)?|)/i,
 			callback: function(response, convo) {
 				//TODO: fix
+				convo.say('Här var det info!');
 				convo.next();
 			}
 		},
@@ -960,13 +961,14 @@ function askConcertInfo(response, convo) {
 			callback: function(response, convo) {
 				convo.say('Okej!');
 				askParticipants(response, convo);
-				// convo.next();
+				convo.next();
 			}
 		},
 		{
 			pattern: /^(stycken|låtar|verk|program)/i,
 			callback: function(response, convo) {
 				//TODO: fix
+				convo.say('Här är programmet!');
 				convo.next();
 			}
 		},
@@ -1019,7 +1021,7 @@ function askParticipants(response, convo) {
 			callback: function(response, convo) {
 				//TODO: fix
 				sendParticipantInfo(participants[response.text], convo);
-				// convo.next();
+				convo.next();
 			}
 		},
 		{
@@ -1040,32 +1042,33 @@ function askParticipants(response, convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	convo.say({
-		attachment: {
-			type: 'template',
-			payload: {
-				template_type: 'generic',
-				elements: [
-					{
-						title: participant.name,
-						image_url: participant.image,
-						subtitle: 'Gå till '+participant.name+'s hemsida.',
-						default_action: {
-							type: 'web_url',
-							url: participant.website_url,
-							webview_height_ratio: 'tall'
-						},
-						buttons: [
-							{
-								title: 'Mer info',
-								type: 'web_url',
-								url: participant.website_url,
-								webview_height_ratio: 'tall'
-							}
-						]
-					}
-				]
-			}
-		}
-	});
+	convo.say('Kort text');
+	// convo.say({
+	// 	attachment: {
+	// 		type: 'template',
+	// 		payload: {
+	// 			template_type: 'generic',
+	// 			elements: [
+	// 				{
+	// 					title: participant.name,
+	// 					image_url: participant.image,
+	// 					subtitle: 'Gå till '+participant.name+'s hemsida.',
+	// 					default_action: {
+	// 						type: 'web_url',
+	// 						url: participant.website_url,
+	// 						webview_height_ratio: 'tall'
+	// 					},
+	// 					buttons: [
+	// 						{
+	// 							title: 'Mer info',
+	// 							type: 'web_url',
+	// 							url: participant.website_url,
+	// 							webview_height_ratio: 'tall'
+	// 						}
+	// 					]
+	// 				}
+	// 			]
+	// 		}
+	// 	}
+	// });
 }
