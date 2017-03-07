@@ -187,6 +187,11 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 		quick_replies: [
 			{
 				"content_type": "text",
+				"title": "Kommande konserter",
+				"payload": "konserter",
+			},
+			{
+				"content_type": "text",
 				"title": "Vem är du?",
 				"payload": "Vem är du?",
 			},
@@ -252,6 +257,7 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 });
 
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
+	bot.reply(message, 'ip: '+controller.webserver.get('ip'));
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
@@ -419,7 +425,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
 });
 
-controller.hears(['konsert$', '(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
 	bot.startConversation(message, askConcert);
 });
 
@@ -470,7 +476,7 @@ controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, m
 	});
 });
 
-controller.hears(['^artistinfo (.*)', '^artist (.*)'], 'message_received', function(bot, message) {
+controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_received', function(bot, message) {
 	let artistName = message.match[1];
 
 	bot.startTyping(message, () => {
@@ -801,15 +807,6 @@ function sendArtistInfo(message, artist) {
 						]
 					}
 				]
-				// ,
-				// 'buttons': [
-				// 	{
-				// 		'type':'web_url',
-				// 		'url':'https://sv.wikipedia.org/wiki/'+artist.name.split(' ').join('_'),
-				// 		'title':'Läs mer',
-				// 		'webview_height_ratio': 'full'
-				// 	}
-				// ]
 			}
 		}
 	}, (err, response) => {
@@ -916,7 +913,7 @@ function askConcert(response, convo) {
 	convo.on('end', function(convo) {
 		if (convo.status !== 'completed') {
 			// this happens if the conversation ended prematurely for some reason
-			bot.reply(message, 'Vi går vidare!');
+			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		}
 	});
 }
@@ -942,7 +939,7 @@ function askConcertInfo(response, convo) {
 
 	quickReplies.push({
 		content_type: 'text',
-		title: '🚫Ingen🚫',
+		title: '🚫Avsluta🚫',
 		payload: 'stopp'
 	});
 
@@ -972,7 +969,7 @@ function askConcertInfo(response, convo) {
 			}
 		},
 		{
-			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			pattern: /^(stopp|nej|avsluta|inget)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -991,9 +988,9 @@ function askConcertInfo(response, convo) {
 function askParticipants(response, convo) {
 	let participantNames = [];
 	let participants = {};
-	for(let participant of information.concert.participants) {
-		participantNames.push(participant.name);
-		participants[participant.name] = participant;
+	for(let p of information.concert.participants) {
+		participantNames.push(p.name);
+		participants[p.name] = p;
 	}
 
 	let quickReplies = [];
@@ -1007,7 +1004,7 @@ function askParticipants(response, convo) {
 
 	quickReplies.push({
 		content_type: 'text',
-		title: '🚫Ingen🚫',
+		title: '🚫Avsluta🚫',
 		payload: 'stopp'
 	});
 
