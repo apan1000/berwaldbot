@@ -41,6 +41,7 @@ const schedule = require('node-schedule');
 const information = require('./info');
 
 const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
+const timeouts = [];
 
 const ops = commandLineArgs([
 	{
@@ -104,6 +105,11 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 			});
 		}
 	});
+});
+
+controller.middleware.receive.use(function(bot, message, next) {
+	clearAllTimeouts();
+    next();
 });
 
 // Send information message about the concert after specified date and time
@@ -193,7 +199,7 @@ controller.hears(['^(Get Started)'], 'message_received', function(bot, message) 
 	});
 });
 
-controller.hears(['hjälp'], 'message_received', function(bot, message) {
+controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
 	bot.reply(message, {
 		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "om berwaldhallen".',
 		quick_replies: [
@@ -245,7 +251,7 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 	bot.reply(message, 'Fin webbadress :) Skulle säkert gått in och kollat om jag var en människa😞');
 });
 
-controller.hears(['^hej', '^hallå', '^tja'], 'message_received', function(bot, message) {
+controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
@@ -275,29 +281,29 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 	bot.reply(message, bwh.shortDesc);
 
 	// Typing
-	setTimeout(() => {
+	timeouts.push(setTimeout(() => {
 		bot.reply(message, typing_message);
 
 		// Long description 0
-		setTimeout(() => {
+		timeouts.push(setTimeout(() => {
 			console.log('Sending long text...');
 			bot.reply(message, bwh.longDesc[0]);
 
 			// Typing
-			setTimeout(() => {
+			timeouts.push(setTimeout(() => {
 				bot.reply(message, typing_message);
 
 				// Long description 1
-				setTimeout(() => {
+				timeouts.push(setTimeout(() => {
 					console.log('Sending long text...');
 					bot.reply(message, bwh.longDesc[1]);
 
 					// Typing
-					setTimeout(() => {
+					timeouts.push(setTimeout(() => {
 						bot.reply(message, typing_message);
 
 						// Template
-						setTimeout(() => {
+						timeouts.push(setTimeout(() => {
 							console.log('Sending template...');
 							bot.reply(message, {
 								attachment: {
@@ -330,12 +336,12 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 								if(err)
 									console.error(err);
 							});
-						}, 1000); // Template
-					}, 500); // Start typing
-				}, 7000); // Long description 1
-			}, 5000); // Start typing
-		}, 6000); // Long description 0
-	}, 2500); // Start typing
+						}, 1000)); // Template
+					}, 500)); // Start typing
+				}, 7000)); // Long description 1
+			}, 5000)); // Start typing
+		}, 6000)); // Long description 0
+	}, 2500)); // Start typing
 });
 
 controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
@@ -810,6 +816,10 @@ function sendArtistInfo(message, artist) {
 		if(err)
 			console.error(err);
 	});
+}
+
+function clearAllTimeouts() {
+	timeouts.forEach(clearTimeout);
 }
 
 function setNickname(user, nickname) {
