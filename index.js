@@ -257,7 +257,10 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 });
 
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
-	bot.reply(message, 'ip: '+controller.webserver.get('ip'));
+	const ip = os.networkInterfaces();
+	let hostName = 'inget';
+	dns.reverse(ip, (err,hostnames) => {hostName=hostnames[0]});
+	bot.reply(message, 'name: '+hostName);
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
