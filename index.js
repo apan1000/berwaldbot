@@ -890,7 +890,7 @@ function askConcert(response, convo) {
 		{
 			pattern: new RegExp(concert.name, 'i'),
 			callback: function(response, convo) {
-				convo.say(response.text);
+				convo.say('Javisst :)');
 				askConcertInfo(response, convo);
 				convo.next();
 			}
@@ -958,6 +958,7 @@ function askConcertInfo(response, convo) {
 		{
 			pattern: /^(medverkande|artister)/i,
 			callback: function(response, convo) {
+				convo.say('Okej!');
 				askParticipants(response, convo);
 				convo.next();
 			}
