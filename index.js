@@ -1010,7 +1010,7 @@ function askParticipants(response, convo) {
 		{
 			content_type: 'text',
 			title: '🔙 Bakåt',
-			payload: 'bakåt'
+			payload: 'bak'
 		},
 		{
 			content_type: 'text',
@@ -1032,7 +1032,7 @@ function askParticipants(response, convo) {
 			}
 		},
 		{
-			pattern: /^bak(åt)?|tillbaka/i,
+			pattern: /^(bak|bakåt|tillbaka)/i,
 			callback: function(response, convo) {
 				askConcertInfo(response, convo);
 				convo.next();
