@@ -892,7 +892,7 @@ function askConcert(response, convo) {
 			callback: function(response, convo) {
 				convo.say('Javisst :)');
 				askConcertInfo(response, convo);
-				convo.next();
+				// convo.next();
 			}
 		},
 		{
