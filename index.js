@@ -30,6 +30,7 @@ const Botkit = require('./node_modules/botkit/lib/Botkit.js');
 const firebaseStorage = require('botkit-storage-firebase')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
 const os = require('os');
 const url = require('url');
+const dns = require('dns');
 
 const commandLineArgs = require('command-line-args');
 const localtunnel = require('localtunnel');
