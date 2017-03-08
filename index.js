@@ -897,7 +897,7 @@ function askConcert(response, convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫Ingen🚫',
+			title: '🚫Ingen',
 			payload: 'stopp'
 		}
 	];
@@ -960,7 +960,7 @@ function askConcertInfo(response, convo) {
 
 	quickReplies.push({
 		content_type: 'text',
-		title: '🚫Avsluta🚫',
+		title: '🚫Avsluta',
 		payload: 'stopp'
 	});
 
@@ -1022,7 +1022,7 @@ function askParticipants(response, convo) {
 		quickReplies.push({
 			content_type: 'text',
 			title: n,
-			image: participants[n].image,
+			image_url: participants[n].image,
 			payload: n
 		});
 	}
@@ -1035,7 +1035,7 @@ function askParticipants(response, convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫Avsluta🚫',
+			title: '🚫Avsluta',
 			payload: 'stopp'
 		}
 	);
