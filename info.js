@@ -15,9 +15,20 @@ module.exports = {
     concert : {
         name: 'Solistprisvinnaren',
         image: images_url+'solistprisvinnaren.jpg',
-        dates: ['2017-03-29', '2017-03-30'],
-        time: '18:00',
-        about: 'Den blygsamma fagotten blir ett enastående virtuost instrument i händerna på 2015 års solistprisvinnare och P2:s Artist in Residence, Sebastian Stevensson! Bernhard Crusells Concertino står i fokus men även Antonín Dvoráks lyriska och folkmusikinspirerade Symfoni nr. 8.\nDirigerar gör det amerikanska stjärnskottet Karina Canellakis, en av dagens mest spännande unga dirigenter!',
+        occasions: [
+            {
+                date:'2017-03-29',
+                time: '18:00',
+                url: 'http://berwaldhallen.ebiljett.nu/Home/tickets/1194/False',
+                image: images_url+'solist_small.png'
+            }, {
+                date:'2017-03-30',
+                time: '18:00',
+                url: 'http://berwaldhallen.ebiljett.nu/Home/tickets/1195/False',
+                image: images_url+'solist_small.png'
+            }
+        ],
+        about: 'Den blygsamma fagotten blir ett enastående virtuost instrument i händerna på 2015 års solistprisvinnare och P2:s Artist in Residence, Sebastian Stevensson!\nBernhard Crusells Concertino står i fokus men även Antonín Dvoráks lyriska och folkmusikinspirerade Symfoni nr. 8.\n\nDirigerar gör det amerikanska stjärnskottet Karina Canellakis, en av dagens mest spännande unga dirigenter!',
         presenter: 'Tanja Orraryd',
         participants: [
             {

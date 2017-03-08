@@ -120,6 +120,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 
     // instead of capturing the raw response, let's use the hidden payload
     if (message.payload) {
+		console.log('Payload: ',message.payload);
         message.text = message.payload;
     }
 
@@ -442,6 +443,10 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 
 controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
 	bot.startConversation(message, askConcert);
+});
+
+controller.hears(['solistprisvinnareninformation'], 'message_received', function(bot, message) {
+	bot.reply(message, information.concert.about);
 });
 
 controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
@@ -966,7 +971,7 @@ function askConcertInfo(response, convo) {
 			pattern: /(om|info(rmation)?|mer)/i,
 			callback: function(response, convo) {
 				//TODO: fix
-				convo.say('Här var det info!');
+				sendConcertInfo(response, convo);
 				convo.next();
 			}
 		},
@@ -1067,6 +1072,75 @@ function askParticipants(response, convo) {
 			}
 		}
 	]);
+}
+
+function sendConcertInfo(response, convo) {
+	const c = information.concert;
+
+	let msg = {
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'list',
+				top_element_style: 'large',
+				elements: [
+					{
+						title: c.name,
+						image_url: c.image
+						// ,
+						// subtitle: ''
+						// ,
+						// default_action: {
+						// 	type: 'web_url',
+						// 	url: 'https://sverigesradio.se/berwaldhallen',
+						// 	webview_height_ratio: 'tall'
+						// },
+						// buttons: [
+						// 	{
+						// 		title: 'Info & Bokning',
+						// 		type: 'web_url',
+						// 		url: 'https://sverigesradio.se/berwaldhallen',
+						// 		webview_height_ratio: 'tall'
+						// 	}
+						// ]
+					}
+				],
+				buttons: [
+					{
+						title: 'Lyssna',
+						type: 'postback',
+						payload: c.name+'information',
+					}
+				]
+			}
+		}
+	}
+
+	for(let o of c.occasions) {
+		msg.attachment.payload.elements.push({
+			title: 'Tillfälle: '+o.date,
+			image_url: o.image,
+			subtitle: 'Tid: '+o.time,
+			default_action: {
+				type: 'web_url',
+				url: o.url,
+				webview_height_ratio: 'tall',
+			},
+			buttons: [
+				{
+					title: 'Webbsidan',
+					type: 'web_url',
+					url: o.url,
+					webview_height_ratio: 'tall',
+				}
+			]
+		})
+	}
+
+	convo.say(, (err, response) => {
+		if(err)
+			console.error(err);
+	});
 }
 
 function sendParticipantInfo(participant, convo) {
