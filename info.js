@@ -20,15 +20,15 @@ module.exports = {
                 date:'2017-03-29',
                 time: '18:00',
                 url: 'http://berwaldhallen.ebiljett.nu/Home/tickets/1194/False',
-                image: images_url+'solist_small.png'
+                image: images_url+'solist_small.jpg'
             }, {
                 date:'2017-03-30',
                 time: '18:00',
                 url: 'http://berwaldhallen.ebiljett.nu/Home/tickets/1195/False',
-                image: images_url+'solist_small.png'
+                image: images_url+'solist_small.jpg'
             }
         ],
-        about: 'Den blygsamma fagotten blir ett enastående virtuost instrument i händerna på 2015 års solistprisvinnare och P2:s Artist in Residence, Sebastian Stevensson!\nBernhard Crusells Concertino står i fokus men även Antonín Dvoráks lyriska och folkmusikinspirerade Symfoni nr. 8.\n\nDirigerar gör det amerikanska stjärnskottet Karina Canellakis, en av dagens mest spännande unga dirigenter!',
+        about: 'Den blygsamma fagotten blir ett enastående virtuost instrument i händerna på 2015 års solistprisvinnare och P2:s Artist in Residence, Sebastian Stevensson!\n\nBernhard Crusells Concertino står i fokus men även Antonín Dvoráks lyriska och folkmusikinspirerade Symfoni nr. 8.\n\nDirigerar gör det amerikanska stjärnskottet Karina Canellakis, en av dagens mest spännande unga dirigenter!',
         presenter: 'Tanja Orraryd',
         participants: [
             {
@@ -36,19 +36,23 @@ module.exports = {
                 position: 'dirigent',
                 image: images_url+'karina.jpg',
                 website_url: 'http://karinacanellakis.com/',
-                about: 'New York-födda Karina Canellakis har vunnit internationell berömmelse för såväl sina tekniska som musikaliska kunskaper. Vinnaren av 2016 års Sir Georg Solti Conducting Award har fått lysande kritik sedan 2014 då hon i sista minuten ryckte in som ersättare för Jaap van Zweden och dirigerade Dallas symfoniorkester i Sjostakovitjs åttonde symfoni.'+
-                    '\nHon gjorde europeisk debut i juni förra året med Chamber Orchestra of Europe på Styriarte Festival i Graz och är åter inbjuden till Graz i juni i år för att dirigera Concentus Musicus Wien i fyra symfonier av Beethoven. Hon har varit biträdande dirigent för Dallas symfoniorkester två säsonger och då genomfört över 60 konserter.'+
-                    '\nSäsongen 2016/17 debuterar Karina Kanellakis, utöver Sveriges Radios Symfoniorkester, bland annat med City of Birmingham Symphony Orchestra, Royal Scottish National Orchestra, Orchestre National de Lyon samt Trondheim, Kristiansand och Malmö symfoniorkestrar.'
+                about: [
+                    'New York-födda Karina Canellakis har vunnit internationell berömmelse för såväl sina tekniska som musikaliska kunskaper. Vinnaren av 2016 års Sir Georg Solti Conducting Award har fått lysande kritik sedan 2014 då hon i sista minuten ryckte in som ersättare för Jaap van Zweden och dirigerade Dallas symfoniorkester i Sjostakovitjs åttonde symfoni.'+
+                    '\nHon gjorde europeisk debut i juni förra året med Chamber Orchestra of Europe på Styriarte Festival i Graz och är åter inbjuden till Graz i juni i år för att dirigera Concentus Musicus Wien i fyra symfonier av Beethoven.',
+                    
+                    'Hon har varit biträdande dirigent för Dallas symfoniorkester två säsonger och då genomfört över 60 konserter.'+
+                    '\nSäsongen 2016/17 debuterar Karina Kanellakis, utöver Sveriges Radios Symfoniorkester, bland annat med City of Birmingham Symphony Orchestra, Royal Scottish National Orchestra, Orchestre National de Lyon samt Trondheim, Kristiansand och Malmö symfoniorkestrar.']
             },
             {
                 name: 'Sebastian Stevensson',
                 position: 'fagott',
                 image: images_url+'sebastian.jpg',
                 website_url: 'https://soundcloud.com/sebastian-stevensson',
-                about: 'Sebastian Stevensson är 2016 års vinnare av Solistpriset som han mottog i Berwaldhallen i januari samma år.'+
-                    '\nSebastian har studerat vid Kungliga Musikhögskolan i Stockholm och arbetat på Norska Operan och som solofagottist i Danmarks Radios Symfoniorkester där han sedan 2012 har en fast plats. Under 2015 arbetade Sebastian som solofagottist i Münchner Philharmoniker under Valery Gergiev.'+
-                    '\nHan har under kortare perioder arbetat som solofagottist med orkestrar som London Philharmonic Orchestra, City of Birmingham Symphony Orchestra, Kungliga Filharmonikerna, Philharmonia Orchestra London och Rotterdam Philharmonic. Sebastian har även lett mästarkurser för musikhögskolestudenter i Stockholm och Mannheim.'+
-                    '\nSebastian Stevensson är P2:s artist 2016/2017.'
+                about: ['Sebastian Stevensson är 2016 års vinnare av Solistpriset som han mottog i Berwaldhallen i januari samma år.'+
+                    '\nSebastian har studerat vid Kungliga Musikhögskolan i Stockholm och arbetat på Norska Operan och som solofagottist i Danmarks Radios Symfoniorkester där han sedan 2012 har en fast plats. Under 2015 arbetade Sebastian som solofagottist i Münchner Philharmoniker under Valery Gergiev.',
+                    
+                    'Han har under kortare perioder arbetat som solofagottist med orkestrar som London Philharmonic Orchestra, City of Birmingham Symphony Orchestra, Kungliga Filharmonikerna, Philharmonia Orchestra London och Rotterdam Philharmonic. Sebastian har även lett mästarkurser för musikhögskolestudenter i Stockholm och Mannheim.'+
+                    '\nSebastian Stevensson är P2:s artist 2016/2017.']
             },
         ],
         pieces: [
