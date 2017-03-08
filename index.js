@@ -1137,7 +1137,7 @@ function sendConcertInfo(response, convo) {
 		})
 	}
 
-	convo.say(, (err, response) => {
+	convo.say(msg, (err, response) => {
 		if(err)
 			console.error(err);
 	});
