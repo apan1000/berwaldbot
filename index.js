@@ -910,7 +910,7 @@ function askConcert(response, convo) {
 			}
 		},
 		{
-			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -963,7 +963,7 @@ function askConcertInfo(response, convo) {
 		quick_replies: quickReplies
 	}, [
 		{
-			pattern: /^(om|info(rmation)?|mer)/i,
+			pattern: /(om|info(rmation)?|mer)/i,
 			callback: function(response, convo) {
 				//TODO: fix
 				convo.say('Här var det info!');
@@ -971,7 +971,7 @@ function askConcertInfo(response, convo) {
 			}
 		},
 		{
-			pattern: /^(medverkande|artister)/i,
+			pattern: /(medverkande|artister)/i,
 			callback: function(response, convo) {
 				convo.say('Okej!');
 				askParticipants(response, convo);
@@ -979,7 +979,7 @@ function askConcertInfo(response, convo) {
 			}
 		},
 		{
-			pattern: /^(stycken|låtar|verk|program)/i,
+			pattern: /(stycken|låtar|verk|program)/i,
 			callback: function(response, convo) {
 				//TODO: fix
 				convo.say('Här är programmet!');
@@ -987,7 +987,7 @@ function askConcertInfo(response, convo) {
 			}
 		},
 		{
-			pattern: /^(stopp|nej|avsluta|inget)/i,
+			pattern: /(stopp|nej|avsluta|inget)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -1046,14 +1046,14 @@ function askParticipants(response, convo) {
 			}
 		},
 		{
-			pattern: /^(bak|bakåt|tillbaka)/i,
+			pattern: /(bak|bakåt|tillbaka)/i,
 			callback: function(response, convo) {
 				askConcertInfo(response, convo);
 				convo.next();
 			}
 		},
 		{
-			pattern: /^(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
