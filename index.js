@@ -765,6 +765,35 @@ function getArtistInfo(name) {
 	});
 }
 
+function sendDefaultQuickReplies(message) {
+	bot.reply(message, {
+		attachment: {
+			type: 'image',
+			payload: {
+				url: images_url+'botwald-wide.png',
+				is_reusable: true
+			}
+		},
+		quick_replies: [
+			{
+				content_type: 'text',
+				title: 'Kommande konserter',
+				payload: 'konserter',
+			},
+			{
+				content_type: 'text',
+				title: 'Om Berwaldhallen',
+				payload: 'Berwaldhallen',
+			},
+			{
+				content_type: 'text',
+				title: 'Ge mig artistinfo',
+				payload: 'artistinfo',
+			}
+		]
+	});
+}
+
 function sendArtistInfo(message, artist) {
 	bot.reply(message, {
 		attachment: {
@@ -936,6 +965,7 @@ function askConcert(response, convo) {
 			// this happens if the conversation ended prematurely for some reason
 			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		}
+		sendDefaultQuickReplies(convo.source_message);
 	});
 }
 
