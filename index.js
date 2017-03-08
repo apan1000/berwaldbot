@@ -446,7 +446,8 @@ controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, me
 });
 
 controller.hears(['solistprisvinnareninformation'], 'message_received', function(bot, message) {
-	bot.reply(message, information.concert.about);
+	let msg = 'Solistprisvinnaren:\n\n'+information.concert.about;
+	bot.reply(message, msg);
 });
 
 controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
@@ -1087,28 +1088,13 @@ function sendConcertInfo(response, convo) {
 				elements: [
 					{
 						title: c.name,
-						image_url: c.image
-						// ,
-						// subtitle: ''
-						// ,
-						// default_action: {
-						// 	type: 'web_url',
-						// 	url: 'https://sverigesradio.se/berwaldhallen',
-						// 	webview_height_ratio: 'tall'
-						// },
-						// buttons: [
-						// 	{
-						// 		title: 'Info & Bokning',
-						// 		type: 'web_url',
-						// 		url: 'https://sverigesradio.se/berwaldhallen',
-						// 		webview_height_ratio: 'tall'
-						// 	}
-						// ]
+						image_url: c.image,
+						subtitle: c.participants[1].name
 					}
 				],
 				buttons: [
 					{
-						title: 'Lyssna',
+						title: 'Läs mer',
 						type: 'postback',
 						payload: c.name+'information',
 					}
@@ -1126,15 +1112,7 @@ function sendConcertInfo(response, convo) {
 				type: 'web_url',
 				url: o.url,
 				webview_height_ratio: 'tall',
-			},
-			buttons: [
-				{
-					title: 'Webbsidan',
-					type: 'web_url',
-					url: o.url,
-					webview_height_ratio: 'tall',
-				}
-			]
+			}
 		})
 	}
 
