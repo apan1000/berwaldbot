@@ -1017,11 +1017,12 @@ function askParticipants(response, convo) {
 	}
 
 	let quickReplies = [];
-	for(let name of participantNames) {
+	for(let n of participantNames) {
 		quickReplies.push({
 			content_type: 'text',
-			title: name,
-			payload: name
+			title: n,
+			image: participants[n].image,
+			payload: n
 		});
 	}
 
