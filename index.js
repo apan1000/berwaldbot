@@ -446,7 +446,7 @@ controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, me
 });
 
 controller.hears(['solistprisvinnareninformation'], 'message_received', function(bot, message) {
-	let msg = 'Solistprisvinnaren:\n\n'+information.concert.about;
+	let msg = '🏆Solistprisvinnaren🏆\n\n'+information.concert.about;
 	bot.reply(message, msg);
 });
 
@@ -971,8 +971,7 @@ function askConcertInfo(response, convo) {
 		{
 			pattern: /(om|info(rmation)?|mer)/i,
 			callback: function(response, convo) {
-				//TODO: fix
-				sendConcertInfo(response, convo);
+				sendConcertInfo(convo);
 				convo.next();
 			}
 		},
@@ -980,15 +979,14 @@ function askConcertInfo(response, convo) {
 			pattern: /(medverkande|artister)/i,
 			callback: function(response, convo) {
 				convo.say('Okej!');
-				askParticipants(response, convo);
+				askParticipants(convo);
 				convo.next();
 			}
 		},
 		{
 			pattern: /(stycken|låtar|verk|program)/i,
 			callback: function(response, convo) {
-				//TODO: fix
-				convo.say('Här är programmet!');
+				askProgram(convo);
 				convo.next();
 			}
 		},
@@ -1009,7 +1007,7 @@ function askConcertInfo(response, convo) {
 	]);
 }
 
-function askParticipants(response, convo) {
+function askParticipants(convo) {
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
@@ -1047,7 +1045,6 @@ function askParticipants(response, convo) {
 		{
 			pattern: new RegExp(participantNames.join('|'), 'i'),
 			callback: function(response, convo) {
-				//TODO: fix
 				sendParticipantInfo(participants[response.text], convo);
 				convo.next();
 			}
@@ -1076,7 +1073,73 @@ function askParticipants(response, convo) {
 	]);
 }
 
-function sendConcertInfo(response, convo) {
+function askProgram(convo) {
+	let pieceNames = [];
+	let pieces = {};
+	for(let p of information.concert.pieces) {
+		pieceNames.push(p.name);
+		pieces[p.name] = p;
+	}
+
+	let quickReplies = [];
+	for(let n of pieceNames) {
+		quickReplies.push({
+			content_type: 'text',
+			title: n,
+			image_url: pieces[n].image,
+			payload: n
+		});
+	}
+
+	quickReplies.push(
+		{
+			content_type: 'text',
+			title: '🔙 Bakåt',
+			payload: 'bak'
+		},
+		{
+			content_type: 'text',
+			title: '🚫Avsluta',
+			payload: 'stopp'
+		}
+	);
+
+	convo.ask({
+		text: 'Här är programmet, tryck på det du vill veta mer om. :)',
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: new RegExp(pieceNames.join('|'), 'i'),
+			callback: function(response, convo) {
+				sendPieceInfo(pieces[response.text], convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /(bak|bakåt|tillbaka)/i,
+			callback: function(response, convo) {
+				askConcertInfo(response, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /(stopp|nej|avsluta|ingen)/i,
+			callback: function(response, convo) {
+				// stop the conversation. this will cause it to end with status == 'stopped'
+				convo.stop();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.repeat();
+				convo.next();
+			}
+		}
+	]);
+}
+
+function sendConcertInfo(convo) {
 	const c = information.concert;
 
 	let msg = {
@@ -1151,4 +1214,48 @@ function sendParticipantInfo(participant, convo) {
 			}
 		}
 	});
+
+	for(let a of participant.about) {
+		convo.say(a);
+	}
+
+	askParticipants(convo);
+}
+
+function sendPieceInfo(piece, convo) {
+	// TODO: Ask about info, composer, etc (Maybe in another function, this can be just info/about)
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: piece.name,
+						image_url: piece.image,
+						subtitle: piece.composer.name,
+						default_action: {
+							type: 'web_url',
+							url: piece.website_url,
+							webview_height_ratio: 'tall'
+						},
+						buttons: [
+							{
+								title: 'Mer info',
+								type: 'web_url',
+								url: piece.website_url,
+								webview_height_ratio: 'tall'
+							}
+						]
+					}
+				]
+			}
+		}
+	});
+
+	for(let a of piece.info) {
+		convo.say(a);
+	}
+
+	askProgram(convo);
 }
