@@ -114,6 +114,20 @@ controller.middleware.receive.use(function(bot, message, next) {
     next();
 });
 
+controller.middleware.capture.use(function(bot, message, convo, next) {
+
+    // user's raw response is in message.text
+
+    // instead of capturing the raw response, let's use the hidden payload
+    if (message.payload) {
+        message.text = message.payload;
+    }
+
+    // always call next!
+    next();
+
+});
+
 // Send information message about the concert after specified date and time
 const infoDate = new Date(2017, 3, 5, 10);
 let j = schedule.scheduleJob(infoDate, function(){
