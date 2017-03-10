@@ -47,7 +47,7 @@ module.exports = {
                 name: 'Sebastian Stevensson',
                 position: 'fagott',
                 image: images_url+'sebastian.jpg',
-                website_url: 'https://soundcloud.com/sebastian-stevensson',
+                website_url: 'http://www.csc.kth.se/~fberglun/exjobb/sebastian-stevensson/',
                 about: ['Sebastian Stevensson är 2016 års vinnare av Solistpriset som han mottog i Berwaldhallen i januari samma år.'+
                     '\nSebastian har studerat vid Kungliga Musikhögskolan i Stockholm och arbetat på Norska Operan och som solofagottist i Danmarks Radios Symfoniorkester där han sedan 2012 har en fast plats. Under 2015 arbetade Sebastian som solofagottist i Münchner Philharmoniker under Valery Gergiev.',
                     
