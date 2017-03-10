@@ -932,7 +932,7 @@ function askConcert(response, convo) {
 	];
 
 	convo.ask({
-		text: 'Här är dina kommande konserter. (Jag vet bara om Solistprisvinnaren😉)\n'+
+		text: 'Här är dina kommande konserter. (Jag vet bara om Solistprisvinnaren under testperioden😉)\n'+
 				'Vilken vill du veta mer om?🤔', 
 		quick_replies: quickReplies
 	}, [
@@ -973,7 +973,7 @@ function askConcertInfo(response, convo) {
 	let quickReplies = [
 		{
 			content_type: 'text',
-			title: 'Generell info',
+			title: 'ℹ️ Generell info',
 			payload: 'info'
 		},
 		{
@@ -990,7 +990,7 @@ function askConcertInfo(response, convo) {
 
 	quickReplies.push({
 		content_type: 'text',
-		title: '🚫Avsluta',
+		title: '🚫 Avsluta',
 		payload: 'stopp'
 	});
 
@@ -1063,7 +1063,7 @@ function askParticipants(convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫Avsluta',
+			title: '🚫 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -1080,7 +1080,7 @@ function askParticipants(convo) {
 			}
 		},
 		{
-			pattern: /(bak|bakåt|tillbaka)/i,
+			pattern: /(bak(åt)?|tillbaka)/i,
 			callback: function(response, convo) {
 				askConcertInfo(response, convo);
 				convo.next();
@@ -1129,7 +1129,7 @@ function askProgram(convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫Avsluta',
+			title: '🚫 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -1141,14 +1141,109 @@ function askProgram(convo) {
 		{
 			pattern: new RegExp(pieceNames.join('|'), 'i'),
 			callback: function(response, convo) {
-				sendPieceInfo(pieces[response.text], convo);
+				askPiece(pieces[response.text], convo);
 				convo.next();
 			}
 		},
 		{
-			pattern: /(bak|bakåt|tillbaka)/i,
+			pattern: /(bak(åt)?|tillbaka)/i,
 			callback: function(response, convo) {
 				askConcertInfo(response, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /(stopp|nej|avsluta|ingen)/i,
+			callback: function(response, convo) {
+				// stop the conversation. this will cause it to end with status == 'stopped'
+				convo.stop();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.repeat();
+				convo.next();
+			}
+		}
+	]);
+}
+
+function askPiece(piece, convo) {
+	let quickReplies = [
+		{
+			content_type: 'text',
+			title: 'ℹ️ Infotext',
+			payload: 'info'
+		}
+	];
+
+	if(piece.composer) {
+		quickReplies.push(
+			{
+				content_type: 'text',
+				title: 'Kompositör',
+				image_url: piece.composer.image,
+				payload: 'kompositör'
+			}
+		);
+	}
+
+	quickReplies.push(
+		{
+			content_type: 'text',
+			title: '🔙 Bakåt',
+			payload: 'bak'
+		},
+		{
+			content_type: 'text',
+			title: '🚫 Avsluta',
+			payload: 'stopp'
+		}
+	);
+
+	// Send image and name of piece before asking
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: piece.name,
+						image_url: piece.image,
+						//subtitle: piece.composer.name
+					}
+				]
+			}
+		}
+	});
+
+	convo.ask({
+		text: 'Vad vill du veta om '+piece.name+'?',
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: /(kompositör|artist)/i,
+			callback: function(response, convo) {
+				if(piece.composer)
+					sendComposerInfo(piece.composer, convo);
+				else
+					askPiece(piece, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /(info(rmation)?|om)/i,
+			callback: function(response, convo) {
+				sendPieceInfo(piece, convo);
+				convo.next();
+			}
+		},
+		{
+			pattern: /(bak(åt)?|tillbaka)/i,
+			callback: function(response, convo) {
+				askProgram(convo);
 				convo.next();
 			}
 		},
@@ -1194,7 +1289,7 @@ function sendConcertInfo(convo) {
 				]
 			}
 		}
-	}
+	};
 
 	for(let o of c.occasions) {
 		msg.attachment.payload.elements.push({
@@ -1252,8 +1347,11 @@ function sendParticipantInfo(participant, convo) {
 	askParticipants(convo);
 }
 
+function sendComposerInfo(composer, convo) {
+	// TODO: Send composer info
+}
+
 function sendPieceInfo(piece, convo) {
-	// TODO: Ask about info, composer, etc (Maybe in another function, this can be just info/about)
 	convo.say({
 		attachment: {
 			type: 'template',
@@ -1263,20 +1361,7 @@ function sendPieceInfo(piece, convo) {
 					{
 						title: piece.name,
 						image_url: piece.image,
-						subtitle: piece.composer.name,
-						default_action: {
-							type: 'web_url',
-							url: piece.website_url,
-							webview_height_ratio: 'tall'
-						},
-						buttons: [
-							{
-								title: 'Mer info',
-								type: 'web_url',
-								url: piece.website_url,
-								webview_height_ratio: 'tall'
-							}
-						]
+						subtitle: piece.composer.name
 					}
 				]
 			}
