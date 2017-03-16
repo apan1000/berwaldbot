@@ -411,7 +411,9 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 					// this happens if the conversation ended prematurely for some reason
 					bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 				}
-				sendDefaultQuickReplies(convo.source_message, false);
+				setTimeout(function() {
+					sendDefaultQuickReplies(convo.source_message, false);
+				}, 300);
 			});
 		}
 	});
@@ -462,12 +464,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 				{
 					pattern: new RegExp(participantNames.join('|'), 'i'),
 					callback: function(response, convo) {
-						sendParticipantInfo(participants[response.text], convo).then(resp => {
-							// convo.next();
-						}).catch(e => {
-							console.error(e);
-							convo.stop();
-						});
+						sendParticipantInfo(participants[response.text], convo);
 						convo.next();
 					}
 				},
@@ -505,7 +502,9 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 					if(error)
 						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
 				}
-				sendDefaultQuickReplies(message, false);
+				setTimeout(function() {
+					sendDefaultQuickReplies(message, false);
+				}, 300);
 			});
 		}
 	});
@@ -524,15 +523,13 @@ controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_rec
 	if( artistName.match(new RegExp(participantNames.join('|'))) ) {
 		bot.startConversation(message, function(err, convo) {
 			if (!err) {
-				sendParticipantInfo(participants[artistName], convo).then(resp => {
-					convo.next();
-				}).catch(e => {
-					console.error(e);
-					convo.stop();
-				});
+				sendParticipantInfo(participants[artistName], convo);
+				convo.next();
 
 				convo.on('end', function(convo) {
-					sendDefaultQuickReplies(message, false);
+					setTimeout(function() {
+						sendDefaultQuickReplies(message, false);
+					}, 300);
 				});
 			}
 		});
@@ -683,7 +680,9 @@ controller.on('message_received', function(bot, message) {
 			bot.reply(message, "😃😛");
 	} else {
 		bot.reply(message, 'ℹ️ Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
-		sendDefaultQuickReplies(message, false);
+		setTimeout(function() {
+			sendDefaultQuickReplies(message, false);
+		}, 300);
 	}
 	
 	return false;
@@ -961,7 +960,9 @@ function askConcert(response, convo) {
 			// this happens if the conversation ended prematurely for some reason
 			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		}
-		sendDefaultQuickReplies(convo.source_message, false);
+		setTimeout(function() {
+			sendDefaultQuickReplies(convo.source_message, false);
+		}, 300);
 	});
 }
 
@@ -1237,13 +1238,9 @@ function askPiece(piece, convo) {
 		{
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
-				sendPieceInfo(piece, convo).then(resp => {
-					askProgram(convo);
-					convo.next();
-				}).catch(e => {
-					console.error(e);
-					convo.stop();
-				});
+				sendPieceInfo(piece, convo);
+				askProgram(convo);
+				convo.next();
 			}
 		},
 		{
@@ -1321,50 +1318,46 @@ function sendConcertInfo(convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	return new Promise((resolve, reject) => {
-		convo.say({
-			attachment: {
-				type: 'template',
-				payload: {
-					template_type: 'generic',
-					elements: [
-						{
-							title: participant.name,
-							image_url: participant.image,
-							subtitle: 'Gå till '+participant.name+'s hemsida.',
-							default_action: {
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: participant.name,
+						image_url: participant.image,
+						subtitle: 'Gå till '+participant.name+'s hemsida.',
+						default_action: {
+							type: 'web_url',
+							url: participant.website_url,
+							webview_height_ratio: 'tall'
+						},
+						buttons: [
+							{
+								title: 'Hemsida',
 								type: 'web_url',
 								url: participant.website_url,
 								webview_height_ratio: 'tall'
-							},
-							buttons: [
-								{
-									title: 'Hemsida',
-									type: 'web_url',
-									url: participant.website_url,
-									webview_height_ratio: 'tall'
-								}
-							]
-						}
-					]
-				}
-			}
-		}, (err, response) => {
-			if(err) {
-				reject(err);
-			}
-
-			for(let a of participant.about) {
-				convo.say(a, (err, response) => {
-					if(err) {
-						reject(err);
+							}
+						]
 					}
-				});
+				]
 			}
-			resolve(response);
-		});
-
+		}
+	}, (err, response) => {
+		if(err) {
+			console.error(err);
+		}
 	});
+
+	for(let a of participant.about) {
+		convo.say(a, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	}
 }
 
 function sendComposerInfo(composer, convo) {
@@ -1372,34 +1365,31 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	return new Promise((resolve, reject) => {
-		convo.say({
-			attachment: {
-				type: 'template',
-				payload: {
-					template_type: 'generic',
-					elements: [
-						{
-							title: piece.name,
-							image_url: piece.image,
-							subtitle: piece.composer.name
-						}
-					]
-				}
-			}
-		}, (err, response) => {
-			if(err) {
-				reject(err);
-			}
-
-			for(let a of piece.info) {
-				convo.say(a, (err, response) => {
-					if(err) {
-						reject(err);
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: piece.name,
+						image_url: piece.image,
+						subtitle: piece.composer.name
 					}
-				});
+				]
 			}
-			resolve(response);
-		});
+		}
+	}, (err, response) => {
+		if(err) {
+			console.error(err);
+		}
 	});
+
+	for(let a of piece.info) {
+		convo.say(a, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	}
 }
