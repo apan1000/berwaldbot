@@ -1263,6 +1263,7 @@ function askPiece(piece, convo) {
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
 				sendPieceInfo(piece, convo);
+				askPiece(piece, convo);
 				convo.next();
 			}
 		},
@@ -1436,7 +1437,6 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	convo.next();
 	askPieceInfo(piece, 0, convo);
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
@@ -1482,6 +1482,5 @@ function askPieceInfo(piece, i, convo) {
 		]);
 	} else {
 		convo.say(piece.info[i]);
-		askPiece(piece, convo);
 	}
 }
