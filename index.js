@@ -512,8 +512,12 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 	});
 });
 
-controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_received', function(bot, message) {
+controller.hears(['artistinfo (.*)', '(artist|grupp|medverkande) (.*)'], 'message_received', function(bot, message) {
 	let artistName = message.match[1];
+	if(message.match.length === 5) { // Matched (artist|grupp|medverkande)
+		artistName = message.match[2];
+	}
+
 	if( artistName.match(new RegExp('orkester', 'i')) ) {
 		artistName == 'Sveriges Radios Symfoniorkester'
 	}
