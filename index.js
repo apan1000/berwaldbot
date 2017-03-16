@@ -463,11 +463,12 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 					pattern: new RegExp(participantNames.join('|'), 'i'),
 					callback: function(response, convo) {
 						sendParticipantInfo(participants[response.text], convo).then(resp => {
-							convo.next();
+							// convo.next();
 						}).catch(e => {
 							console.error(e);
 							convo.stop();
 						});
+						convo.next();
 					}
 				},
 				{
