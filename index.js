@@ -1031,7 +1031,7 @@ function askParticipants(convo) {
 	);
 
 	convo.ask({
-		text: 'De här personerna medverkar, tryck på den du vill veta mer om. :)',
+		text: 'Här är de medverkande, tryck på den du vill veta mer om. :)',
 		quick_replies: quickReplies
 	}, [
 		{
@@ -1261,7 +1261,10 @@ function sendConcertInfo(convo) {
 		});
 	}
 
-	convo.say('🏆Solistprisvinnaren🏆\n\n'+information.concert.about);
+	convo.say('🏆Solistprisvinnaren🏆\n\n'+information.concert.about, (err, response) => {
+		if(err)
+			console.error(err);
+	});
 
 	convo.say(typing_message);
 	timeouts.push(setTimeout(() => {
@@ -1302,10 +1305,16 @@ function sendParticipantInfo(participant, convo) {
 				]
 			}
 		}
+	}, (err, response) => {
+		if(err)
+			console.error(err);
 	});
 
 	for(let a of participant.about) {
-		convo.say(a);
+		convo.say(a, (err, response) => {
+			if(err)
+				console.error(err);
+		});
 	}
 }
 
@@ -1331,6 +1340,9 @@ function sendPieceInfo(piece, convo) {
 	});
 
 	for(let a of piece.info) {
-		convo.say(a);
+		convo.say(a, (err, response) => {
+			if(err)
+				console.error(err);
+		});
 	}
 }
