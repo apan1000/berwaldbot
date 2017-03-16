@@ -1436,6 +1436,7 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
+	convo.next();
 	askPieceInfo(piece, 0, convo);
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
