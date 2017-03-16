@@ -1072,13 +1072,9 @@ function askParticipants(convo) {
 		{
 			pattern: new RegExp(participantNames.join('|'), 'i'),
 			callback: function(response, convo) {
-				sendParticipantInfo(participants[response.text], convo).then(resp => {
-					askParticipants(convo);
-					convo.next();
-				}).catch(e => {
-					console.error(e);
-					convo.stop();
-				});
+				sendParticipantInfo(participants[response.text], convo);
+				askParticipants(convo);
+				convo.next();
 			}
 		},
 		{
