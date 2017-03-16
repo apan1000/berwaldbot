@@ -1436,12 +1436,12 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	// askPieceInfo(piece, 0, convo);
-	convo.ask("So where do you want it delivered?", function(response, convo) {
-		convo.say("Ok! Goodbye.");
-		askPiece(piece, convo);
-		convo.next();
-	});
+	askPieceInfo(piece, 0, convo);
+	// convo.ask("So where do you want it delivered?", function(response, convo) {
+	// 	convo.say("Ok! Goodbye.");
+	// 	askPiece(piece, convo);
+	// 	convo.next();
+	// });
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
 	// 		if(err) {
@@ -1486,5 +1486,6 @@ function askPieceInfo(piece, i, convo) {
 		]);
 	} else {
 		convo.say(piece.info[i]);
+		askPiece(piece, convo);
 	}
 }
