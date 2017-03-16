@@ -434,6 +434,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			participants[p.name.substr(0, 17)+'...'] = p;
 		} else {
 			participantNames.push(p.name);
+			p.payload = p.name;
 			participants[p.name] = p;
 		}
 	}
@@ -1048,6 +1049,7 @@ function askParticipants(convo) {
 			participants[p.name.substr(0, 17)+'...'] = p;
 		} else {
 			participantNames.push(p.name);
+			p.payload = p.name;
 			participants[p.name] = p;
 		}
 	}
