@@ -430,6 +430,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 	for(let p of information.concert.participants) {
 		if(p.name.length > 20) {
 			participantNames.push(p.name.substr(0, 17)+'...');
+			p.payload = p.name;
 			participants[p.name.substr(0, 17)+'...'] = p;
 		} else {
 			participantNames.push(p.name);
@@ -443,7 +444,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			content_type: 'text',
 			title: n,
 			image_url: participants[n].image,
-			payload: n
+			payload: participants[n].payload
 		});
 	}
 
@@ -512,17 +513,15 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 
 controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_received', function(bot, message) {
 	let artistName = message.match[1];
+	if( artistName.match(new RegExp('orkester', 'i')) ) {
+		artistName == 'Sveriges Radios Symfoniorkester'
+	}
 
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
-		if(p.name.length > 20) {
-			participantNames.push(p.name.substr(0, 17)+'...');
-			participants[p.name.substr(0, 17)+'...'] = p;
-		} else {
-			participantNames.push(p.name);
-			participants[p.name] = p;
-		}
+		participantNames.push(p.name);
+		participants[p.name] = p;
 	}
 
 	if( artistName.match(new RegExp(participantNames.join('|'))) ) {
@@ -1043,8 +1042,14 @@ function askParticipants(convo) {
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
-		participantNames.push(p.name);
-		participants[p.name] = p;
+		if(p.name.length > 20) {
+			participantNames.push(p.name.substr(0, 17)+'...');
+			p.payload = p.name;
+			participants[p.name.substr(0, 17)+'...'] = p;
+		} else {
+			participantNames.push(p.name);
+			participants[p.name] = p;
+		}
 	}
 
 	let quickReplies = [];
@@ -1053,7 +1058,7 @@ function askParticipants(convo) {
 			content_type: 'text',
 			title: n,
 			image_url: participants[n].image,
-			payload: n
+			payload: participants[n].payload
 		});
 	}
 
