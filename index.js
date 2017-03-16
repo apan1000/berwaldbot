@@ -1467,7 +1467,7 @@ function askPieceInfo(piece, i, convo) {
 		];
 
 		convo.ask({
-			text: "Question huh?",
+			text: piece.info[i],
 			quick_replies: quickReplies
 		}, function(response, convo) {
 			convo.say("Ok! Goodbye.");
