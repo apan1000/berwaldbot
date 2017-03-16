@@ -933,7 +933,7 @@ function askConcert(response, convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🛑Ingen',
+			title: '🛑 Ingen',
 			payload: 'stopp'
 		}
 	];
@@ -1437,7 +1437,25 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	askPieceInfo(piece, 0, convo);
+	let i = 0;
+	convo.ask({
+		text: piece.info[i],
+		quick_replies: quickReplies
+	}, [
+		{
+			pattern: /(stopp|stop|nej|avsluta)/i,
+			callback: function(response, convo) {
+				convo.next();
+			}
+		},
+		{
+			default: true,
+			callback: function(response, convo) {
+				convo.next();
+			}
+		}
+	]);
+	// askPieceInfo(piece, 0, convo);
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
 	// 		if(err) {
