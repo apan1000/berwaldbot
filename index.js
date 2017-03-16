@@ -1466,7 +1466,10 @@ function askPieceInfo(piece, i, convo) {
 			}
 		];
 
-		convo.ask("So where do you want it delivered?", function(response, convo) {
+		convo.ask({
+			text: "Question huh?",
+			quick_replies: quickReplies
+		}, function(response, convo) {
 			convo.say("Ok! Goodbye.");
 			askPieceInfo(piece, i+1, convo);
 			convo.next();
