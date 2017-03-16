@@ -513,10 +513,12 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 });
 
 controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_received', function(bot, message) {
-	let artistName = message.match[1];
+	let artistName = message.match[2];
 	if( artistName.match(new RegExp('orkester', 'i')) ) {
 		artistName == 'Sveriges Radios Symfoniorkester'
 	}
+
+	console.info('\n\nartistName:\n',artistName,'\n');
 
 	let participantNames = [];
 	let participants = {};
