@@ -516,11 +516,11 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 	let artistName = message.match[1];
 
 	if( /orkester|symfoni/i.test(artistName) ) {
-		artistName == 'Sveriges Radios Symfoniorkester'
+		artistName = 'Sveriges Radios Symfoniorkester'
 	} else if( /sebastian|stevensson/i.test(artistName) ) {
-		artistName == 'Sebastian Stevensson'
+		artistName = 'Sebastian Stevensson'
 	} else if( /karina|canellakis/i.test(artistName) ) {
-		artistName == 'Karina Canellakis'
+		artistName = 'Karina Canellakis'
 	}
 
 	console.info('\n\nartistName:\n',artistName,'\n');
