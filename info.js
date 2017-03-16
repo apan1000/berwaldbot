@@ -57,6 +57,15 @@ module.exports = {
                     '\nSebastian Stevensson är P2:s artist 2016/2017.'
                 ]
             },
+            {
+                name: 'Orkestern',
+                position: 'fagott',
+                image: images_url+'sebastian.jpg',
+                website_url: 'http://www.csc.kth.se/~fberglun/exjobb/sebastian-stevensson/',
+                about: [
+                    'Om'
+                ]
+            },
         ],
         pieces: [
             {

@@ -45,6 +45,10 @@ const dayNames = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag',
 const timeouts = [];
 const images_url = 'http://www.csc.kth.se/~fberglun/exjobb/images/';
 
+const typing_message = {
+	sender_action: 'typing_on'
+};
+
 const ops = commandLineArgs([
 	{
 		name: 'lt', alias: 'l', args: 1, description: 'Use localtunnel.me to make your bot available on the web.',
@@ -209,21 +213,21 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 			},
 			{
 				"content_type": "text",
-				"title": "Vem är du?",
-				"payload": "Vem är du?",
+				"title": "Ge mig artistinfo",
+				"payload": "artistinfo",
 			},
 			{
 				"content_type": "text",
-				"title": "Ge mig artistinfo",
-				"payload": "artistinfo",
-			}
+				"title": "Om Berwaldhallen",
+				"payload": "berwaldhallen"
+			},
 		]
 	});
 });
 
 controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
 	bot.reply(message, {
-		text: 'Du kan välja ett av alternativen här under eller skriva t.ex. "artist Tommy Sjöberg", "hej" eller "om berwaldhallen".',
+		text: 'ℹ️ Du kan välja ett av alternativen här under eller skriva t.ex. "artist Sebastian Stevensson", "hej" eller "om berwaldhallen".',
 		quick_replies: [
 			{
 				"content_type": "text",
@@ -239,11 +243,6 @@ controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
 				"content_type": "text",
 				"title": "Om Berwaldhallen",
 				"payload": "berwaldhallen"
-			},
-			{
-				"content_type": "text",
-				"title": "Vem är du?",
-				"payload": "Vem är du?"
 			},
 		]
 	});
@@ -267,7 +266,7 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 			}).catch(err => {
 				console.error('No user information:',err);
 			}).then(() => {
-				bot.reply(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där.');
+				bot.reply(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där😎');
 			});
 		}
 	});
@@ -275,9 +274,6 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 
 controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
 	const bwh = information.berwaldhallen;
-	const typing_message = {
-		sender_action: 'typing_on'
-	};
 
 	console.log('Sending short text...');
 	bot.reply(message, bwh.shortDesc);
@@ -363,9 +359,6 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 // });
 
 controller.hears(['spotify'], 'message_received', function(bot, message) {
-	// var typing_message = {
-	// 	sender_action: 'typing_on'
-	// };
 	// bot.reply(message, typing_message);
 
 	// setTimeout(() => {
@@ -409,52 +402,100 @@ controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, me
 	bot.startConversation(message, askConcert);
 });
 
-controller.hears(['solistprisvinnareninformation'], 'message_received', function(bot, message) {
-	let msg = '🏆Solistprisvinnaren🏆\n\n'+information.concert.about;
-	bot.reply(message, msg);
-});
-
-controller.hears(['artistinfo$', 'artist$'], 'message_received', function(bot, message) {
-
+controller.hears(['solistprisvinnaren'], 'message_received', function(bot, message) {
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
-			convo.ask({
-				text: 'Vilken artist vill du veta mer om?🤔', 
-				quick_replies: [{
-					content_type: 'text',
-					title: 'Tommy Körberg',
-					payload: 'Tommy Körberg'
-				}, {
-					content_type: 'text',
-					title: 'Christian Gerhaher',
-					payload: 'Christian Gerhaher'
-				}, {
-					content_type: 'text',
-					title: 'Nujabes',
-					payload: 'Nujabes'
-				}]
-			}, function(response, convo) {
-				bot.startTyping(message, () => {
-					getArtistInfo(response.text).then(artist => {
-						console.log('Artist info is in, let\'s send it!');
-						sendArtistInfo(message, artist);
-						bot.stopTyping(message, () => {
-							convo.next();
-						});
-					}).catch(error => {
-						bot.stopTyping(message, () => {
-							console.error(error);
-							convo.stop();
-						});
-					});
-				});
-
-			});
+			askConcertInfo(message, convo);
 
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					// this happens if the conversation ended prematurely for some reason
-					bot.reply(message, 'Jag gjorde något fel🙈 Försök gärna igen!');
+					bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
+				}
+				sendDefaultQuickReplies(convo.source_message, true);
+			});
+		}
+	});
+});
+
+controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received', function(bot, message) {
+	let error = false;
+	let artistText = 'artist';
+	if(message.match[message.match.length] == 'medverkande')
+		artistText = 'medverkande';
+	
+	let participantNames = [];
+	let participants = {};
+	for(let p of information.concert.participants) {
+		participantNames.push(p.name);
+		participants[p.name] = p;
+	}
+
+	let quickReplies = [];
+	for(let n of participantNames) {
+		quickReplies.push({
+			content_type: 'text',
+			title: n,
+			image_url: participants[n].image,
+			payload: n
+		});
+	}
+
+	quickReplies.push(
+		{
+			content_type: 'text',
+			title: '🚫 Avsluta',
+			payload: 'stopp'
+		}
+	);
+	
+	bot.startConversation(message, function(err, convo) {
+		if (!err) {
+			convo.ask({
+				text: 'Vilken '+artistText+' vill du veta mer om?🤔',
+				quick_replies: quickReplies
+			}, [
+				{
+					pattern: new RegExp(participantNames.join('|'), 'i'),
+					callback: function(response, convo) {
+						sendParticipantInfo(participants[response.text], convo);
+						convo.next();
+					}
+				},
+				{
+					pattern: /(stopp|nej|avsluta|ingen)/i,
+					callback: function(response, convo) {
+						// stop the conversation. this will cause it to end with status == 'stopped'
+						convo.stop();
+					}
+				},
+				{
+					default: true,
+					callback: function(response, convo) {
+						bot.startTyping(message, () => {
+							getArtistInfo(response.text).then(artist => {
+								console.log('Artist info is in, let\'s send it!');
+								sendArtistInfo(message, artist);
+								bot.stopTyping(message, () => {
+									convo.next();
+								});
+							}).catch(err => {
+								bot.stopTyping(message, () => {
+									console.error(err);
+									error = true;
+									convo.stop();
+								});
+							});
+						});
+					}
+				}
+			]);
+
+			convo.on('end', function(convo) {
+				if (convo.status !== 'completed') {
+					if(error)
+						bot.reply(message, 'Något gick fel🙈 Försök gärna igen!');
+					sendDefaultQuickReplies(message, false)
 				}
 			});
 		}
@@ -529,9 +570,10 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 			bot.startConversation(message, function(err, convo) {
 				if (!err) {
+					bot.reply(message, 'Du heter ' + user.first_name + ':)');
 					convo.say('Jag vet inte vad du vill bli kallad än!');
 					convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
-						convo.ask('Ska jag kalla dig `' + response.text + '`❓', [
+						convo.ask('Ska jag kalla dig `' + response.text + '`?😃', [
 							{
 								pattern: bot.utterances.yes,
 								callback: function(response, convo) {
@@ -563,9 +605,6 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 					convo.on('end', function(convo) {
 						if (convo.status === 'completed') {
 							bot.reply(message, 'Okej! Uppdaterar min databas...💻');
-							var typing_message = {
-								sender_action: 'typing_on'
-							};
 							bot.reply(message, typing_message);
 
 							controller.storage.users.get(message.user, function(err, user) {
@@ -577,7 +616,8 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 								setNickname(user, convo.extractResponse('nickname')).then(newUser => {
 									setTimeout(() => {
-										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍');
+										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
+											'\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
 									}, 750);
 								}).catch(error => {
 									console.error(error);
@@ -586,7 +626,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 						} else {
 							// this happens if the conversation ended prematurely for some reason
-							bot.reply(message, 'Okej! Strunt samma.😌');
+							bot.reply(message, 'Okej! Strunt samma.😌\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
 						}
 					});
 				}
@@ -608,7 +648,8 @@ controller.on('message_received', function(bot, message) {
 		else
 			bot.reply(message, "😃😛");
 	} else {
-		bot.reply(message, 'Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+		bot.reply(message, 'ℹ️ Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+		sendDefaultQuickReplies(message, false);
 	}
 	
 	return false;
@@ -670,33 +711,57 @@ function getArtistInfo(name) {
 	});
 }
 
-function sendDefaultQuickReplies(message) {
-	bot.reply(message, {
-		attachment: {
-			type: 'image',
-			payload: {
-				url: images_url+'botwald-wide.png',
-				is_reusable: true
-			}
-		},
-		quick_replies: [
-			{
-				content_type: 'text',
-				title: 'Kommande konserter',
-				payload: 'konserter',
+function sendDefaultQuickReplies(message, hasImage) {
+	if(hasImage) {
+		bot.reply(message, {
+			attachment: {
+				type: 'image',
+				payload: {
+					url: images_url+'botwald-wide.png',
+					is_reusable: true
+				}
 			},
-			{
-				content_type: 'text',
-				title: 'Om Berwaldhallen',
-				payload: 'Berwaldhallen',
-			},
-			{
-				content_type: 'text',
-				title: 'Ge mig artistinfo',
-				payload: 'artistinfo',
-			}
-		]
-	});
+			quick_replies: [
+				{
+					content_type: 'text',
+					title: 'Kommande konserter',
+					payload: 'konserter',
+				},
+				{
+					content_type: 'text',
+					title: 'Om Berwaldhallen',
+					payload: 'Berwaldhallen',
+				},
+				{
+					content_type: 'text',
+					title: 'Ge mig artistinfo',
+					payload: 'artistinfo',
+				}
+			]
+		});
+	} else {
+		bot.reply(message, {
+			text: ':)',
+			quick_replies: [
+				{
+					content_type: 'text',
+					title: 'Kommande konserter',
+					payload: 'konserter',
+				},
+				{
+					content_type: 'text',
+					title: 'Om Berwaldhallen',
+					payload: 'Berwaldhallen',
+				},
+				{
+					content_type: 'text',
+					title: 'Ge mig artistinfo',
+					payload: 'artistinfo',
+				}
+			]
+		});
+	}
+	
 }
 
 function sendArtistInfo(message, artist) {
@@ -709,21 +774,7 @@ function sendArtistInfo(message, artist) {
 				elements: [
 					{
 						title: artist.name.toUpperCase(),
-						image_url: artist.images.length>1 ? artist.images[1].url : images_url+'note.png',
-						subtitle: 'Missa inte detta möte mellan '+artist.name.split(' ')[0]+' och Sveriges Radios Symfoniorkester.',
-						default_action: {
-							type: 'web_url',
-							url: 'https://sverigesradio.se/berwaldhallen',
-							webview_height_ratio: 'tall'
-						},
-						buttons: [
-							{
-								title: 'Info & Bokning',
-								type: 'web_url',
-								url: 'https://sverigesradio.se/berwaldhallen',
-								webview_height_ratio: 'tall'
-							}
-						]
+						image_url: artist.images.length>1 ? artist.images[1].url : images_url+'note.png'
 					},
 					{
 						title: 'Lyssna på Spotify',
@@ -774,6 +825,9 @@ function clearSavedTimeouts() {
 	timeouts.forEach(clearTimeout);
 }
 
+/******************
+* USER
+*******************/
 function setNickname(user, nickname) {
 	user.nickname = nickname;
 
@@ -821,6 +875,9 @@ function getUser(userId) {
 	});
 }
 
+/******************
+* CONCERT
+*******************/
 function askConcert(response, convo) {
 	let concert = information.concert;
 	let quickReplies = [
@@ -870,7 +927,7 @@ function askConcert(response, convo) {
 			// this happens if the conversation ended prematurely for some reason
 			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		}
-		sendDefaultQuickReplies(convo.source_message);
+		sendDefaultQuickReplies(convo.source_message, true);
 	});
 }
 
@@ -1184,13 +1241,6 @@ function sendConcertInfo(convo) {
 						image_url: c.image,
 						subtitle: c.participants[1].name
 					}
-				],
-				buttons: [
-					{
-						title: 'Läs mer',
-						type: 'postback',
-						payload: c.name+'information',
-					}
 				]
 			}
 		}
@@ -1206,13 +1256,21 @@ function sendConcertInfo(convo) {
 				url: o.url,
 				webview_height_ratio: 'tall',
 			}
-		})
+		});
 	}
 
-	convo.say(msg, (err, response) => {
-		if(err)
-			console.error(err);
-	});
+	convo.say('🏆Solistprisvinnaren🏆\n\n'+information.concert.about);
+
+	bot.reply(message, typing_message);
+	timeouts.push(setTimeout(() => {
+		convo.say(msg, (err, response) => {
+			if(err)
+				console.error(err);
+		});
+
+		askConcertInfo('', convo);
+	}, 1000));
+
 }
 
 function sendParticipantInfo(participant, convo) {
