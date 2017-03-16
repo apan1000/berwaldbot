@@ -1446,7 +1446,7 @@ function sendPieceInfo(piece, convo) {
 					{
 						title: piece.name,
 						image_url: piece.image,
-						subtitle: piece.composer.name
+						subtitle: piece.composer ? piece.composer.name : ''
 					}
 				]
 			}
