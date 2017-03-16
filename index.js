@@ -1467,25 +1467,48 @@ function askPieceInfo(piece, i, convo) {
 		];
 
 		convo.ask({
-			text: piece.info[i],
+			text: "So where do you want it delivered?",
 			quick_replies: quickReplies
 		}, [
 			{
 				pattern: /(stopp|stop|nej|avsluta)/i,
 				callback: function(response, convo) {
+					convo.say("Ok! Goodbye.");
+					askPiece(piece, convo);
 					convo.next();
 				}
 			},
 			{
 				default: true,
 				callback: function(response, convo) {
+					convo.say("Ok! Next.");
 					askPieceInfo(piece.info, i+1, convo);
 					convo.next();
 				}
 			}
 		]);
+
+		// convo.ask({
+		// 	text: piece.info[i],
+		// 	quick_replies: quickReplies
+		// }, [
+		// 	{
+		// 		pattern: /(stopp|stop|nej|avsluta)/i,
+		// 		callback: function(response, convo) {
+		// 			convo.next();
+		// 		}
+		// 	},
+		// 	{
+		// 		default: true,
+		// 		callback: function(response, convo) {
+		// 			askPieceInfo(piece.info, i+1, convo);
+		// 			convo.next();
+		// 		}
+		// 	}
+		// ]);
 	} else {
-		convo.say(piece.info[i]);
+		// convo.say(piece.info[i]);
+		convo.say("The end.");
 		askPiece(piece, convo);
 	}
 }
