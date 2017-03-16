@@ -108,13 +108,13 @@ module.exports = {
                     works: 'Tre klarinettkonserter, kammarmusik bl a tre klarinettkvartetter, verk för manskör, en rad romanser samt operan Den lilla slavinnan.',
                     more: [
                         'Om den unge Crusell:'+
-                        '\nI hans födelsestad fanns blott en enda person som idkade musik.'+
-                        'Det var en bodbetjänt som om sommaraftnarna roade sig att blåsa flöjt.'+
-                        'Utanför dennes fönster fanns den lille fyraårige Berndt sent om en afton sittande på gatan, med ryggen stödd mot väggen och utom sig av förtjusning över de ljuva tonerna.',
+                        '\n\nI hans födelsestad fanns blott en enda person som idkade musik.'+
+                        ' Det var en bodbetjänt som om sommaraftnarna roade sig att blåsa flöjt.'+
+                        ' Utanför dennes fönster fanns den lille fyraårige Berndt sent om en afton sittande på gatan, med ryggen stödd mot väggen och utom sig av förtjusning över de ljuva tonerna.',
 
                         'Hans föräldrar, som länge sökt honom med oro bannade honom allvarsamt.'+
-                        'Men detta hindrade honom ej att nästa morgon återta sin favoritplats.'+
-                        'Han blev nu agad för sin olydnad, men sedan även detta icke hjälpte, överlämnade man honom åt sin vurm, övertygad att han alltid skulle komma hem, så fort flöjten tystnat.'+
+                        ' Men detta hindrade honom ej att nästa morgon återta sin favoritplats.'+
+                        ' Han blev nu agad för sin olydnad, men sedan även detta icke hjälpte, överlämnade man honom åt sin vurm, övertygad att han alltid skulle komma hem, så fort flöjten tystnat.'+
                         '\n\nUr Crusells egna anteckningar – om sig själv i tredje person.'
                     ]
                 }
@@ -152,9 +152,11 @@ module.exports = {
                         born: '8 september 1841 i Nelahozeves, Tjeckien.',
                         dead: '1 maj 1904 i Prag.',
                         works: 'Nio symfonier, t ex nr 9 Från nya världen, tio operor t ex Rusalka, fem symfoniska dikter, t ex Heldenlied, fyra större körverk, sex konserter, kammarmusik.',
-                        more: 'Om folkmusik:'+
+                        more: [
+                            'Om folkmusik:'+
                             '\nDvorák var starkt intresserad av mährisk och böhmisk folkmusik och inspirerades ofta av folkmusikaliska idiom i sina egna kompositioner.'+
                             '\nNär han bodde i USA i slutet av 1800-talet ville han utforska traditionell amerikansk musik och uppmuntrade afroamerikanska och indianska influenser i strävan efter en nationell musikalisk identitet.'
+                        ]
                 }
             },
             {
