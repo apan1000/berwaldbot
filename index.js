@@ -1437,33 +1437,33 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	let i = 0;
-	convo.say('Heeej');
-	convo.ask({
-		text: piece.info[i],
-		quick_replies: quickReplies
-	}, [
-		{
-			pattern: /(stopp|stop|nej|avsluta)/i,
-			callback: function(response, convo) {
-				convo.next();
-			}
-		},
-		{
-			default: true,
-			callback: function(response, convo) {
-				convo.next();
-			}
-		}
-	]);
-	// askPieceInfo(piece, 0, convo);
-	// for(let a of piece.info) {
-	// 	convo.say(a, (err, response) => {
-	// 		if(err) {
-	// 			console.error(err);
+	// let i = 0;
+	// convo.say('Heeej');
+	// convo.ask({
+	// 	text: piece.info[i],
+	// 	quick_replies: quickReplies
+	// }, [
+	// 	{
+	// 		pattern: /(stopp|stop|nej|avsluta)/i,
+	// 		callback: function(response, convo) {
+	// 			convo.next();
 	// 		}
-	// 	});
-	// }
+	// 	},
+	// 	{
+	// 		default: true,
+	// 		callback: function(response, convo) {
+	// 			convo.next();
+	// 		}
+	// 	}
+	// ]);
+	// askPieceInfo(piece, 0, convo);
+	for(let a of piece.info) {
+		convo.say(a, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	}
 }
 
 function askPieceInfo(piece, i, convo) {
