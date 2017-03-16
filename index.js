@@ -427,8 +427,13 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
-		participantNames.push(p.name.substr(0, 20));
-		participants[p.name.substr(0, 20)] = p;
+		if(p.name.length > 20) {
+			participantNames.push(p.name.substr(0, 17)+'...');
+			participants[p.name.substr(0, 17)+'...'] = p;
+		} else {
+			participantNames.push(p.name.substr(0, 20));
+			participants[p.name.substr(0, 20)] = p;
+		}
 	}
 
 	let quickReplies = [];
@@ -495,8 +500,8 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 				if (convo.status !== 'completed') {
 					if(error)
 						bot.reply(message, 'Något gick fel🙈 Försök gärna igen!');
-					sendDefaultQuickReplies(message, false)
 				}
+				sendDefaultQuickReplies(message, false);
 			});
 		}
 	});
@@ -505,19 +510,39 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_received', function(bot, message) {
 	let artistName = message.match[1];
 
-	bot.startTyping(message, () => {
-		getArtistInfo(artistName).then(artist => {
-			console.log('Artist info is in, let\'s send it!');
-			bot.stopTyping(message, () => {
-				sendArtistInfo(message, artist);
-			});
-		}).catch(error => {
-			bot.stopTyping(message, () => {
-				console.error(error);
-				bot.reply(message, 'Kunde inte hitta artistinfo. :(');
+	let participantNames = [];
+	let participants = {};
+	for(let p of information.concert.participants) {
+		participantNames.push(p.name);
+		participants[p.name] = p;
+	}
+
+	if( artistName.match(new RegExp(participantNames.join('|'))) ) {
+		bot.startConversation(message, function(err, convo) {
+			if (!err) {
+				sendParticipantInfo(participants[artistName], convo);
+				convo.next();
+
+				convo.on('end', function(convo) {
+					sendDefaultQuickReplies(message, false);
+				});
+			}
+		});
+	} else {
+		bot.startTyping(message, () => {
+			getArtistInfo(artistName).then(artist => {
+				console.log('Artist info is in, let\'s send it!');
+				bot.stopTyping(message, () => {
+					sendArtistInfo(message, artist);
+				});
+			}).catch(error => {
+				bot.stopTyping(message, () => {
+					console.error(error);
+					bot.reply(message, 'Kunde inte hitta artistinfo. :(');
+				});
 			});
 		});
-	});
+	}
 });
 
 
