@@ -1263,7 +1263,6 @@ function askPiece(piece, convo) {
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
 				sendPieceInfo(piece, convo);
-				askPiece(piece, convo);
 				convo.next();
 			}
 		},
@@ -1437,8 +1436,7 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	convo.next();
-	askPieceInfo(piece.info, 0, convo);
+	askPieceInfo(piece, 0, convo);
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
 	// 		if(err) {
@@ -1448,8 +1446,8 @@ function sendPieceInfo(piece, convo) {
 	// }
 }
 
-function askPieceInfo(info, i, convo) {
-	if(i < info.length-1) {
+function askPieceInfo(piece, i, convo) {
+	if(i < piece.info.length-1) {
 		let quickReplies = [
 			{
 				content_type: 'text',
@@ -1464,7 +1462,7 @@ function askPieceInfo(info, i, convo) {
 		];
 
 		convo.ask({
-			text: info[i],
+			text: piece.info[i],
 			quick_replies: quickReplies
 		}, [
 			{
@@ -1476,12 +1474,13 @@ function askPieceInfo(info, i, convo) {
 			{
 				default: true,
 				callback: function(response, convo) {
-					askPieceInfo(info, i+1, convo);
+					askPieceInfo(piece.info, i+1, convo);
 					convo.next();
 				}
 			}
 		]);
 	} else {
-		convo.say(info[i]);
+		convo.say(piece.info[i]);
+		askPiece(piece, convo);
 	}
 }
