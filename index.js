@@ -516,8 +516,13 @@ controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_rec
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
-		participantNames.push(p.name);
-		participants[p.name] = p;
+		if(p.name.length > 20) {
+			participantNames.push(p.name.substr(0, 17)+'...');
+			participants[p.name.substr(0, 17)+'...'] = p;
+		} else {
+			participantNames.push(p.name);
+			participants[p.name] = p;
+		}
 	}
 
 	if( artistName.match(new RegExp(participantNames.join('|'))) ) {
