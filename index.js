@@ -1263,7 +1263,6 @@ function askPiece(piece, convo) {
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
 				sendPieceInfo(piece, convo);
-				askPiece(piece, convo);
 				convo.next();
 			}
 		},
@@ -1440,6 +1439,7 @@ function sendPieceInfo(piece, convo) {
 	// askPieceInfo(piece, 0, convo);
 	convo.ask("So where do you want it delivered?", function(response, convo) {
 		convo.say("Ok! Goodbye.");
+		askPiece(piece, convo);
 		convo.next();
 	});
 	// for(let a of piece.info) {
