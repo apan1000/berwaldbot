@@ -463,8 +463,11 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 				{
 					pattern: new RegExp(participantNames.join('|'), 'i'),
 					callback: function(response, convo) {
-						sendParticipantInfo(participants[response.text], convo);
-						convo.next();
+						sendParticipantInfo(participants[response.text], convo).then(resp => {
+							convo.next();
+						}).catch(e => {
+							console.error(e);
+						});
 					}
 				},
 				{
@@ -520,8 +523,11 @@ controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_rec
 	if( artistName.match(new RegExp(participantNames.join('|'))) ) {
 		bot.startConversation(message, function(err, convo) {
 			if (!err) {
-				sendParticipantInfo(participants[artistName], convo);
-				convo.next();
+				sendParticipantInfo(participants[artistName], convo).then(resp => {
+					convo.next();
+				}).catch(e => {
+					console.error(e);
+				});
 
 				convo.on('end', function(convo) {
 					sendDefaultQuickReplies(message, false);
@@ -1062,9 +1068,12 @@ function askParticipants(convo) {
 		{
 			pattern: new RegExp(participantNames.join('|'), 'i'),
 			callback: function(response, convo) {
-				sendParticipantInfo(participants[response.text], convo);
-				askParticipants(convo);
-				convo.next();
+				sendParticipantInfo(participants[response.text], convo).then(resp => {
+					askParticipants(convo);
+					convo.next();
+				}).catch(e => {
+					console.error(e);
+				});
 			}
 		},
 		{
@@ -1224,9 +1233,12 @@ function askPiece(piece, convo) {
 		{
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
-				sendPieceInfo(piece, convo);
-				askProgram(convo);
-				convo.next();
+				sendPieceInfo(piece, convo).then(resp => {
+					askProgram(convo);
+					convo.next();
+				}).catch(e => {
+					console.error(e);
+				});
 			}
 		},
 		{
@@ -1287,8 +1299,9 @@ function sendConcertInfo(convo) {
 	}
 
 	convo.say('🏆Solistprisvinnaren🏆\n\n'+information.concert.about, (err, response) => {
-		if(err)
+		if(err) {
 			console.error(err);
+		}
 	});
 
 	convo.say(typing_message);
@@ -1303,44 +1316,52 @@ function sendConcertInfo(convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
-	convo.say({
-		attachment: {
-			type: 'template',
-			payload: {
-				template_type: 'generic',
-				elements: [
-					{
-						title: participant.name,
-						image_url: participant.image,
-						subtitle: 'Gå till '+participant.name+'s hemsida.',
-						default_action: {
-							type: 'web_url',
-							url: participant.website_url,
-							webview_height_ratio: 'tall'
-						},
-						buttons: [
-							{
-								title: 'Hemsida',
+	return new Promise((resolve, reject) => {
+		convo.say({
+			attachment: {
+				type: 'template',
+				payload: {
+					template_type: 'generic',
+					elements: [
+						{
+							title: participant.name,
+							image_url: participant.image,
+							subtitle: 'Gå till '+participant.name+'s hemsida.',
+							default_action: {
 								type: 'web_url',
 								url: participant.website_url,
 								webview_height_ratio: 'tall'
-							}
-						]
-					}
-				]
+							},
+							buttons: [
+								{
+									title: 'Hemsida',
+									type: 'web_url',
+									url: participant.website_url,
+									webview_height_ratio: 'tall'
+								}
+							]
+						}
+					]
+				}
 			}
-		}
-	}, (err, response) => {
-		if(err)
-			console.error(err);
-	});
-
-	for(let a of participant.about) {
-		convo.say(a, (err, response) => {
-			if(err)
+		}, (err, response) => {
+			if(err) {
 				console.error(err);
+				reject(err);
+			}
+
+			for(let a of participant.about) {
+				convo.say(a, (err, response) => {
+					if(err) {
+						console.error(err);
+						reject(err);
+					}
+					resolve(response);
+				});
+			}
 		});
-	}
+
+	});
 }
 
 function sendComposerInfo(composer, convo) {
@@ -1348,26 +1369,37 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	convo.say({
-		attachment: {
-			type: 'template',
-			payload: {
-				template_type: 'generic',
-				elements: [
-					{
-						title: piece.name,
-						image_url: piece.image,
-						subtitle: piece.composer.name
-					}
-				]
+	return new Promise((resolve, reject) => {
+		convo.say({
+			attachment: {
+				type: 'template',
+				payload: {
+					template_type: 'generic',
+					elements: [
+						{
+							title: piece.name,
+							image_url: piece.image,
+							subtitle: piece.composer.name
+						}
+					]
+				}
 			}
-		}
-	});
-
-	for(let a of piece.info) {
-		convo.say(a, (err, response) => {
-			if(err)
+		}, (err, response) => {
+			if(err) {
 				console.error(err);
+				reject(err);
+			}
+
+			for(let a of piece.info) {
+				convo.say(a, (err, response) => {
+					if(err) {
+						console.error(err);
+						reject(err);
+					}
+
+					resolve(response);
+				});
+			}
 		});
-	}
+	});
 }
