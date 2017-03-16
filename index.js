@@ -421,14 +421,14 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received', function(bot, message) {
 	let error = false;
 	let artistText = 'artist';
-	if(message.match[message.match.length] == 'medverkande')
+	if(message.match[message.match.length-1] == 'medverkande')
 		artistText = 'medverkande';
 	
 	let participantNames = [];
 	let participants = {};
 	for(let p of information.concert.participants) {
-		participantNames.push(p.name);
-		participants[p.name] = p;
+		participantNames.push(p.name.substr(0, 20));
+		participants[p.name.substr(0, 20)] = p;
 	}
 
 	let quickReplies = [];
