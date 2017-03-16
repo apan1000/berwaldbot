@@ -1438,6 +1438,7 @@ function sendComposerInfo(composer, convo) {
 
 function sendPieceInfo(piece, convo) {
 	let i = 0;
+	convo.say('Heeej');
 	convo.ask({
 		text: piece.info[i],
 		quick_replies: quickReplies
