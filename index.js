@@ -515,8 +515,12 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (.*)'], 'message_received', function(bot, message) {
 	let artistName = message.match[1];
 
-	if( artistName.match(new RegExp('orkester', 'i')) ) {
+	if( /orkester|symfoni/i.test(artistName) ) {
 		artistName == 'Sveriges Radios Symfoniorkester'
+	} else if( /sebastian|stevensson/i.test(artistName) ) {
+		artistName == 'Sebastian Stevensson'
+	} else if( /karina|canellakis/i.test(artistName) ) {
+		artistName == 'Karina Canellakis'
 	}
 
 	console.info('\n\nartistName:\n',artistName,'\n');
