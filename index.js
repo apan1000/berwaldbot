@@ -1457,11 +1457,50 @@ function sendPieceInfo(piece, convo) {
 		}
 	});
 
-	for(let a of piece.info) {
-		convo.say(a, (err, response) => {
-			if(err) {
-				console.error(err);
+	askPieceInfo(piece.info, 0, convo);
+	// for(let a of piece.info) {
+	// 	convo.say(a, (err, response) => {
+	// 		if(err) {
+	// 			console.error(err);
+	// 		}
+	// 	});
+	// }
+}
+
+function askPieceInfo(info, i, convo) {
+	if(i < info.length-1) {
+		let quickReplies = [
+			{
+				content_type: 'text',
+				title: '➡️️ Nästa',
+				payload: 'nästa'
+			},
+			{
+				content_type: 'text',
+				title: '🛑 Stopp',
+				payload: 'stopp'
 			}
-		});
+		];
+
+		convo.ask({
+			text: info[i],
+			quick_replies: quickReplies
+		}, [
+			{
+				pattern: /(stopp|stop|nej|avsluta)/i,
+				callback: function(response, convo) {
+					convo.next();
+				}
+			},
+			{
+				default: true,
+				callback: function(response, convo) {
+					askPieceInfo(info, i+1, convo);
+					convo.next();
+				}
+			}
+		]);
+	} else {
+		convo.say(info[i]);
 	}
 }
