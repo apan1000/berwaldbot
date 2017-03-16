@@ -1466,27 +1466,11 @@ function askPieceInfo(piece, i, convo) {
 			}
 		];
 
-		convo.ask({
-			text: "So where do you want it delivered?",
-			quick_replies: quickReplies
-		}, [
-			{
-				pattern: /(stopp|stop|nej|avsluta)/i,
-				callback: function(response, convo) {
-					convo.say("Ok! Goodbye.");
-					askPiece(piece, convo);
-					convo.next();
-				}
-			},
-			{
-				default: true,
-				callback: function(response, convo) {
-					convo.say("Ok! Next.");
-					askPieceInfo(piece.info, i+1, convo);
-					convo.next();
-				}
-			}
-		]);
+		convo.ask("So where do you want it delivered?", function(response, convo) {
+			convo.say("Ok! Goodbye.");
+			askPieceInfo(piece, i+1, convo);
+			convo.next();
+		});
 
 		// convo.ask({
 		// 	text: piece.info[i],
@@ -1495,6 +1479,7 @@ function askPieceInfo(piece, i, convo) {
 		// 	{
 		// 		pattern: /(stopp|stop|nej|avsluta)/i,
 		// 		callback: function(response, convo) {
+		// 			askPiece(piece, convo);
 		// 			convo.next();
 		// 		}
 		// 	},
@@ -1507,8 +1492,7 @@ function askPieceInfo(piece, i, convo) {
 		// 	}
 		// ]);
 	} else {
-		// convo.say(piece.info[i]);
-		convo.say("The end.");
+		convo.say(piece.info[i]);
 		askPiece(piece, convo);
 	}
 }
