@@ -176,7 +176,7 @@ controller.api.thread_settings.menu([
 // 	}
 // });
 
-controller.hears(['^(Get Started)'], 'message_received', function(bot, message) {
+controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, message) {
 	let user = {
 		id: message.user,
 		first_message: message
@@ -247,26 +247,6 @@ controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
 			},
 		]
 	});
-});
-
-controller.hears(['quick'], 'message_received', function(bot, message) {
-
-	bot.reply(message, {
-		text: 'Hey! This message has some quick replies attached.',
-		quick_replies: [
-			{
-				"content_type": "text",
-				"title": "Yes",
-				"payload": "yes",
-			},
-			{
-				"content_type": "text",
-				"title": "No",
-				"payload": "no",
-			}
-		]
-	});
-
 });
 
 controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
@@ -366,37 +346,21 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 	}, 2500)); // Start typing
 });
 
-controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
-	const users = controller.storage.users.all(function(err, users) {
-		if(err) {
-			bot.reply(message, 'Tyvärr kunde jag inte visa alla användare. Låt oss prata om något annat😊');
-			return console.error('error getting users', err);
-		}
+// controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
+// 	const users = controller.storage.users.all(function(err, users) {
+// 		if(err) {
+// 			bot.reply(message, 'Tyvärr kunde jag inte visa alla användare. Låt oss prata om något annat😊');
+// 			return console.error('error getting users', err);
+// 		}
 
-		let userNames = 'Alla användare:';
-		users.forEach((user) => {
-			userNames += ' ' + user.first_name;
-		});
+// 		let userNames = 'Alla användare:';
+// 		users.forEach((user) => {
+// 			userNames += ' ' + user.first_name;
+// 		});
 
-		bot.reply(message, userNames);
-	});
-});
-
-controller.hears(['silent push'], 'message_received', function(bot, message) {
-	reply_message = {
-		text: "This message will have a push notification on a mobile phone, but no sound notification",
-		notification_type: "SILENT_PUSH"
-	}
-	bot.reply(message, reply_message);
-});
-
-controller.hears(['no push'], 'message_received', function(bot, message) {
-	reply_message = {
-		text: "This message will not have any push notification on a mobile phone",
-		notification_type: "NO_PUSH"
-	}
-	bot.reply(message, reply_message);
-});
+// 		bot.reply(message, userNames);
+// 	});
+// });
 
 controller.hears(['spotify'], 'message_received', function(bot, message) {
 	// var typing_message = {
@@ -631,41 +595,6 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 	});
 });
 
-controller.hears(['shutdown'], 'message_received', function(bot, message) {
-
-	bot.startConversation(message, function(err, convo) {
-
-		convo.ask('Är du säker på att du vill att jag ska stängas av?😨', [
-			{
-				pattern: bot.utterances.yes,
-				callback: function(response, convo) {
-					convo.say('Hej då😢');
-					convo.next();
-					setTimeout(function() {
-						process.exit();
-					}, 3000);
-				}
-			},
-			{
-				pattern: bot.utterances.no,
-				default: true,
-				callback: function(response, convo) {
-					convo.say('*Phew!*😓');
-					convo.next();
-				}
-			}
-		]);
-	});
-});
-
-
-controller.hears(['vem är du', 'identifiera dig', 'status', 'vad heter du'], 'message_received', 
-	function(bot, message) {
-		bot.reply(message,
-			'👾Jag är BerwaldBoten😶 Jag kan hjälpa dig med dina frågor om Berwaldhallen.'
-		);
-});
-
 controller.on('message_received', function(bot, message) {
 	console.log('Default message_received:\n',message,'\n');
 	
@@ -679,35 +608,11 @@ controller.on('message_received', function(bot, message) {
 		else
 			bot.reply(message, "😃😛");
 	} else {
-		bot.reply(message, 'Testa: \'Vad heter jag?\', \'artistinfo\' eller \'Kalla mig Kalle\'');
+		bot.reply(message, 'Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
 	}
 	
 	return false;
 });
-
-
-function formatUptime(uptime) {
-	var unit = 'sekunder';
-	if (uptime/60 > 119) {
-		uptime = uptime / 60;
-		unit = 'timmar';
-	}
-	if (uptime/60 > 60) {
-		uptime = uptime / 60;
-		unit = 'timme';
-	}
-	else if(uptime > 119) {
-		uptime = uptime / 60;
-		unit = 'minuter';
-	}
-	else if (uptime > 60) {
-		uptime = uptime / 60;
-		unit = 'minut';
-	}
-
-	uptime = uptime + ' ' + unit;
-	return uptime;
-}
 
 function getArtistInfo(name) {
 	return new Promise((resolve, reject) => {
