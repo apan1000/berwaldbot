@@ -412,7 +412,7 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 					// this happens if the conversation ended prematurely for some reason
 					bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 				}
-				sendDefaultQuickReplies(convo.source_message, true);
+				sendDefaultQuickReplies(convo.source_message, false);
 			});
 		}
 	});
@@ -570,7 +570,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 			bot.startConversation(message, function(err, convo) {
 				if (!err) {
-					bot.reply(message, 'Du heter ' + user.first_name + ':)');
+					bot.reply(message, 'Du heter ' + user.first_name + ' :)');
 					convo.say('Jag vet inte vad du vill bli kallad än!');
 					convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
 						convo.ask('Ska jag kalla dig `' + response.text + '`?😃', [
@@ -927,7 +927,7 @@ function askConcert(response, convo) {
 			// this happens if the conversation ended prematurely for some reason
 			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		}
-		sendDefaultQuickReplies(convo.source_message, true);
+		sendDefaultQuickReplies(convo.source_message, false);
 	});
 }
 
@@ -957,7 +957,7 @@ function askConcertInfo(response, convo) {
 	});
 
 	convo.ask({
-		text: 'Vad vill du veta om konserten?', 
+		text: 'Vad vill du veta om konserten?',
 		quick_replies: quickReplies
 	}, [
 		{
@@ -1038,6 +1038,7 @@ function askParticipants(convo) {
 			pattern: new RegExp(participantNames.join('|'), 'i'),
 			callback: function(response, convo) {
 				sendParticipantInfo(participants[response.text], convo);
+				askParticipants(convo);
 				convo.next();
 			}
 		},
@@ -1199,6 +1200,7 @@ function askPiece(piece, convo) {
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
 				sendPieceInfo(piece, convo);
+				askProgram(convo);
 				convo.next();
 			}
 		},
@@ -1261,7 +1263,7 @@ function sendConcertInfo(convo) {
 
 	convo.say('🏆Solistprisvinnaren🏆\n\n'+information.concert.about);
 
-	bot.reply(message, typing_message);
+	convo.say(typing_message);
 	timeouts.push(setTimeout(() => {
 		convo.say(msg, (err, response) => {
 			if(err)
@@ -1306,8 +1308,6 @@ function sendParticipantInfo(participant, convo) {
 	for(let a of participant.about) {
 		convo.say(a);
 	}
-
-	askParticipants(convo);
 }
 
 function sendComposerInfo(composer, convo) {
@@ -1334,6 +1334,4 @@ function sendPieceInfo(piece, convo) {
 	for(let a of piece.info) {
 		convo.say(a);
 	}
-
-	askProgram(convo);
 }

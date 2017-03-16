@@ -59,9 +59,9 @@ module.exports = {
             },
             {
                 name: 'Orkestern',
-                position: 'fagott',
-                image: images_url+'sebastian.jpg',
-                website_url: 'http://www.csc.kth.se/~fberglun/exjobb/sebastian-stevensson/',
+                position: '',
+                image: images_url+'orkester.jpg',
+                website_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3988&artikel=4507405',
                 about: [
                     'Om'
                 ]
