@@ -1124,8 +1124,15 @@ function askProgram(convo) {
 	let pieceNames = [];
 	let pieces = {};
 	for(let p of information.concert.pieces) {
-		pieceNames.push(p.name);
-		pieces[p.name] = p;
+		if(p.name.length > 20) {
+			pieceNames.push(p.name.substr(0, 17)+'...');
+			p.payload = p.name;
+			pieces[p.name.substr(0, 17)+'...'] = p;
+		} else {
+			pieceNames.push(p.name);
+			p.payload = p.name;
+			pieces[p.name] = p;
+		}
 	}
 
 	let quickReplies = [];
@@ -1134,7 +1141,7 @@ function askProgram(convo) {
 			content_type: 'text',
 			title: n,
 			image_url: pieces[n].image,
-			payload: n
+			payload: pieces[n].payload
 		});
 	}
 
@@ -1243,10 +1250,12 @@ function askPiece(piece, convo) {
 		{
 			pattern: /(kompositör|artist)/i,
 			callback: function(response, convo) {
-				if(piece.composer)
+				if(piece.composer) {
 					sendComposerInfo(piece.composer, convo);
-				else
 					askPiece(piece, convo);
+				} else {
+					askPiece(piece, convo);
+				}
 				convo.next();
 			}
 		},
@@ -1254,7 +1263,7 @@ function askPiece(piece, convo) {
 			pattern: /(info(rmation)?|om)/i,
 			callback: function(response, convo) {
 				sendPieceInfo(piece, convo);
-				askProgram(convo);
+				askPiece(piece, convo);
 				convo.next();
 			}
 		},
@@ -1376,7 +1385,55 @@ function sendParticipantInfo(participant, convo) {
 }
 
 function sendComposerInfo(composer, convo) {
-	// TODO: Send composer info
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'list',
+				elements: [
+					{
+						title: composer.name,
+						image_url: composer.image,
+						default_action: {
+							type: 'web_url',
+							url: composer.website_url,
+							webview_height_ratio: 'tall'
+						}
+					},
+					{
+						title: 'Född',
+						subtitle: composer.dead
+					},
+					{
+						title: 'Död',
+						subtitle: composer.dead
+					}
+				],
+				buttons: [
+					{
+						title: 'Läs mer på Wikipedia',
+						type: 'web_url',
+						url: composer.website_url,
+						webview_height_ratio: 'tall'
+					}
+				]
+			}
+		}
+	}, (err, response) => {
+		if(err) {
+			console.error(err);
+		}
+	});
+
+	convo.say('Verk:\n'+composer.works);
+
+	for(let m of composer.more) {
+		convo.say(m, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	}
 }
 
 function sendPieceInfo(piece, convo) {
