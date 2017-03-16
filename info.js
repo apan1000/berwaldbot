@@ -58,12 +58,14 @@ module.exports = {
                 ]
             },
             {
-                name: 'Orkestern',
-                position: '',
+                name: 'Sveriges Radios Symfoniorkester',
+                position: 'orkester',
                 image: images_url+'orkester.jpg',
                 website_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3988&artikel=4507405',
                 about: [
-                    'Om'
+                    'Sveriges Radios Symfoniorkester är hela Sveriges orkester. Oavsett var i landet du bor kan du lyssna på orkesterns konserter i Sveriges Radio P2 i etern och på webben och flera av dem visas också i Sveriges Television.',
+                    'Inför Radiosymfonikernas gästspel vid the BBC Proms 2014 blev Daniel Harding tillfrågad om varför de sticker ut ur mängden. ”Orkestern har en otrolig ödmjukhet inför musiken och en underbar känsla för musikalisk fantasi och uppfinningsförmåga.”'+
+                        '\nI en annan intervju sade Tomo Keller, en av orkesterns konsertmästare, att ”det är en ren glädje att spela med orkestern” och framhävde två unika drag: drivkraften att ständigt bli bättre, samt en sällsynt känsla och lyhördhet.'
                 ]
             },
         ],

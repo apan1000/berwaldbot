@@ -1271,8 +1271,7 @@ function sendConcertInfo(convo) {
 		});
 
 		askConcertInfo('', convo);
-	}, 1000));
-
+	}, 300));
 }
 
 function sendParticipantInfo(participant, convo) {
@@ -1293,7 +1292,7 @@ function sendParticipantInfo(participant, convo) {
 						},
 						buttons: [
 							{
-								title: 'Mer info',
+								title: 'Hemsida',
 								type: 'web_url',
 								url: participant.website_url,
 								webview_height_ratio: 'tall'
