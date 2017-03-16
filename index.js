@@ -1470,9 +1470,13 @@ function askPieceInfo(piece, i, convo) {
 			text: piece.info[i],
 			quick_replies: quickReplies
 		}, function(response, convo) {
-			convo.say("Ok! Goodbye.");
-			askPieceInfo(piece, i+1, convo);
-			convo.next();
+			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
+				askPiece(piece, convo);
+				convo.next();
+			} else  {
+				askPieceInfo(piece, i+1, convo);
+				convo.next();
+			}
 		});
 
 		// convo.ask({
