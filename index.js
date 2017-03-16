@@ -987,12 +987,12 @@ function askConcertInfo(response, convo) {
 		},
 		{
 			content_type: 'text',
-			title: 'Medverkande',
+			title: '👫 Medverkande',
 			payload: 'medverkande'
 		},
 		{
 			content_type: 'text',
-			title: 'Program',
+			title: '📄 Program',
 			payload: 'program'
 		}
 	];
@@ -1236,7 +1236,7 @@ function askPiece(piece, convo) {
 					{
 						title: piece.name,
 						image_url: piece.image,
-						//subtitle: piece.composer.name
+						subtitle: piece.composer ? piece.composer.name : ''
 					}
 				]
 			}
@@ -1437,26 +1437,7 @@ function sendComposerInfo(composer, convo) {
 }
 
 function sendPieceInfo(piece, convo) {
-	convo.say({
-		attachment: {
-			type: 'template',
-			payload: {
-				template_type: 'generic',
-				elements: [
-					{
-						title: piece.name,
-						image_url: piece.image,
-						subtitle: piece.composer ? piece.composer.name : ''
-					}
-				]
-			}
-		}
-	}, (err, response) => {
-		if(err) {
-			console.error(err);
-		}
-	});
-
+	convo.next();
 	askPieceInfo(piece.info, 0, convo);
 	// for(let a of piece.info) {
 	// 	convo.say(a, (err, response) => {
