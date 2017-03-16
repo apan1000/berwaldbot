@@ -263,10 +263,9 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 
 			getUser(user.id).then(result => {
 				user = result;
+				bot.reply(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där😎');
 			}).catch(err => {
 				console.error('No user information:',err);
-			}).then(() => {
-				bot.reply(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där😎');
 			});
 		}
 	});
@@ -431,8 +430,8 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			participantNames.push(p.name.substr(0, 17)+'...');
 			participants[p.name.substr(0, 17)+'...'] = p;
 		} else {
-			participantNames.push(p.name.substr(0, 20));
-			participants[p.name.substr(0, 20)] = p;
+			participantNames.push(p.name);
+			participants[p.name] = p;
 		}
 	}
 
@@ -467,6 +466,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 							convo.next();
 						}).catch(e => {
 							console.error(e);
+							convo.stop();
 						});
 					}
 				},
@@ -502,7 +502,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					if(error)
-						bot.reply(message, 'Något gick fel🙈 Försök gärna igen!');
+						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
 				}
 				sendDefaultQuickReplies(message, false);
 			});
@@ -527,6 +527,7 @@ controller.hears(['artistinfo (.*)', '((artist|grupp)(en)?) (.*)'], 'message_rec
 					convo.next();
 				}).catch(e => {
 					console.error(e);
+					convo.stop();
 				});
 
 				convo.on('end', function(convo) {
@@ -566,6 +567,7 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 			bot.reply(message, 'Okej, jag ska kalla dig ' + newUser.nickname + ' från och med nu.');
 		}).catch(error => {
 			console.error(error);
+			bot.reply(message, 'Oops, jag tror jag glömde, försök igen!');
 		});
 	});
 });
@@ -1073,6 +1075,7 @@ function askParticipants(convo) {
 					convo.next();
 				}).catch(e => {
 					console.error(e);
+					convo.stop();
 				});
 			}
 		},
@@ -1238,6 +1241,7 @@ function askPiece(piece, convo) {
 					convo.next();
 				}).catch(e => {
 					console.error(e);
+					convo.stop();
 				});
 			}
 		},
@@ -1346,19 +1350,17 @@ function sendParticipantInfo(participant, convo) {
 			}
 		}, (err, response) => {
 			if(err) {
-				console.error(err);
 				reject(err);
 			}
 
 			for(let a of participant.about) {
 				convo.say(a, (err, response) => {
 					if(err) {
-						console.error(err);
 						reject(err);
 					}
-					resolve(response);
 				});
 			}
+			resolve(response);
 		});
 
 	});
@@ -1386,20 +1388,17 @@ function sendPieceInfo(piece, convo) {
 			}
 		}, (err, response) => {
 			if(err) {
-				console.error(err);
 				reject(err);
 			}
 
 			for(let a of piece.info) {
 				convo.say(a, (err, response) => {
 					if(err) {
-						console.error(err);
 						reject(err);
 					}
-
-					resolve(response);
 				});
 			}
+			resolve(response);
 		});
 	});
 }
