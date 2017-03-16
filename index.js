@@ -452,7 +452,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 	quickReplies.push(
 		{
 			content_type: 'text',
-			title: '🚫 Avsluta',
+			title: '🛑 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -471,7 +471,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 					}
 				},
 				{
-					pattern: /(stopp|nej|avsluta|ingen)/i,
+					pattern: /(stopp|stop|nej|avsluta|ingen)/i,
 					callback: function(response, convo) {
 						// stop the conversation. this will cause it to end with status == 'stopped'
 						convo.stop();
@@ -933,7 +933,7 @@ function askConcert(response, convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫Ingen',
+			title: '🛑Ingen',
 			payload: 'stopp'
 		}
 	];
@@ -952,7 +952,7 @@ function askConcert(response, convo) {
 			}
 		},
 		{
-			pattern: /(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|stop|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -999,7 +999,7 @@ function askConcertInfo(response, convo) {
 
 	quickReplies.push({
 		content_type: 'text',
-		title: '🚫 Avsluta',
+		title: '🛑 Avsluta',
 		payload: 'stopp'
 	});
 
@@ -1030,7 +1030,7 @@ function askConcertInfo(response, convo) {
 			}
 		},
 		{
-			pattern: /(stopp|nej|avsluta|inget)/i,
+			pattern: /(stopp|stop|nej|avsluta|inget)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -1079,7 +1079,7 @@ function askParticipants(convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫 Avsluta',
+			title: '🛑 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -1104,7 +1104,7 @@ function askParticipants(convo) {
 			}
 		},
 		{
-			pattern: /(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|stop|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -1153,7 +1153,7 @@ function askProgram(convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫 Avsluta',
+			title: '🛑 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -1177,7 +1177,7 @@ function askProgram(convo) {
 			}
 		},
 		{
-			pattern: /(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|stop|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -1221,7 +1221,7 @@ function askPiece(piece, convo) {
 		},
 		{
 			content_type: 'text',
-			title: '🚫 Avsluta',
+			title: '🛑 Avsluta',
 			payload: 'stopp'
 		}
 	);
@@ -1275,7 +1275,7 @@ function askPiece(piece, convo) {
 			}
 		},
 		{
-			pattern: /(stopp|nej|avsluta|ingen)/i,
+			pattern: /(stopp|stop|nej|avsluta|ingen)/i,
 			callback: function(response, convo) {
 				// stop the conversation. this will cause it to end with status == 'stopped'
 				convo.stop();
@@ -1425,7 +1425,7 @@ function sendComposerInfo(composer, convo) {
 		}
 	});
 
-	convo.say('Verk:\n'+composer.works);
+	convo.say('Verk:\n\n'+composer.works);
 
 	for(let m of composer.more) {
 		convo.say(m, (err, response) => {
