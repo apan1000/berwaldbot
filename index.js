@@ -339,13 +339,9 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					// this happens if the conversation ended prematurely for some reason
-					setTimeout(function() {
-						sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
-					}, 300);
+					sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
 				} else {
-					setTimeout(function() {
-						sendDefaultQuickReplies(convo.source_message);
-					}, 300);
+					sendDefaultQuickReplies(convo.source_message);
 				}
 			});
 		}
@@ -434,11 +430,14 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
-					if(error)
-						sendDefaultQuickReplies(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
-				} else {
-					sendDefaultQuickReplies(message);
+					if(error) {
+						setTimeout(function() {
+							bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
+						}, 300);
+					}
 				}
+				
+				sendDefaultQuickReplies(message);
 			});
 		}
 	});
@@ -471,9 +470,7 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 				convo.next();
 
 				convo.on('end', function(convo) {
-					setTimeout(function() {
-						sendDefaultQuickReplies(message);
-					}, 300);
+					sendDefaultQuickReplies(message);
 				});
 			}
 		});
@@ -490,9 +487,7 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 					bot.reply(message, 'Kunde inte hitta artistinfo. :(');
 				});
 			}).then(() => {
-				setTimeout(function() {
-					sendDefaultQuickReplies(message);
-				}, 300);
+				sendDefaultQuickReplies(message);
 			});
 		});
 	}
@@ -597,7 +592,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 									setTimeout(() => {
 										sendDefaultQuickReplies(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
 											'\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
-									}, 750);
+									}, 450);
 								}).catch(error => {
 									console.error(error);
 								});
@@ -690,56 +685,57 @@ function getArtistInfo(name) {
 }
 
 function sendDefaultQuickReplies(message, customText, hasImage) {
-	if(hasImage) {
-		bot.reply(message, {
-			attachment: {
-				type: 'image',
-				payload: {
-					url: images_url+'botwald-wide.png',
-					is_reusable: true
-				}
-			},
-			quick_replies: [
-				{
-					content_type: 'text',
-					title: 'Kommande konserter',
-					payload: 'konserter',
+	setTimeout(function() {
+		if(hasImage) {
+			bot.reply(message, {
+				attachment: {
+					type: 'image',
+					payload: {
+						url: images_url+'botwald-wide.png',
+						is_reusable: true
+					}
 				},
-				{
-					content_type: 'text',
-					title: 'Om Berwaldhallen',
-					payload: 'Berwaldhallen',
-				},
-				{
-					content_type: 'text',
-					title: 'Ge mig artistinfo',
-					payload: 'artistinfo',
-				}
-			]
-		});
-	} else {
-		bot.reply(message, {
-			text: customText ? customText : ':)',
-			quick_replies: [
-				{
-					content_type: 'text',
-					title: 'Kommande konserter',
-					payload: 'konserter',
-				},
-				{
-					content_type: 'text',
-					title: 'Om Berwaldhallen',
-					payload: 'Berwaldhallen',
-				},
-				{
-					content_type: 'text',
-					title: 'Ge mig artistinfo',
-					payload: 'artistinfo',
-				}
-			]
-		});
-	}
-	
+				quick_replies: [
+					{
+						content_type: 'text',
+						title: 'Kommande konserter',
+						payload: 'konserter',
+					},
+					{
+						content_type: 'text',
+						title: 'Om Berwaldhallen',
+						payload: 'Berwaldhallen',
+					},
+					{
+						content_type: 'text',
+						title: 'Ge mig artistinfo',
+						payload: 'artistinfo',
+					}
+				]
+			});
+		} else {
+			bot.reply(message, {
+				text: customText ? customText : ':)',
+				quick_replies: [
+					{
+						content_type: 'text',
+						title: 'Kommande konserter',
+						payload: 'konserter',
+					},
+					{
+						content_type: 'text',
+						title: 'Om Berwaldhallen',
+						payload: 'Berwaldhallen',
+					},
+					{
+						content_type: 'text',
+						title: 'Ge mig artistinfo',
+						payload: 'artistinfo',
+					}
+				]
+			});
+		}
+	}, 300);
 }
 
 function sendArtistInfo(message, artist) {
@@ -905,9 +901,7 @@ function askConcert(response, convo) {
 			// this happens if the conversation ended prematurely for some reason
 			sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
 		} else {
-			setTimeout(function() {
-				sendDefaultQuickReplies(convo.source_message);
-			}, 300);
+			sendDefaultQuickReplies(convo.source_message);
 		}
 	});
 }
@@ -1454,9 +1448,7 @@ function sendBerwaldhallenInfo(response, convo) {
 	askBerwaldhallenInfo(0, convo);
 
 	convo.on('end', function(convo) {
-		setTimeout(function() {
-			sendDefaultQuickReplies(convo.source_message);
-		}, 300);
+		sendDefaultQuickReplies(convo.source_message);
 	});
 }
 
