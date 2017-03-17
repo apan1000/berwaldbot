@@ -1311,15 +1311,10 @@ function sendConcertInfo(convo) {
 		}
 	});
 
-	convo.say(typing_message);
-	timeouts.push(setTimeout(() => {
-		convo.say(msg, (err, response) => {
-			if(err)
-				console.error(err);
-		});
-
-		askConcertInfo('', convo);
-	}, 300));
+	convo.say(msg, (err, response) => {
+		if(err)
+			console.error(err);
+	});
 }
 
 function sendParticipantInfo(participant, convo) {
