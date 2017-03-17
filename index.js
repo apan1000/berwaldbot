@@ -326,7 +326,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
 
 	setTimeout(function() {
-		sendDefaultQuickReplies(message, false);
+		sendDefaultQuickReplies(message);
 	}, 300);
 });
 
@@ -439,7 +439,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
 				}
 				setTimeout(function() {
-					sendDefaultQuickReplies(message, false);
+					sendDefaultQuickReplies(message);
 				}, 300);
 			});
 		}
@@ -474,7 +474,7 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 
 				convo.on('end', function(convo) {
 					setTimeout(function() {
-						sendDefaultQuickReplies(message, false);
+						sendDefaultQuickReplies(message);
 					}, 300);
 				});
 			}
@@ -493,7 +493,7 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 				});
 			}).then(() => {
 				setTimeout(function() {
-					sendDefaultQuickReplies(message, false);
+					sendDefaultQuickReplies(message);
 				}, 300);
 			});
 		});
@@ -518,7 +518,7 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 			bot.reply(message, 'Oops, jag tror jag glömde, försök igen!');
 		}).then(() => {
 			setTimeout(function() {
-				sendDefaultQuickReplies(message, false);
+				sendDefaultQuickReplies(message);
 			}, 300);
 		});
 	});
@@ -528,6 +528,9 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
 			bot.reply(message, 'Du heter ' + user.nickname + '😉');
+			setTimeout(function() {
+				sendDefaultQuickReplies(message);
+			}, 300);
 		} else {
 			if(!user) {
 				user = {
@@ -603,13 +606,12 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 									setTimeout(() => {
 										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
 											'\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
+										setTimeout(function() {
+											sendDefaultQuickReplies(message);
+										}, 300);
 									}, 750);
 								}).catch(error => {
 									console.error(error);
-								}).then(() => {
-									setTimeout(function() {
-										sendDefaultQuickReplies(message, false);
-									}, 300);	
 								});
 							});
 
@@ -617,7 +619,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 							// this happens if the conversation ended prematurely for some reason
 							bot.reply(message, 'Okej! Strunt samma.😌\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
 							setTimeout(function() {
-								sendDefaultQuickReplies(message, false);
+								sendDefaultQuickReplies(message);
 							}, 300);
 						}
 					});
@@ -632,18 +634,15 @@ controller.on('message_received', function(bot, message) {
 	
 	if(message.sticker_id) {
 		if(message.sticker_id === 369239263222822)
-			bot.reply(message, '👍');
+			sendDefaultQuickReplies(message, '👍');
 		else if(message.sticker_id === 369239343222814)
-			bot.reply(message, '👍👍');
+			sendDefaultQuickReplies(message, '👍👍');
 		else if(message.sticker_id === 369239383222810)
-			bot.reply(message, '😄👍👍👍');
+			sendDefaultQuickReplies(message, '😄👍👍👍');
 		else
-			bot.reply(message, "😃😛");
+			sendDefaultQuickReplies(message, '😃😛');
 	} else {
-		bot.reply(message, 'ℹ️ Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
-		setTimeout(function() {
-			sendDefaultQuickReplies(message, false);
-		}, 300);
+		sendDefaultQuickReplies(message, 'ℹ️ Testa: \'Kommande konserter\', \'artistinfo\' eller \'Kalla mig Kalle\'');
 	}
 	
 	return false;
@@ -705,7 +704,7 @@ function getArtistInfo(name) {
 	});
 }
 
-function sendDefaultQuickReplies(message, hasImage) {
+function sendDefaultQuickReplies(message, customText, hasImage) {
 	if(hasImage) {
 		bot.reply(message, {
 			attachment: {
@@ -735,7 +734,7 @@ function sendDefaultQuickReplies(message, hasImage) {
 		});
 	} else {
 		bot.reply(message, {
-			text: ':)',
+			text: customText ? customText : ':)',
 			quick_replies: [
 				{
 					content_type: 'text',
@@ -1470,7 +1469,7 @@ function sendBerwaldhallenInfo(response, convo) {
 
 	convo.on('end', function(convo) {
 		setTimeout(function() {
-			sendDefaultQuickReplies(message, false);
+			sendDefaultQuickReplies(message);
 		}, 300);
 	});
 }
