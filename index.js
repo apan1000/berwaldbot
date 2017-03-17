@@ -323,11 +323,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	// 			console.error(err);
 	// 	});
 	// });
-	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
-
-	setTimeout(function() {
-		sendDefaultQuickReplies(message);
-	}, 300);
+	sendDefaultQuickReplies(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
 });
 
 controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
@@ -343,11 +339,14 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					// this happens if the conversation ended prematurely for some reason
-					bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
+					setTimeout(function() {
+						sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
+					}, 300);
+				} else {
+					setTimeout(function() {
+						sendDefaultQuickReplies(convo.source_message);
+					}, 300);
 				}
-				setTimeout(function() {
-					sendDefaultQuickReplies(convo.source_message, false);
-				}, 300);
 			});
 		}
 	});
@@ -436,11 +435,10 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					if(error)
-						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
-				}
-				setTimeout(function() {
+						sendDefaultQuickReplies(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
+				} else {
 					sendDefaultQuickReplies(message);
-				}, 300);
+				}
 			});
 		}
 	});
@@ -512,14 +510,10 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 
 		// Insert into database
 		setNickname(user, name).then(newUser => {
-			bot.reply(message, 'Okej, jag ska kalla dig ' + newUser.nickname + ' från och med nu.');
+			sendDefaultQuickReplies(message, 'Okej, jag ska kalla dig ' + newUser.nickname + ' från och med nu.');
 		}).catch(error => {
 			console.error(error);
-			bot.reply(message, 'Oops, jag tror jag glömde, försök igen!');
-		}).then(() => {
-			setTimeout(function() {
-				sendDefaultQuickReplies(message);
-			}, 300);
+			sendDefaultQuickReplies(message, 'Oops, jag tror jag glömde, försök igen!');
 		});
 	});
 });
@@ -527,10 +521,7 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
-			bot.reply(message, 'Du heter ' + user.nickname + '😉');
-			setTimeout(function() {
-				sendDefaultQuickReplies(message);
-			}, 300);
+			sendDefaultQuickReplies(message, 'Du heter ' + user.nickname + '😉');
 		} else {
 			if(!user) {
 				user = {
@@ -604,11 +595,8 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 								setNickname(user, convo.extractResponse('nickname')).then(newUser => {
 									setTimeout(() => {
-										bot.reply(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
+										sendDefaultQuickReplies(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
 											'\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
-										setTimeout(function() {
-											sendDefaultQuickReplies(message);
-										}, 300);
 									}, 750);
 								}).catch(error => {
 									console.error(error);
@@ -617,10 +605,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 						} else {
 							// this happens if the conversation ended prematurely for some reason
-							bot.reply(message, 'Okej! Strunt samma.😌\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
-							setTimeout(function() {
-								sendDefaultQuickReplies(message);
-							}, 300);
+							sendDefaultQuickReplies(message, 'Okej! Strunt samma.😌\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
 						}
 					});
 				}
@@ -918,11 +903,12 @@ function askConcert(response, convo) {
 	convo.on('end', function(convo) {
 		if (convo.status !== 'completed') {
 			// this happens if the conversation ended prematurely for some reason
-			bot.reply(convo.source_message, 'Okej! Vi pratar om något annat :)');
+			sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
+		} else {
+			setTimeout(function() {
+				sendDefaultQuickReplies(convo.source_message);
+			}, 300);
 		}
-		setTimeout(function() {
-			sendDefaultQuickReplies(convo.source_message, false);
-		}, 300);
 	});
 }
 
