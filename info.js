@@ -166,11 +166,11 @@ module.exports = {
                 image: images_url+'valborg.jpg',
                 info: [
                     'Efter fyra av säsongens onsdagskonserter blir det kammarmusikaliska bonuskonserter med musik av svenska kvinnliga tonsättare från 1800-talets andra och 1900-talets första hälft.'+
-                    '\nKonserterna är ett samarbete mellan Berwaldhallen och Sveriges Radio P2 och introduceras av musikforskaren och producenten Christina Tobeck.',
+                    '\n\nKonserterna är ett samarbete mellan Berwaldhallen och Sveriges Radio P2 och introduceras av musikforskaren och producenten Christina Tobeck.',
 
                     'Berwaldbonusen sker i direkt anslutning till konsertenoch du som har besökt kvällens huvudkonsert kan kostnadsfritt stanna kvar på bonuskonserten.'+
-                    '\nAbonnenter får som förmån alla Berwaldbonuskonserterna kostnadsfritt. Ta med ditt abonnemangskort!'+
-                    '\nDu får gärna försöka hitta en plats närmare scenen eftersom kammarmusiken är i det mindre formatet.',
+                    '\n\nAbonnenter får som förmån alla Berwaldbonuskonserterna kostnadsfritt. Ta med ditt abonnemangskort!'+
+                    '\n\nDu får gärna försöka hitta en plats närmare scenen eftersom kammarmusiken är i det mindre formatet.',
 
                     'Per Sporrong: violin'+
                     '\nJohan Ullén: piano'+

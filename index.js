@@ -397,7 +397,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
 });
 
-controller.hears(['(.*)konsert(er(na)?)?'], 'message_received', function(bot, message) {
+controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
 	bot.startConversation(message, askConcert);
 });
 
