@@ -83,8 +83,8 @@ module.exports = {
                     'Bernhard Crusell föddes i Nystad i Finland 1775, son till en fattig bokbindare. Han utbildade sig till klarinettist och trots en klen hälsa gick han in vid militärmusiken på Sveaborg.',
                     
                     'Som 16-åring följde han med sin välgörare major Wallenstjerna till Stockholm där han anställdes av Abbé Vogler vid Hovkapellet och var dess förste klarinettist till 1834.'+
-                    '\nEfter klarinettstudier i Berlin studerade han komposition i Paris och mötte tonsättare som Cherubini och Méhul.'+
-                    '\nCrusell blev som tonsättare känd redan under sin livstid och fick sina verk utgivna på internationella förlag, men som klarinettist framträdde han sparsamt utanför Sverige.',
+                    '\n\nEfter klarinettstudier i Berlin studerade han komposition i Paris och mötte tonsättare som Cherubini och Méhul.'+
+                    '\n\nCrusell blev som tonsättare känd redan under sin livstid och fick sina verk utgivna på internationella förlag, men som klarinettist framträdde han sparsamt utanför Sverige.',
                     
                     'De många klarinettkompositionerna tillkom huvudsakligen åren 1803 till 1812. Senare ägnade sig Crusell åt att komponera romanser, översätta operalibretton och odla sitt litterära intresse som förde honom till Götiska förbundet.',
 
@@ -92,11 +92,13 @@ module.exports = {
                     '\nHan komponerade även en opera 1824, Den lilla slavinnan, med ämne ur Tusen och en natt, som uppfördes 34 gånger på Kungliga teatern fram till 1838.',
 
                     'Crusell besökte aldrig Finland efter Tsarrysslands annektering 1809. I den finska självbilden uppfattas han ändå som finsk eftersom han var den första betydande tonsättaren som fötts i landet.'+
-                    '\nDirigenten Robert Kajanus betecknade honom som ”den finska musikens fader”. Kanske i en iver att lansera ett ”inhemskt” alternativ till den tyskfödde Fredrik Pacius, som ju var den som lade grunden för musiklivet i Helsingfors? frågar sig Crusells biograf Fabian Dahlström.',
+                    '\n\nDirigenten Robert Kajanus betecknade honom som ”den finska musikens fader”. Kanske i en iver att lansera ett ”inhemskt” alternativ till den tyskfödde Fredrik Pacius, som ju var den som lade grunden för musiklivet i Helsingfors? frågar sig Crusells biograf Fabian Dahlström.',
 
                     'Även om Crusell mest blev känd för sina klarinettkompositioner, som i elegans kan mäta sig med Carl Maria von Webers (som han för övrigt mötte), komponerade han också för andra instrument.',
 
-                    'Concertinon i B-dur, skriven för Crusells svärson Franz Preumayer, den yngste av de tre fagottspelande bröder i Hovkapellet, uruppfördes i Ladugårdslandskyrkan i Stockholm den 24 september 1829. Verket, som var tänkt att ingå i en konsertturné, inleds med ett storstilat orkestertutti. Efter en lång kadens och ett följande allegro följer ett tema med variation på en melodi av den franske tonsättaren Boïeldieu. Finalen i verket, som går i en följd utan pauser, är en polonäs i tidens stil.'+
+                    'Concertinon i B-dur, skriven för Crusells svärson Franz Preumayer, den yngste av de tre fagottspelande bröder i Hovkapellet, uruppfördes i Ladugårdslandskyrkan i Stockholm den 24 september 1829.'+
+                    '\nVerket, som var tänkt att ingå i en konsertturné, inleds med ett storstilat orkestertutti. Efter en lång kadens och ett följande allegro följer ett tema med variation på en melodi av den franske tonsättaren Boïeldieu.'+
+                    '\nFinalen i verket, som går i en följd utan pauser, är en polonäs i tidens stil.'+
                     '\n\n- Henry Larsson'
                 ],
                 composer: {
@@ -126,11 +128,11 @@ module.exports = {
                     'Liksom fallet är med en rad andra tonsättares symfonier, har under årens lopp vissa problem uppstått med numreringen hos Antonin Dvorák och det är först under senare är, närmare bestämt efter andra världskriget, som man har kommit fram till en viss enhetlighet.',
                     
                     'Anledningen till den förbistring som rädde tidigare var att Dvorák hade en schism med sin berlinske förläggare Simrock.'+
-                    '\nDenne, som hade gjort en smärre förmögenhet på Dvoráks slaviska danser, som man kunde höra misshandlas på fyrhändigt piano i minsta kyffe, klagade över att den tjeckoslova­kiske mästarens större verk inte alls gav samma inkomster, och när Antonin Dvorák lämnade in sin G­-dursymfoni visade sig Simrock föga intresserad.'+
-                    '\nEn irriterad brevväxling kom till stånd, och slutet på det hela blev att Dvorák lät trycka symfonin hos den engelska firman Novello.',
+                    '\n\nDenne, som hade gjort en smärre förmögenhet på Dvoráks slaviska danser, som man kunde höra misshandlas på fyrhändigt piano i minsta kyffe, klagade över att den tjeckoslova­kiske mästarens större verk inte alls gav samma inkomster, och när Antonin Dvorák lämnade in sin G­-dursymfoni visade sig Simrock föga intresserad.'+
+                    '\n\nEn irriterad brevväxling kom till stånd, och slutet på det hela blev att Dvorák lät trycka symfonin hos den engelska firman Novello.',
 
                     'Men detta innebar nya svårigheter: Simrock, som förstås insåg att han nu riskerade att en "fet fisk" gled ur hans händer, åberopade ett kontrakt som skrivits ett par år tidigare, och han började göra anspråk på uppföranderätten i Tyskland (symfonin hade vid det laget redan spelats i Tjeckoslovakien).'+
-                    '\nAntonin Dvorák var givetvis förgrymmad över Simrocks beteende och lät publicera ytterligare ett större verk, Requiem, hos Novello, men efter en längre tids förnyad korrespon­dens lyckades Simrock få honom att återvända till fadershuset.'+
+                    '\n\nAntonin Dvorák var givetvis förgrymmad över Simrocks beteende och lät publicera ytterligare ett större verk, Requiem, hos Novello, men efter en längre tids förnyad korrespon­dens lyckades Simrock få honom att återvända till fadershuset.'+
                     '\nDärefter publicerades alla Antonin Dvorák verk hos Berlin-förlaget.',
 
                     'Hela denna manipulation, plus bl a det faktum att Simrock väntade med att trycka ett par av Dvorák symfonier till efter hans död, gjorde dock att den dåtida numreringen inte alls stämde.'+

@@ -1426,29 +1426,51 @@ function sendComposerInfo(composer, convo) {
 
 	convo.say('Verk:\n\n'+composer.works);
 
-	for(let m of composer.more) {
-		convo.say(m, (err, response) => {
-			if(err) {
-				console.error(err);
-			}
-		});
-	}
-}
-
-function sendPieceInfo(piece, convo) {
-	askPieceInfo(piece, 0, convo);
-	// convo.ask("So where do you want it delivered?", function(response, convo) {
-	// 	convo.say("Ok! Goodbye.");
-	// 	askPiece(piece, convo);
-	// 	convo.next();
-	// });
-	// for(let a of piece.info) {
-	// 	convo.say(a, (err, response) => {
+	askComposerMore(composer, 0, convo);
+	// for(let m of composer.more) {
+	// 	convo.say(m, (err, response) => {
 	// 		if(err) {
 	// 			console.error(err);
 	// 		}
 	// 	});
 	// }
+}
+
+function askComposerMore(composer, i, convo) {
+	if(i < composer.more.length-1) {
+		let quickReplies = [
+			{
+				content_type: 'text',
+				title: '➡️️ Nästa',
+				payload: 'nästa'
+			},
+			{
+				content_type: 'text',
+				title: '🛑 Stopp',
+				payload: 'stopp'
+			}
+		];
+
+		convo.ask({
+			text: composer.more[i],
+			quick_replies: quickReplies
+		}, function(response, convo) {
+			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
+				// askComposer(composer, convo);
+				convo.next();
+			} else  {
+				askComposerMore(composer, i+1, convo);
+				convo.next();
+			}
+		});
+	} else {
+		convo.say(composer.info[i]);
+		// askComposer(composer, convo);
+	}
+}
+
+function sendPieceInfo(piece, convo) {
+	askPieceInfo(piece, 0, convo);
 }
 
 function askPieceInfo(piece, i, convo) {
@@ -1478,26 +1500,6 @@ function askPieceInfo(piece, i, convo) {
 				convo.next();
 			}
 		});
-
-		// convo.ask({
-		// 	text: piece.info[i],
-		// 	quick_replies: quickReplies
-		// }, [
-		// 	{
-		// 		pattern: /(stopp|stop|nej|avsluta)/i,
-		// 		callback: function(response, convo) {
-		// 			askPiece(piece, convo);
-		// 			convo.next();
-		// 		}
-		// 	},
-		// 	{
-		// 		default: true,
-		// 		callback: function(response, convo) {
-		// 			askPieceInfo(piece.info, i+1, convo);
-		// 			convo.next();
-		// 		}
-		// 	}
-		// ]);
 	} else {
 		convo.say(piece.info[i]);
 		askPiece(piece, convo);
