@@ -1415,6 +1415,37 @@ function askPieceInfo(piece, i, convo) {
 function sendBerwaldhallenInfo(response, convo) {
 	const bwh = information.berwaldhallen;
 
+	convo.say({
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: 'Berwaldhallen',
+						image_url: bwh.image,
+						default_action: {
+							type: 'web_url',
+							url: bwh.website_url,
+							webview_height_ratio: 'full'
+						}
+					}
+				],
+				buttons: [
+					{
+						title: 'Hemsida',
+						type: 'web_url',
+						url: bwh.website_url,
+						webview_height_ratio: 'full'
+					}
+				]
+			}
+		}
+	}, (err, response) => {
+		if(err) {
+			console.error(err);
+		}
+	});
 	convo.say(bwh.shortDesc);
 
 	askBerwaldhallenInfo(0, convo);
