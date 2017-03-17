@@ -1428,13 +1428,6 @@ function sendComposerInfo(piece, convo) {
 	convo.say('Verk:\n\n'+composer.works);
 
 	askComposerMore(piece, 0, convo);
-	// for(let m of composer.more) {
-	// 	convo.say(m, (err, response) => {
-	// 		if(err) {
-	// 			console.error(err);
-	// 		}
-	// 	});
-	// }
 }
 
 function askComposerMore(piece, i, convo) {
@@ -1452,21 +1445,15 @@ function askComposerMore(piece, i, convo) {
 			}
 		];
 
-		// convo.ask("1234", function(response, convo) {
-		// 	if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
-		// 		askPiece(piece, convo);
-		// 		convo.next();
-		// 	} else  {
-		// 		askComposerMore(piece, i+1, convo);
-		// 		convo.next();
-		// 	}
-		// });
-		convo.ask("So where do you want it delivered?", function(response, convo) {
-			convo.say("Ok! Goodbye.");
-			askComposerMore(piece, i+1, convo);
-			convo.next();
+		convo.ask(piece.composer.more[i], function(response, convo) {
+			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
+				askPiece(piece, convo);
+				convo.next();
+			} else  {
+				askComposerMore(piece, i+1, convo);
+				convo.next();
+			}
 		});
-
 	} else {
 		convo.say(piece.composer.more[i]);
 		askPiece(piece, convo);
