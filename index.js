@@ -1428,15 +1428,15 @@ function sendBerwaldhallenInfo(response, convo) {
 							type: 'web_url',
 							url: bwh.website_url,
 							webview_height_ratio: 'full'
-						}
-					}
-				],
-				buttons: [
-					{
-						title: 'Hemsida',
-						type: 'web_url',
-						url: bwh.website_url,
-						webview_height_ratio: 'full'
+						},
+						buttons: [
+							{
+								title: 'Hemsida',
+								type: 'web_url',
+								url: bwh.website_url,
+								webview_height_ratio: 'full'
+							}
+						]
 					}
 				]
 			}
