@@ -267,9 +267,7 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 });
 
 controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
-	bot.startConversation(message, sendBerwaldhallenInfo).on('end', function(convo) {
-		sendDefaultQuickReplies(convo.source_message, false);
-	});
+	bot.startConversation(message, sendBerwaldhallenInfo);
 });
 
 // controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
@@ -1420,6 +1418,10 @@ function sendBerwaldhallenInfo(response, convo) {
 	convo.say(bwh.shortDesc);
 
 	askBerwaldhallenInfo(0, convo);
+
+	convo.on('end', function(convo) {
+		sendDefaultQuickReplies(convo.source_message, false);
+	});
 }
 
 function askBerwaldhallenInfo(i, convo) {
