@@ -1251,8 +1251,8 @@ function askPiece(piece, convo) {
 			pattern: /(kompositör|artist)/i,
 			callback: function(response, convo) {
 				if(piece.composer) {
-					sendComposerInfo(piece.composer, convo);
-					askPiece(piece, convo);
+					sendComposerInfo(piece, convo);
+					// askPiece(piece, convo);
 				} else {
 					askPiece(piece, convo);
 				}
@@ -1383,7 +1383,9 @@ function sendParticipantInfo(participant, convo) {
 	}
 }
 
-function sendComposerInfo(composer, convo) {
+function sendComposerInfo(piece, convo) {
+	let composer = piece.composer;
+
 	convo.say({
 		attachment: {
 			type: 'template',
@@ -1426,7 +1428,7 @@ function sendComposerInfo(composer, convo) {
 
 	convo.say('Verk:\n\n'+composer.works);
 
-	askComposerMore(composer, 0, convo);
+	askComposerMore(piece, 0, convo);
 	// for(let m of composer.more) {
 	// 	convo.say(m, (err, response) => {
 	// 		if(err) {
@@ -1436,8 +1438,8 @@ function sendComposerInfo(composer, convo) {
 	// }
 }
 
-function askComposerMore(composer, i, convo) {
-	if(i < composer.more.length-1) {
+function askComposerMore(piece, i, convo) {
+	if(i < piece.composer.more.length-1) {
 		let quickReplies = [
 			{
 				content_type: 'text',
@@ -1452,20 +1454,20 @@ function askComposerMore(composer, i, convo) {
 		];
 
 		convo.ask({
-			text: composer.more[i],
+			text: piece.composer.more[i],
 			quick_replies: quickReplies
 		}, function(response, convo) {
 			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
-				// askComposer(composer, convo);
+				askPiece(piece, convo);
 				convo.next();
 			} else  {
-				askComposerMore(composer, i+1, convo);
+				askComposerMore(piece, i+1, convo);
 				convo.next();
 			}
 		});
 	} else {
 		convo.say(composer.info[i]);
-		// askComposer(composer, convo);
+		askPiece(piece, convo);
 	}
 }
 
