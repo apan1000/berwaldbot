@@ -222,7 +222,7 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 
 controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
 	bot.reply(message, {
-		text: 'ℹ️ Du kan välja ett av alternativen här under eller skriva t.ex. "artist Sebastian Stevensson", "hej" eller "om berwaldhallen".',
+		text: 'ℹ️ Du kan välja ett av alternativen här under eller skriva t ex\n"artist Sebastian Stevensson",\n"hej" eller\n"om berwaldhallen".',
 		quick_replies: [
 			{
 				"content_type": "text",
@@ -267,73 +267,9 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 });
 
 controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received', function(bot, message) {
-	const bwh = information.berwaldhallen;
-
-	console.log('Sending short text...');
-	bot.reply(message, bwh.shortDesc);
-
-	// Typing
-	timeouts.push(setTimeout(() => {
-		bot.reply(message, typing_message);
-
-		// Long description 0
-		timeouts.push(setTimeout(() => {
-			console.log('Sending long text...');
-			bot.reply(message, bwh.longDesc[0]);
-
-			// Typing
-			timeouts.push(setTimeout(() => {
-				bot.reply(message, typing_message);
-
-				// Long description 1
-				timeouts.push(setTimeout(() => {
-					console.log('Sending long text...');
-					bot.reply(message, bwh.longDesc[1]);
-
-					// Typing
-					timeouts.push(setTimeout(() => {
-						bot.reply(message, typing_message);
-
-						// Template
-						timeouts.push(setTimeout(() => {
-							console.log('Sending template...');
-							bot.reply(message, {
-								attachment: {
-									type: 'template',
-									payload: {
-										template_type: 'generic',
-										elements: [
-											{
-												title: 'Berwaldhallens historia',
-												image_url: 'https://static-cdn.sr.se/sida/images/3991/2624678_450_295.jpg',
-												subtitle: 'Läs om Berwaldhallens historia',
-												default_action: {
-													type: 'web_url',
-													url: bwh.history_url,
-													webview_height_ratio: 'tall'
-												},
-												buttons: [
-													{
-														title: 'Historia',
-														type: 'web_url',
-														url: bwh.history_url,
-														webview_height_ratio: 'tall'
-													}
-												]
-											}
-										]
-									}
-								}
-							}, (err, response) => {
-								if(err)
-									console.error(err);
-							});
-						}, 1000)); // Template
-					}, 500)); // Start typing
-				}, 7000)); // Long description 1
-			}, 5000)); // Start typing
-		}, 6000)); // Long description 0
-	}, 2500)); // Start typing
+	bot.startConversation(message, sendBerwaldhallenInfo).on('end', function(convo) {
+		sendDefaultQuickReplies(convo.source_message, false);
+	});
 });
 
 // controller.hears(['^(visa)( alla)? användare', '^användare'], 'message_received', function(bot, message) {
@@ -1475,5 +1411,79 @@ function askPieceInfo(piece, i, convo) {
 	} else {
 		convo.say(piece.info[i]);
 		askPiece(piece, convo);
+	}
+}
+
+function sendBerwaldhallenInfo(response, convo) {
+	const bwh = information.berwaldhallen;
+
+	convo.say(bwh.shortDesc);
+
+	askBerwaldhallenInfo(0, convo);
+}
+
+function askBerwaldhallenInfo(i, convo) {
+	const bwh = information.berwaldhallen;
+
+	if(i < bwh.longDesc.length-1) {
+		let quickReplies = [
+			{
+				content_type: 'text',
+				title: '➡️️ Nästa',
+				payload: 'nästa'
+			},
+			{
+				content_type: 'text',
+				title: '🛑 Stopp',
+				payload: 'stopp'
+			}
+		];
+
+		convo.ask({
+			text: bwh.longDesc[i],
+			quick_replies: quickReplies
+		}, function(response, convo) {
+			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
+				convo.next();
+			} else  {
+				askBerwaldhallenInfo(i+1, convo);
+				convo.next();
+			}
+		});
+	} else {
+		convo.say(bwh.longDesc[i]);
+
+		console.log('Sending history template...');
+		convo.say({
+			attachment: {
+				type: 'template',
+				payload: {
+					template_type: 'generic',
+					elements: [
+						{
+							title: 'Berwaldhallens historia',
+							image_url: 'https://static-cdn.sr.se/sida/images/3991/2624678_450_295.jpg',
+							subtitle: 'Läs om Berwaldhallens historia',
+							default_action: {
+								type: 'web_url',
+								url: bwh.history_url,
+								webview_height_ratio: 'tall'
+							},
+							buttons: [
+								{
+									title: 'Historia',
+									type: 'web_url',
+									url: bwh.history_url,
+									webview_height_ratio: 'tall'
+								}
+							]
+						}
+					]
+				}
+			}
+		}, (err, response) => {
+			if(err)
+				console.error(err);
+		});
 	}
 }

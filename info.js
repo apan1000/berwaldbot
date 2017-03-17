@@ -3,12 +3,17 @@ const images_url = 'http://www.csc.kth.se/~fberglun/exjobb/images/';
 module.exports = {
     berwaldhallen: {
         shortDesc: 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser.',
-        longDesc: ['Berwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält. Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands.\nÅrligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här. Samtliga konserter sänds i Sveriges Radio, de flesta i P2, samt runtom och utanför Europa via EBU, European Broadcasting Union.',
+        longDesc: [
+            'Berwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält.'+
+            'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands.'+
+            '\n\nÅrligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här.'+
+            'Samtliga konserter sänds i Sveriges Radio, de flesta i P2, samt runtom och utanför Europa via EBU, European Broadcasting Union.',
 
-                'Tack vare Radiokören och Radiosymfonikerna kan Sveriges Radio erbjuda sina lyssnare ett kvalitativt kulturutbud.\nGenom direktsändning kan alla få tillgång till konstmusik av mycket hög kvalitet och musikupplevelser som annars skulle vara svåra att nå.'+
-                '\n\nBerwaldhallen är även en efterfrågad konsertscen för externa arrangörer och utöver våra egna konserter och evenemang, äger årligen ett stort antal konserter, bolagsstämmor och andra evenemang, rum i Berwaldhallen.'
-            ],
-        image: images_url+'',
+            'Tack vare Radiokören och Radiosymfonikerna kan Sveriges Radio erbjuda sina lyssnare ett kvalitativt kulturutbud.'+
+            '\nGenom direktsändning kan alla få tillgång till konstmusik av mycket hög kvalitet och musikupplevelser som annars skulle vara svåra att nå.'+
+            '\n\nBerwaldhallen är även en efterfrågad konsertscen för externa arrangörer och utöver våra egna konserter och evenemang, äger årligen ett stort antal konserter, bolagsstämmor och andra evenemang, rum i Berwaldhallen.'
+        ],
+        image: images_url+'berwaldhallen.jpg',
         website_url: 'https://sverigesradio.se',
         history_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848173',
     },
@@ -42,11 +47,12 @@ module.exports = {
                 image: images_url+'karina.jpg',
                 website_url: 'http://karinacanellakis.com/',
                 about: [
-                    'New York-födda Karina Canellakis har vunnit internationell berömmelse för såväl sina tekniska som musikaliska kunskaper. Vinnaren av 2016 års Sir Georg Solti Conducting Award har fått lysande kritik sedan 2014 då hon i sista minuten ryckte in som ersättare för Jaap van Zweden och dirigerade Dallas symfoniorkester i Sjostakovitjs åttonde symfoni.'+
-                    '\nHon gjorde europeisk debut i juni förra året med Chamber Orchestra of Europe på Styriarte Festival i Graz och är åter inbjuden till Graz i juni i år för att dirigera Concentus Musicus Wien i fyra symfonier av Beethoven.',
+                    'New York-födda Karina Canellakis har vunnit internationell berömmelse för såväl sina tekniska som musikaliska kunskaper.'+
+                    '\nVinnaren av 2016 års Sir Georg Solti Conducting Award har fått lysande kritik sedan 2014 då hon i sista minuten ryckte in som ersättare för Jaap van Zweden och dirigerade Dallas symfoniorkester i Sjostakovitjs åttonde symfoni.'+
+                    '\n\nHon gjorde europeisk debut i juni förra året med Chamber Orchestra of Europe på Styriarte Festival i Graz och är åter inbjuden till Graz i juni i år för att dirigera Concentus Musicus Wien i fyra symfonier av Beethoven.',
                     
                     'Hon har varit biträdande dirigent för Dallas symfoniorkester två säsonger och då genomfört över 60 konserter.'+
-                    '\nSäsongen 2016/17 debuterar Karina Kanellakis, utöver Sveriges Radios Symfoniorkester, bland annat med City of Birmingham Symphony Orchestra, Royal Scottish National Orchestra, Orchestre National de Lyon samt Trondheim, Kristiansand och Malmö symfoniorkestrar.'
+                    '\n\nSäsongen 2016/17 debuterar Karina Kanellakis, utöver Sveriges Radios Symfoniorkester, bland annat med City of Birmingham Symphony Orchestra, Royal Scottish National Orchestra, Orchestre National de Lyon samt Trondheim, Kristiansand och Malmö symfoniorkestrar.'
                 ]
             },
             {
@@ -56,9 +62,11 @@ module.exports = {
                 website_url: 'http://www.csc.kth.se/~fberglun/exjobb/sebastian-stevensson/',
                 about: [
                     'Sebastian Stevensson är 2016 års vinnare av Solistpriset som han mottog i Berwaldhallen i januari samma år.'+
-                    '\nSebastian har studerat vid Kungliga Musikhögskolan i Stockholm och arbetat på Norska Operan och som solofagottist i Danmarks Radios Symfoniorkester där han sedan 2012 har en fast plats. Under 2015 arbetade Sebastian som solofagottist i Münchner Philharmoniker under Valery Gergiev.',
+                    '\n\nSebastian har studerat vid Kungliga Musikhögskolan i Stockholm och arbetat på Norska Operan och som solofagottist i Danmarks Radios Symfoniorkester där han sedan 2012 har en fast plats.'+
+                    '\nUnder 2015 arbetade Sebastian som solofagottist i Münchner Philharmoniker under Valery Gergiev.',
                     
-                    'Han har under kortare perioder arbetat som solofagottist med orkestrar som London Philharmonic Orchestra, City of Birmingham Symphony Orchestra, Kungliga Filharmonikerna, Philharmonia Orchestra London och Rotterdam Philharmonic. Sebastian har även lett mästarkurser för musikhögskolestudenter i Stockholm och Mannheim.'+
+                    'Han har under kortare perioder arbetat som solofagottist med orkestrar som London Philharmonic Orchestra, City of Birmingham Symphony Orchestra, Kungliga Filharmonikerna, Philharmonia Orchestra London och Rotterdam Philharmonic.'+
+                    '\nSebastian har även lett mästarkurser för musikhögskolestudenter i Stockholm och Mannheim.'+
                     '\nSebastian Stevensson är P2:s artist 2016/2017.'
                 ]
             },
@@ -70,8 +78,9 @@ module.exports = {
                 about: [
                     'Sveriges Radios Symfoniorkester är hela Sveriges orkester. Oavsett var i landet du bor kan du lyssna på orkesterns konserter i Sveriges Radio P2 i etern och på webben och flera av dem visas också i Sveriges Television.',
 
-                    'Inför Radiosymfonikernas gästspel vid the BBC Proms 2014 blev Daniel Harding tillfrågad om varför de sticker ut ur mängden. ”Orkestern har en otrolig ödmjukhet inför musiken och en underbar känsla för musikalisk fantasi och uppfinningsförmåga.”'+
-                    '\nI en annan intervju sade Tomo Keller, en av orkesterns konsertmästare, att ”det är en ren glädje att spela med orkestern” och framhävde två unika drag: drivkraften att ständigt bli bättre, samt en sällsynt känsla och lyhördhet.'
+                    'Inför Radiosymfonikernas gästspel vid the BBC Proms 2014 blev Daniel Harding tillfrågad om varför de sticker ut ur mängden.'+
+                    '”Orkestern har en otrolig ödmjukhet inför musiken och en underbar känsla för musikalisk fantasi och uppfinningsförmåga.”'+
+                    '\n\nI en annan intervju sade Tomo Keller, en av orkesterns konsertmästare, att ”det är en ren glädje att spela med orkestern” och framhävde två unika drag: drivkraften att ständigt bli bättre, samt en sällsynt känsla och lyhördhet.'
                 ]
             },
         ],
