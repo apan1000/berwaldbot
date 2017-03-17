@@ -1466,7 +1466,7 @@ function askComposerMore(piece, i, convo) {
 			}
 		});
 	} else {
-		convo.say(composer.info[i]);
+		convo.say(piece.composer.info[i]);
 		askPiece(piece, convo);
 	}
 }
