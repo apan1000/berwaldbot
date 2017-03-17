@@ -1402,7 +1402,7 @@ function sendComposerInfo(piece, convo) {
 					},
 					{
 						title: 'Född',
-						subtitle: composer.dead
+						subtitle: composer.born
 					},
 					{
 						title: 'Död',
