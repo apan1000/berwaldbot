@@ -1450,7 +1450,9 @@ function sendBerwaldhallenInfo(response, convo) {
 	askBerwaldhallenInfo(0, convo);
 
 	convo.on('end', function(convo) {
-		sendDefaultQuickReplies(convo.source_message, false);
+		setTimeout(function() {
+			sendDefaultQuickReplies(message, false);
+		}, 300);
 	});
 }
 
