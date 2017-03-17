@@ -324,6 +324,10 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	// 	});
 	// });
 	bot.reply(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
+
+	setTimeout(function() {
+		sendDefaultQuickReplies(message, false);
+	}, 300);
 });
 
 controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
@@ -487,6 +491,10 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 					console.error(error);
 					bot.reply(message, 'Kunde inte hitta artistinfo. :(');
 				});
+			}).then(() => {
+				setTimeout(function() {
+					sendDefaultQuickReplies(message, false);
+				}, 300);
 			});
 		});
 	}
@@ -508,6 +516,10 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 		}).catch(error => {
 			console.error(error);
 			bot.reply(message, 'Oops, jag tror jag glömde, försök igen!');
+		}).then(() => {
+			setTimeout(function() {
+				sendDefaultQuickReplies(message, false);
+			}, 300);
 		});
 	});
 });
@@ -594,12 +606,19 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 									}, 750);
 								}).catch(error => {
 									console.error(error);
+								}).then(() => {
+									setTimeout(function() {
+										sendDefaultQuickReplies(message, false);
+									}, 300);	
 								});
 							});
 
 						} else {
 							// this happens if the conversation ended prematurely for some reason
 							bot.reply(message, 'Okej! Strunt samma.😌\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
+							setTimeout(function() {
+								sendDefaultQuickReplies(message, false);
+							}, 300);
 						}
 					});
 				}
