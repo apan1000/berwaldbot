@@ -1252,7 +1252,6 @@ function askPiece(piece, convo) {
 			callback: function(response, convo) {
 				if(piece.composer) {
 					sendComposerInfo(piece, convo);
-					// askPiece(piece, convo);
 				} else {
 					askPiece(piece, convo);
 				}
@@ -1453,25 +1452,15 @@ function askComposerMore(piece, i, convo) {
 			}
 		];
 
-		convo.ask({
-			text: piece.composer.more[i],
-			quick_replies: quickReplies
-		}, [
-			{
-				pattern: /(stopp|stop|nej|avsluta|ingen)/i,
-				callback: function(response, convo) {
-					askPiece(piece, convo);
-					convo.next();
-				}
-			},
-			{
-				default: true,
-				callback: function(response, convo) {
-					askComposerMore(piece, i+1, convo);
-					convo.next();
-				}
+		convo.ask("1234", function(response, convo) {
+			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
+				askPiece(piece, convo);
+				convo.next();
+			} else  {
+				askComposerMore(piece, i+1, convo);
+				convo.next();
 			}
-		]);
+		});
 	} else {
 		convo.say(piece.composer.info[i]);
 		askPiece(piece, convo);
