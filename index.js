@@ -1456,15 +1456,22 @@ function askComposerMore(piece, i, convo) {
 		convo.ask({
 			text: piece.composer.more[i],
 			quick_replies: quickReplies
-		}, function(response, convo) {
-			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
-				askPiece(piece, convo);
-				convo.next();
-			} else  {
-				askComposerMore(piece, i+1, convo);
-				convo.next();
+		}, [
+			{
+				pattern: /(stopp|stop|nej|avsluta|ingen)/i,
+				callback: function(response, convo) {
+					askPiece(piece, convo);
+					convo.next();
+				}
+			},
+			{
+				default: true,
+				callback: function(response, convo) {
+					askComposerMore(piece, i+1, convo);
+					convo.next();
+				}
 			}
-		});
+		]);
 	} else {
 		convo.say(piece.composer.info[i]);
 		askPiece(piece, convo);
