@@ -1425,9 +1425,9 @@ function sendComposerInfo(piece, convo) {
 		}
 	});
 
-	convo.say('Verk:\n\n'+composer.works, (err, response) => {
-		askComposerMore(piece, 0, convo);
-	});
+	convo.say('Verk:\n\n'+composer.works);
+
+	askComposerMore(piece, 0, convo);
 	// for(let m of composer.more) {
 	// 	convo.say(m, (err, response) => {
 	// 		if(err) {
