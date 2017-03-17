@@ -15,7 +15,7 @@ module.exports = {
             '\n\nBerwaldhallen är även en efterfrågad konsertscen för externa arrangörer och utöver våra egna konserter och evenemang, äger årligen ett stort antal konserter, bolagsstämmor och andra evenemang, rum i Berwaldhallen.'
         ],
         image: images_url+'berwaldhallen.jpg',
-        website_url: 'https://sverigesradio.se',
+        website_url: 'https://sverigesradio.se/berwaldhallen',
         history_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848173',
     },
     concert : {

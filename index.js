@@ -431,9 +431,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					if(error) {
-						setTimeout(function() {
-							bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
-						}, 300);
+						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
 					}
 				}
 				
@@ -480,14 +478,13 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 				console.log('Artist info is in, let\'s send it!');
 				bot.stopTyping(message, () => {
 					sendArtistInfo(message, artist);
+					sendDefaultQuickReplies(message);
 				});
 			}).catch(error => {
 				bot.stopTyping(message, () => {
 					console.error(error);
-					bot.reply(message, 'Kunde inte hitta artistinfo. :(');
+					sendDefaultQuickReplies(message, 'Kunde inte hitta artistinfo. :(');
 				});
-			}).then(() => {
-				sendDefaultQuickReplies(message);
 			});
 		});
 	}
