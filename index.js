@@ -1446,7 +1446,6 @@ function sendBerwaldhallenInfo(response, convo) {
 			console.error(err);
 		}
 	});
-	convo.say(bwh.shortDesc);
 
 	askBerwaldhallenInfo(0, convo);
 
@@ -1458,7 +1457,7 @@ function sendBerwaldhallenInfo(response, convo) {
 function askBerwaldhallenInfo(i, convo) {
 	const bwh = information.berwaldhallen;
 
-	if(i < bwh.longDesc.length-1) {
+	if(i < bwh.about.length-1) {
 		let quickReplies = [
 			{
 				content_type: 'text',
@@ -1473,7 +1472,7 @@ function askBerwaldhallenInfo(i, convo) {
 		];
 
 		convo.ask({
-			text: bwh.longDesc[i],
+			text: bwh.about[i],
 			quick_replies: quickReplies
 		}, function(response, convo) {
 			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
@@ -1484,7 +1483,7 @@ function askBerwaldhallenInfo(i, convo) {
 			}
 		});
 	} else {
-		convo.say(bwh.longDesc[i]);
+		convo.say(bwh.about[i]);
 
 		console.log('Sending history template...');
 		convo.say({

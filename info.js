@@ -2,8 +2,9 @@
 const images_url = 'http://www.csc.kth.se/~fberglun/exjobb/images/';
 module.exports = {
     berwaldhallen: {
-        shortDesc: 'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser.',
-        longDesc: [
+        about: [
+            'Konserthuset Berwaldhallen, med Sveriges Radios Symfoniorkester och Radiokören, är en del av Sveriges Radio och en av landets viktigaste kulturinstitutioner med räckvidd långt utanför landets gränser.',
+
             'Berwaldhallen är hemmascen för de två ensemblerna Sveriges Radios Symfoniorkester och Radiokören, som båda tillhör de yppersta i Europa inom sina respektive fält.'+
             'Genom turnéer och framträdanden världen över, har de även blivit viktiga ambassadörer för svensk musik och kultur utomlands.'+
             '\n\nÅrligen ges cirka 100 konserter -  i Berwaldhallen och på turnéer och varje sommar arrangeras Östersjöfestivalen här.'+
