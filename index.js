@@ -1463,7 +1463,7 @@ function askComposerMore(piece, i, convo) {
 		// });
 		convo.ask("So where do you want it delivered?", function(response, convo) {
 			convo.say("Ok! Goodbye.");
-			askPieceInfo(piece, i+1, convo);
+			askComposerMore(piece, i+1, convo);
 			convo.next();
 		});
 
