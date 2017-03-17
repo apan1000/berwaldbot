@@ -1445,7 +1445,10 @@ function askComposerMore(piece, i, convo) {
 			}
 		];
 
-		convo.ask(piece.composer.more[i], function(response, convo) {
+		convo.ask({
+			text: piece.composer.more[i],
+			quick_replies: quickReplies
+		}, function(response, convo) {
 			if( /(stopp|stop|nej|avsluta)/i.test(response.text) ) {
 				askPiece(piece, convo);
 				convo.next();
