@@ -158,19 +158,14 @@ controller.api.thread_settings.get_started('Get Started Payload');
 controller.api.thread_settings.menu([
 	{
 		"type": "postback",
-		"title": "Hej",
-		"payload": "Hej"
-	},
-	{
-		"type": "postback",
-		"title": "Hjälp",
+		"title": "ℹ️ Hjälp",
 		"payload": "Hjälp"
 	},
 	{
-		"type": "web_url",
-		"title": "Hemsida",
-		"url": "https://sverigesradio.se/berwaldhallen"
-	},
+		"type": "postback",
+		"title": "🏆 Solistprisvinnaren",
+		"payload": "Solistprisvinnaren"
+	}
 ]);
 
 // controller.on('facebook_postback', function(bot, message) {
@@ -404,6 +399,7 @@ controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', 
 controller.hears(['solistprisvinnaren'], 'message_received', function(bot, message) {
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
+			sendConcertInfo(convo); // Send info about concert before asking
 			askConcertInfo(message, convo);
 
 			convo.on('end', function(convo) {
@@ -946,7 +942,7 @@ function askConcert(response, convo) {
 		{
 			pattern: new RegExp(concert.name, 'i'),
 			callback: function(response, convo) {
-				convo.say('Javisst :)');
+				sendConcertInfo(convo); // Send info about concert before asking
 				askConcertInfo(response, convo);
 				convo.next();
 			}
@@ -982,11 +978,6 @@ function askConcertInfo(response, convo) {
 	let quickReplies = [
 		{
 			content_type: 'text',
-			title: 'ℹ️ Generell info',
-			payload: 'info'
-		},
-		{
-			content_type: 'text',
 			title: '👫 Medverkande',
 			payload: 'medverkande'
 		},
@@ -1008,16 +999,8 @@ function askConcertInfo(response, convo) {
 		quick_replies: quickReplies
 	}, [
 		{
-			pattern: /(om|info(rmation)?|mer)/i,
-			callback: function(response, convo) {
-				sendConcertInfo(convo);
-				convo.next();
-			}
-		},
-		{
 			pattern: /(medverkande|artister)/i,
 			callback: function(response, convo) {
-				convo.say('Okej!');
 				askParticipants(convo);
 				convo.next();
 			}
