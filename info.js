@@ -17,6 +17,7 @@ module.exports = {
         image: images_url+'berwaldhallen.jpg',
         website_url: 'https://sverigesradio.se/berwaldhallen',
         history_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3991&artikel=5848173',
+        spotify_url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO'
     },
     concert : {
         name: 'Solistprisvinnaren',
@@ -47,6 +48,7 @@ module.exports = {
                 position: 'dirigent',
                 image: images_url+'karina.jpg',
                 website_url: 'http://karinacanellakis.com/',
+                spotify_url: 'https://open.spotify.com/artist/11II2kGYW5NPw1xeNWses6',
                 about: [
                     'New York-födda Karina Canellakis har vunnit internationell berömmelse för såväl sina tekniska som musikaliska kunskaper.'+
                     '\nVinnaren av 2016 års Sir Georg Solti Conducting Award har fått lysande kritik sedan 2014 då hon i sista minuten ryckte in som ersättare för Jaap van Zweden och dirigerade Dallas symfoniorkester i Sjostakovitjs åttonde symfoni.'+
@@ -76,6 +78,7 @@ module.exports = {
                 position: 'orkester',
                 image: images_url+'orkester.jpg',
                 website_url: 'https://sverigesradio.se/sida/artikel.aspx?programid=3988&artikel=4507405',
+                spotify_url: 'https://open.spotify.com/artist/0K6ufQj8JzIZPPkvZrEwJS',
                 about: [
                     'Sveriges Radios Symfoniorkester är hela Sveriges orkester. Oavsett var i landet du bor kan du lyssna på orkesterns konserter i Sveriges Radio P2 i etern och på webben och flera av dem visas också i Sveriges Television.',
 
@@ -89,6 +92,7 @@ module.exports = {
             {
                 name: 'Bernhard Crusell Concertino för fagott och ork B-dur',
                 image: images_url+'bernhard1.jpg',
+                spotify_url: 'https://open.spotify.com/track/237jHfE1ncGOWVmVaQSeiy',
                 info: [
                     'Bernhard Crusell föddes i Nystad i Finland 1775, son till en fattig bokbindare. Han utbildade sig till klarinettist och trots en klen hälsa gick han in vid militärmusiken på Sveaborg.',
                     
@@ -115,6 +119,7 @@ module.exports = {
                     name: 'Bernhard Henrik Crusell',
                     image: images_url+'bernhard2.jpg',
                     website_url: 'https://sv.wikipedia.org/wiki/Bernhard_Crusell',
+                    spotify_url: 'https://open.spotify.com/artist/6RZnn5duxDdSsDoaoRaibD',
                     born: '15 oktober 1775, Nystad, Finland.',
                     dead: '28 juli 1838, Stockholm.',
                     works: 'Tre klarinettkonserter, kammarmusik bl a tre klarinettkvartetter, verk för manskör, en rad romanser samt operan Den lilla slavinnan.',
@@ -134,6 +139,7 @@ module.exports = {
             {
                 name: 'Antonín Dvorák Symfoni nr 8 G-dur',
                 image: images_url+'dvorak1.jpg',
+                spotify_url: 'https://play.spotify.com/track/0UrvHOMzTnvGzM0fiBSTNW',
                 info: [
                     'Liksom fallet är med en rad andra tonsättares symfonier, har under årens lopp vissa problem uppstått med numreringen hos Antonin Dvorák och det är först under senare är, närmare bestämt efter andra världskriget, som man har kommit fram till en viss enhetlighet.',
                     
@@ -161,6 +167,7 @@ module.exports = {
                         name: 'Antonín Dvorák',
                         image: images_url+'dvorak2.jpg',
                         website_url: 'https://sv.wikipedia.org/wiki/Anton%C3%ADn_Dvo%C5%99%C3%A1k',
+                        spotify_url: 'https://open.spotify.com/artist/6n7nd5iceYpXVwcx8VPpxF',
                         born: '8 september 1841 i Nelahozeves, Tjeckien.',
                         dead: '1 maj 1904 i Prag.',
                         works: 'Nio symfonier, t ex nr 9 Från nya världen, tio operor t ex Rusalka, fem symfoniska dikter, t ex Heldenlied, fyra större körverk, sex konserter, kammarmusik.',
@@ -174,6 +181,7 @@ module.exports = {
             {
                 name: 'BERWALDBONUS: TONSÄTTARINNOR',
                 image: images_url+'valborg.jpg',
+                spotify_url: 'https://open.spotify.com/artist/0dPXhX5Y4nNHF5XPUNXNd8',
                 info: [
                     'Efter fyra av säsongens onsdagskonserter blir det kammarmusikaliska bonuskonserter med musik av svenska kvinnliga tonsättare från 1800-talets andra och 1900-talets första hälft.'+
                     '\n\nKonserterna är ett samarbete mellan Berwaldhallen och Sveriges Radio P2 och introduceras av musikforskaren och producenten Christina Tobeck.',

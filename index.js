@@ -312,18 +312,18 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 				elements: [
 					{
 						title: 'Berwaldhallens Spotifylista',
-						image_url: 'http://ttimg.nu/100/event/lek.jpg',
+						image_url: images_url+'spotify.png',
 						subtitle: 'Lyssna på kommande konserter',
 						default_action: {
 							type: 'web_url',
-							url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+							url: information.berwaldhallen.spotify_url,
 							webview_height_ratio: 'tall'
 						},
 						buttons: [
 							{
-								title: 'Lyssna vår Spotifylista',
+								title: 'Lyssna vår Spotify',
 								type: 'web_url',
-								url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+								url: information.berwaldhallen.spotify_url,
 								webview_height_ratio: 'tall'
 							}
 						]
@@ -1427,7 +1427,7 @@ function sendBerwaldhallenInfo(response, convo) {
 		attachment: {
 			type: 'template',
 			payload: {
-				template_type: 'generic',
+				template_type: 'list',
 				elements: [
 					{
 						title: 'Berwaldhallen',
@@ -1436,15 +1436,32 @@ function sendBerwaldhallenInfo(response, convo) {
 							type: 'web_url',
 							url: bwh.website_url,
 							webview_height_ratio: 'full'
+						}
+					},
+					{
+						title: 'Spotifylista',
+						image_url: images_url+'spotify.png',
+						default_action: {
+							type: 'web_url',
+							url: bwh.spotify_url,
+							webview_height_ratio: 'tall'
 						},
 						buttons: [
 							{
-								title: 'Hemsida',
+								title: 'Spotify',
 								type: 'web_url',
-								url: bwh.website_url,
-								webview_height_ratio: 'full'
+								url: bwh.spotify_url,
+								webview_height_ratio: 'tall'
 							}
 						]
+					}
+				],
+				buttons: [
+					{
+						title: 'Hemsida',
+						type: 'web_url',
+						url: bwh.website_url,
+						webview_height_ratio: 'full'
 					}
 				]
 			}
