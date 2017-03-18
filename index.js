@@ -199,25 +199,38 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 	});
 
 	bot.reply(message, {
-		text: 'Hej och välkommen till Berwaldhallens chatbot! Du kan välja ett av alternativen här under eller skriva \'hjälp\' för mer information.',
-		quick_replies: [
-			{
-				"content_type": "text",
-				"title": "Kommande konserter",
-				"payload": "konserter",
-			},
-			{
-				"content_type": "text",
-				"title": "Ge mig artistinfo",
-				"payload": "artistinfo",
-			},
-			{
-				"content_type": "text",
-				"title": "Om Berwaldhallen",
-				"payload": "berwaldhallen"
-			},
-		]
+		attachment: {
+			type: 'image',
+			payload: {
+				url: images_url+'hejbot.jpg'
+			}
+		}
 	});
+
+	setTimeout(function() {
+		bot.reply(message, {
+			text: 'Hej och välkommen till Berwaldhallens chatbot!'+
+			'\nJag finns här för att ge dig information om konserter och medverkande.'+
+			'\nDu kan välja ett av alternativen här under eller skriva \'hjälp\' för mer information.',
+			quick_replies: [
+				{
+					"content_type": "text",
+					"title": "Kommande konserter",
+					"payload": "konserter",
+				},
+				{
+					"content_type": "text",
+					"title": "Ge mig artistinfo",
+					"payload": "artistinfo",
+				},
+				{
+					"content_type": "text",
+					"title": "Om Berwaldhallen",
+					"payload": "berwaldhallen"
+				},
+			]
+		});
+	}, 300);
 });
 
 controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
@@ -287,43 +300,39 @@ controller.hears(['^(((berätta )?om )?(berwald(hallen)?))'], 'message_received'
 // });
 
 controller.hears(['spotify'], 'message_received', function(bot, message) {
-	// bot.reply(message, typing_message);
-
-	// setTimeout(() => {
-	// 	console.log('Sending template...');
-	// 	bot.reply(message, {
-	// 		attachment: {
-	// 			type: 'template',
-	// 			payload: {
-	// 				template_type: 'generic',
-	// 				elements: [
-	// 					{
-	// 						title: 'Berwaldhallens Spotifylista',
-	// 						image_url: 'http://ttimg.nu/100/event/lek.jpg',
-	// 						subtitle: 'Lyssna på kommande konserter',
-	// 						default_action: {
-	// 							type: 'web_url',
-	// 							url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
-	// 							webview_height_ratio: 'tall'
-	// 						},
-	// 						buttons: [
-	// 							{
-	// 								title: 'Lyssna',
-	// 								type: 'web_url',
-	// 								url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
-	// 								webview_height_ratio: 'tall'
-	// 							}
-	// 						]
-	// 					}
-	// 				]
-	// 			}
-	// 		}
-	// 	}, (err, response) => {
-	// 		if(err)
-	// 			console.error(err);
-	// 	});
-	// });
-	sendDefaultQuickReplies(message, 'Berwaldhallens Spotifylista: http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO');
+	bot.reply(message, {
+		attachment: {
+			type: 'template',
+			payload: {
+				template_type: 'generic',
+				elements: [
+					{
+						title: 'Berwaldhallens Spotifylista',
+						image_url: 'http://ttimg.nu/100/event/lek.jpg',
+						subtitle: 'Lyssna på kommande konserter',
+						default_action: {
+							type: 'web_url',
+							url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+							webview_height_ratio: 'tall'
+						},
+						buttons: [
+							{
+								title: 'Lyssna vår Spotifylista',
+								type: 'web_url',
+								url: 'http://open.spotify.com/user/berwaldhallen/playlist/0jNERhOXHnAJEEdvn7ARXO',
+								webview_height_ratio: 'tall'
+							}
+						]
+					}
+				]
+			}
+		}
+	}, (err, response) => {
+		if(err)
+			console.error(err);
+	});
+	
+	sendDefaultQuickReplies(message);
 });
 
 controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
