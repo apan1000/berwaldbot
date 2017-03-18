@@ -142,27 +142,60 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 18, 23, 18));
+const infoDate = new Date(Date.UTC(2017, 2, 18, 23, 29)); // 12:15, den 28e mars
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
-	console.log('Time to send information! Woohoo!.');
+	console.log('\n>>Time to send information! Woohoo!.');
 	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
 	controller.storage.users.get(1312989925454417, function(err, user) {
-		bot.reply(user.first_message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
-			'\nTryck på knappen här nere för att få mer info om den.');
+		bot.reply(user.first_message, {
+			text: 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
+				'\nTryck på knappen här nere för att få mer info om den.',
+			quick_replies: [
+				{
+					"content_type": "text",
+					"title": "🏆 Solistprisvinnaren",
+					"payload": "Solistprisvinnaren"
+				},
+				{
+					"content_type": "text",
+					"title": "🛑 Nej, tack!",
+					"payload": "hjälp"
+				}
+			]
+		}, (err, response) => {
+			if(err)
+				console.error(err);
+		});
 	});
 
-	// const users = controller.storage.users.all(function(err, users) {
-	// 	if(err) {
-	// 		bot.reply(message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Fråga mig gärna om den :)');
-	// 		return console.error('error getting users', err);
-	// 	}
+	const users = controller.storage.users.all(function(err, users) {
+		if(err) {
+			return console.error('error getting users', err);
+		}
 
-	// 	users.forEach((user) => {
-	// 		//TODO: start conversation
-	// 		bot.startConversation();
-	// 	});
-	// });
+		users.forEach((user) => {
+			bot.reply(user.first_message, {
+				text: 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
+					'\nTryck på knappen här nere för att få mer info om den.',
+				quick_replies: [
+					{
+						"content_type": "text",
+						"title": "🏆 Solistprisvinnaren",
+						"payload": "Solistprisvinnaren",
+					},
+					{
+						"content_type": "text",
+						"title": "🛑 Nej, tack!",
+						"payload": "hjälp",
+					}
+				]
+			}, (err, response) => {
+				if(err)
+					console.error(err);
+			});
+		});
+	});
 });
 
 controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
