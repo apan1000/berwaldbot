@@ -114,6 +114,14 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 });
 
 controller.middleware.receive.use(function(bot, message, next) {
+	controller.storage.users.get(message.user, function(err, user) {
+		user.last_active = new Date();
+		controller.storage.users.save(user, (err, id) => {
+			if (err) {
+				console.error('Error saving user:',err);
+			}
+		});
+	});
 	clearSavedTimeouts();
     next();
 });
