@@ -142,7 +142,8 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 19, 23, 15));
+const infoDate = new Date(Date.UTC(2017, 2, 18, 23, 18));
+console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('Time to send information! Woohoo!.');
 	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
