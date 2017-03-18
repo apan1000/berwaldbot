@@ -142,7 +142,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 18, 23, 29)); // 12:15, den 28e mars
+const infoDate = new Date(Date.UTC(2017, 2, 18, 23, 34)); // 12:15, den 28e mars Date.UTC(2017, 2, 28, 11, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
@@ -153,14 +153,14 @@ let j = schedule.scheduleJob(infoDate, function(){
 				'\nTryck på knappen här nere för att få mer info om den.',
 			quick_replies: [
 				{
-					"content_type": "text",
-					"title": "🏆 Solistprisvinnaren",
-					"payload": "Solistprisvinnaren"
+					'content_type': 'text',
+					'title': 'Solistprisvinnaren',
+					'payload': 'solistprisvinnaren'
 				},
 				{
-					"content_type": "text",
-					"title": "🛑 Nej, tack!",
-					"payload": "hjälp"
+					'content_type': 'text',
+					'title': 'Nej, tack!',
+					'payload': 'hjälp'
 				}
 			]
 		}, (err, response) => {
@@ -180,14 +180,14 @@ let j = schedule.scheduleJob(infoDate, function(){
 	// 				'\nTryck på knappen här nere för att få mer info om den.',
 	// 			quick_replies: [
 	// 				{
-	// 					"content_type": "text",
-	// 					"title": "🏆 Solistprisvinnaren",
-	// 					"payload": "Solistprisvinnaren",
+	// 					'content_type': 'text',
+	// 					'title': '🏆 Solistprisvinnaren',
+	// 					'payload': 'Solistprisvinnaren'
 	// 				},
 	// 				{
-	// 					"content_type": "text",
-	// 					"title": "🛑 Nej, tack!",
-	// 					"payload": "hjälp",
+	// 					'content_type': 'text',
+	// 					'title': '🛑 Nej, tack!',
+	// 					'payload': 'hjälp'
 	// 				}
 	// 			]
 	// 		}, (err, response) => {
@@ -202,14 +202,14 @@ controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen til
 controller.api.thread_settings.get_started('Get Started Payload');
 controller.api.thread_settings.menu([
 	{
-		"type": "postback",
-		"title": "ℹ️ Hjälp",
-		"payload": "Hjälp"
+		'type': 'postback',
+		'title': 'ℹ️ Hjälp',
+		'payload': 'Hjälp'
 	},
 	{
-		"type": "postback",
-		"title": "🏆 Solistprisvinnaren",
-		"payload": "Solistprisvinnaren"
+		'type': 'postback',
+		'title': '🏆 Solistprisvinnaren',
+		'payload': 'Solistprisvinnaren'
 	}
 ]);
 
