@@ -205,9 +205,10 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 				url: images_url+'hejbot.jpg'
 			}
 		}
-	});
-
-	setTimeout(function() {
+	}, (err, response) => {
+		if(err) {
+			console.error(err);
+		}
 		bot.reply(message, {
 			text: 'Hej och välkommen till Berwaldhallens chatbot!'+
 			'\nJag finns här för att ge dig information om konserter och medverkande.'+
@@ -229,8 +230,11 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 					"payload": "berwaldhallen"
 				},
 			]
+		}, (err, response) => {
+			if(err)
+				console.error(err);
 		});
-	}, 300);
+	});
 });
 
 controller.hears(['(hjälp|meny)'], 'message_received', function(bot, message) {
@@ -331,7 +335,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 		if(err)
 			console.error(err);
 	});
-	
+
 	sendDefaultQuickReplies(message);
 });
 
