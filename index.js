@@ -397,7 +397,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 		bot.startConversation(message, function(err, convo) {
 			if (!err) {
 				convo.ask({
-					text: 'Vilken '+artistText+' vill du veta mer om,'+user.nickname+'?🤔',
+					text: 'Vilken '+artistText+' vill du veta mer om, '+user.nickname+'?🤔',
 					quick_replies: quickReplies
 				}, [
 					{
