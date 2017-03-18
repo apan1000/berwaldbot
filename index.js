@@ -340,7 +340,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 	});
 });
 
-controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
+controller.hears(['(.*)konsert(er(na)?)?', 'tillfällen'], 'message_received', function(bot, message) {
 	bot.startConversation(message, askConcert);
 });
 
@@ -350,15 +350,6 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 			if (!err) {
 				sendConcertInfo(convo); // Send info about concert before asking
 				askConcertInfo(message, convo);
-
-				convo.on('end', function(convo) {
-					if (convo.status !== 'completed') {
-						// this happens if the conversation ended prematurely for some reason
-						sendDefaultQuickReplies(convo.source_message, 'Okej,'+user.nickname+'! Vi pratar om något annat :)');
-					} else {
-						sendDefaultQuickReplies(convo.source_message);
-					}
-				});
 			}
 		});
 	});
@@ -917,7 +908,7 @@ function askConcert(response, convo) {
 		convo.on('end', function(convo) {
 			if (convo.status !== 'completed') {
 				// this happens if the conversation ended prematurely for some reason
-				sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
+				sendDefaultQuickReplies(convo.source_message, 'Okej, '+user.nickname+'! Vi pratar om något annat :)');
 			} else {
 				sendDefaultQuickReplies(convo.source_message);
 			}
