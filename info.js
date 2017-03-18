@@ -160,7 +160,7 @@ module.exports = {
 
                     'Näst efter "Från nya världen" lär Antonin Dvoráks åttonde symfoni vara hans mest populära.'+
                     '\nVad som i alla tider har tilltalat åhörarna är säkerligen dess sorglösa och rättframma grundstäm­ning, tillsammans med dess omisskänligt böhmiska tongångar.'+
-                    'Idyll och livsglädje genomsy­rar hela detta med rätta älskade mästerverk.'+
+                    ' Idyll och livsglädje genomsy­rar hela detta med rätta älskade mästerverk.'+
                     '\n\n- Per Skans'
                 ],
                 composer: {
