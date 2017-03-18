@@ -1443,6 +1443,12 @@ function sendBerwaldhallenInfo(response, convo) {
 	});
 
 	askBerwaldhallenInfo(0, convo);
+
+	convo.on('end', function(convo) {
+		setTimeout(function() {
+			sendDefaultQuickReplies(convo.source_message);
+		}, 300);
+	});
 }
 
 function askBerwaldhallenInfo(i, convo) {
@@ -1507,7 +1513,6 @@ function askBerwaldhallenInfo(i, convo) {
 		}, (err, response) => {
 			if(err)
 				console.error(err);
-			sendDefaultQuickReplies(convo.source_message);
 		});
 	}
 }
