@@ -1299,22 +1299,36 @@ function sendParticipantInfo(participant, convo) {
 					webview_height_ratio: 'tall'
 				}
 			]
-		})
-	}
+		});
 
-	convo.say({
-		attachment: {
-			type: 'template',
-			payload: {
-				template_type: 'list',
-				elements: elementList
+		convo.say({
+			attachment: {
+				type: 'template',
+				payload: {
+					template_type: 'list',
+					elements: elementList
+				}
 			}
-		}
-	}, (err, response) => {
-		if(err) {
-			console.error(err);
-		}
-	});
+		}, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	} else {
+		convo.say({
+			attachment: {
+				type: 'generic',
+				payload: {
+					template_type: 'list',
+					elements: elementList
+				}
+			}
+		}, (err, response) => {
+			if(err) {
+				console.error(err);
+			}
+		});
+	}
 
 	for(let a of participant.about) {
 		convo.say(a, (err, response) => {
@@ -1328,38 +1342,53 @@ function sendParticipantInfo(participant, convo) {
 function sendComposerInfo(piece, convo) {
 	let composer = piece.composer;
 
+	let elementList = [
+		{
+			title: composer.name,
+			image_url: composer.image,
+			default_action: {
+				type: 'web_url',
+				url: composer.website_url,
+				webview_height_ratio: 'tall'
+			}
+		},
+		{
+			title: 'Född',
+			subtitle: composer.born
+		},
+		{
+			title: 'Död',
+			subtitle: composer.dead
+		}
+	];
+
+	if(composer.spotify_url) {
+		elementList.push({
+			title: composer.name+'s Spotify',
+			image_url: images_url+'spotify.png',
+			subtitle: 'Lyssna på Spotify',
+			default_action: {
+				type: 'web_url',
+				url: composer.spotify_url,
+				webview_height_ratio: 'tall'
+			},
+			buttons: [
+				{
+					title: 'Öppna Spotify',
+					type: 'web_url',
+					url: composer.spotify_url,
+					webview_height_ratio: 'tall'
+				}
+			]
+		});
+	}
+
 	convo.say({
 		attachment: {
 			type: 'template',
 			payload: {
 				template_type: 'list',
-				elements: [
-					{
-						title: composer.name,
-						image_url: composer.image,
-						default_action: {
-							type: 'web_url',
-							url: composer.website_url,
-							webview_height_ratio: 'tall'
-						}
-					},
-					{
-						title: 'Född',
-						subtitle: composer.born
-					},
-					{
-						title: 'Död',
-						subtitle: composer.dead
-					}
-				],
-				buttons: [
-					{
-						title: 'Läs mer på Wikipedia',
-						type: 'web_url',
-						url: composer.website_url,
-						webview_height_ratio: 'tall'
-					}
-				]
+				elements: elementList
 			}
 		}
 	}, (err, response) => {
