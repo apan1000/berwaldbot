@@ -1300,7 +1300,7 @@ function sendParticipantInfo(participant, convo) {
 
 	if(participant.spotify_url) {
 		elementList.push({
-			title: participant.name+'s Spotify',
+			title: participant.name+'s musik',
 			image_url: images_url+'spotify.png',
 			subtitle: 'Lyssna på Spotify',
 			default_action: {
@@ -1381,7 +1381,7 @@ function sendComposerInfo(piece, convo) {
 
 	if(composer.spotify_url) {
 		elementList.push({
-			title: composer.name+'s Spotify',
+			title: composer.name+'s musik',
 			image_url: images_url+'spotify.png',
 			subtitle: 'Lyssna på Spotify',
 			default_action: {
@@ -1519,7 +1519,8 @@ function sendBerwaldhallenInfo(response, convo) {
 						}
 					},
 					{
-						title: 'Spotifylista',
+						title: 'Vår Spotifylista',
+						subtitle: 'Lyssna på kommande konserter',
 						image_url: images_url+'spotify.png',
 						default_action: {
 							type: 'web_url',
