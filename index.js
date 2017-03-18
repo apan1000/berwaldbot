@@ -771,7 +771,7 @@ function sendArtistInfo(message, artist) {
 						},
 						buttons: [
 							{
-								title: 'Lyssna',
+								title: 'Öppna Spotify',
 								type: 'web_url',
 								url: artist.external_urls.spotify,
 								webview_height_ratio: 'compact',
@@ -1166,9 +1166,14 @@ function askPiece(piece, convo) {
 					{
 						title: 'Musiken på Spotify',
 						image_url: images_url+'spotify.png',
+						default_action: {
+							type: 'web_url',
+							url: piece.spotify_url,
+							webview_height_ratio: 'tall'
+						},
 						buttons: [
 							{
-								title: 'Lyssna',
+								title: 'Öppna Spotify',
 								type: 'web_url',
 								url: piece.spotify_url,
 								webview_height_ratio: 'tall'
@@ -1284,7 +1289,7 @@ function sendParticipantInfo(participant, convo) {
 			},
 			buttons: [
 				{
-					title: 'Hemsida',
+					title: 'Öppna hemsida',
 					type: 'web_url',
 					url: participant.website_url,
 					webview_height_ratio: 'tall'
@@ -1523,7 +1528,7 @@ function sendBerwaldhallenInfo(response, convo) {
 						},
 						buttons: [
 							{
-								title: 'Spotify',
+								title: 'Öppna Spotify',
 								type: 'web_url',
 								url: bwh.spotify_url,
 								webview_height_ratio: 'tall'
@@ -1533,7 +1538,7 @@ function sendBerwaldhallenInfo(response, convo) {
 				],
 				buttons: [
 					{
-						title: 'Hemsida',
+						title: 'Öppna hemsida',
 						type: 'web_url',
 						url: bwh.website_url,
 						webview_height_ratio: 'full'
