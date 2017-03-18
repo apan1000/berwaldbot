@@ -142,23 +142,26 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(2017, 3, 5, 10);
+const infoDate = new Date(2017, 3, 19, 0, 10);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('Time to send information! Woohoo!.');
 	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
-
-	// TODO: Skicka info om konsert
-	const users = controller.storage.users.all(function(err, users) {
-		if(err) {
-			bot.reply(message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Fråga mig gärna om den :)');
-			return console.error('error getting users', err);
-		}
-
-		users.forEach((user) => {
-			//TODO: start conversation
-			bot.startConversation();
-		});
+	controller.storage.users.get(1312989925454417, function(err, user) {
+		bot.reply(user.first_message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
+			'\nTryck på knappen här nere för att få mer info om den.');
 	});
+
+	// const users = controller.storage.users.all(function(err, users) {
+	// 	if(err) {
+	// 		bot.reply(message, 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Fråga mig gärna om den :)');
+	// 		return console.error('error getting users', err);
+	// 	}
+
+	// 	users.forEach((user) => {
+	// 		//TODO: start conversation
+	// 		bot.startConversation();
+	// 	});
+	// });
 });
 
 controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
