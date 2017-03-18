@@ -1156,12 +1156,24 @@ function askPiece(piece, convo) {
 		attachment: {
 			type: 'template',
 			payload: {
-				template_type: 'generic',
+				template_type: 'list',
 				elements: [
 					{
 						title: piece.name,
 						image_url: piece.image,
 						subtitle: piece.composer ? piece.composer.name : ''
+					},
+					{
+						title: 'Musiken på Spotify',
+						image_url: images_url+'spotify.png',
+						buttons: [
+							{
+								title: 'Lyssna',
+								type: 'web_url',
+								url: piece.spotify_url,
+								webview_height_ratio: 'tall'
+							}
+						]
 					}
 				]
 			}
@@ -1317,9 +1329,9 @@ function sendParticipantInfo(participant, convo) {
 	} else {
 		convo.say({
 			attachment: {
-				type: 'generic',
+				type: 'template',
 				payload: {
-					template_type: 'list',
+					template_type: 'generic',
 					elements: elementList
 				}
 			}
@@ -1349,16 +1361,16 @@ function sendComposerInfo(piece, convo) {
 			default_action: {
 				type: 'web_url',
 				url: composer.website_url,
-				webview_height_ratio: 'tall'
-			}
-		},
-		{
-			title: 'Född',
-			subtitle: composer.born
-		},
-		{
-			title: 'Död',
-			subtitle: composer.dead
+				webview_height_ratio: 'full'
+			},
+			buttons: [
+				{
+					title: 'Läs mer',
+					type: 'web_url',
+					url: composer.website_url,
+					webview_height_ratio: 'full'
+				}
+			]
 		}
 	];
 
@@ -1382,6 +1394,17 @@ function sendComposerInfo(piece, convo) {
 			]
 		});
 	}
+
+	elementList.push(
+		{
+			title: 'Född',
+			subtitle: composer.born
+		},
+		{
+			title: 'Död',
+			subtitle: composer.dead
+		}
+	);
 
 	convo.say({
 		attachment: {
