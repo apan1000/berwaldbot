@@ -321,7 +321,7 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 						},
 						buttons: [
 							{
-								title: 'Lyssna vår Spotify',
+								title: 'Öppna Spotify',
 								type: 'web_url',
 								url: information.berwaldhallen.spotify_url,
 								webview_height_ratio: 'tall'
@@ -332,11 +332,11 @@ controller.hears(['spotify'], 'message_received', function(bot, message) {
 			}
 		}
 	}, (err, response) => {
-		if(err)
+		if(err) {
 			console.error(err);
+		}
+		sendDefaultQuickReplies(message);
 	});
-
-	sendDefaultQuickReplies(message);
 });
 
 controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', function(bot, message) {
@@ -1260,31 +1260,54 @@ function sendConcertInfo(convo) {
 }
 
 function sendParticipantInfo(participant, convo) {
+	let elementList = [
+		{
+			title: participant.name,
+			image_url: participant.image,
+			subtitle: 'Gå till '+participant.name+'s hemsida.',
+			default_action: {
+				type: 'web_url',
+				url: participant.website_url,
+				webview_height_ratio: 'tall'
+			},
+			buttons: [
+				{
+					title: 'Hemsida',
+					type: 'web_url',
+					url: participant.website_url,
+					webview_height_ratio: 'tall'
+				}
+			]
+		}
+	];
+
+	if(participant.spotify_url) {
+		elementList.push({
+			title: participant.name+'s Spotify',
+			image_url: images_url+'spotify.png',
+			subtitle: 'Lyssna på Spotify',
+			default_action: {
+				type: 'web_url',
+				url: participant.spotify_url,
+				webview_height_ratio: 'tall'
+			},
+			buttons: [
+				{
+					title: 'Öppna Spotify',
+					type: 'web_url',
+					url: participant.spotify_url,
+					webview_height_ratio: 'tall'
+				}
+			]
+		})
+	}
+
 	convo.say({
 		attachment: {
 			type: 'template',
 			payload: {
-				template_type: 'generic',
-				elements: [
-					{
-						title: participant.name,
-						image_url: participant.image,
-						subtitle: 'Gå till '+participant.name+'s hemsida.',
-						default_action: {
-							type: 'web_url',
-							url: participant.website_url,
-							webview_height_ratio: 'tall'
-						},
-						buttons: [
-							{
-								title: 'Hemsida',
-								type: 'web_url',
-								url: participant.website_url,
-								webview_height_ratio: 'tall'
-							}
-						]
-					}
-				]
+				template_type: 'list',
+				elements: elementList
 			}
 		}
 	}, (err, response) => {
