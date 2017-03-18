@@ -345,123 +345,117 @@ controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', 
 });
 
 controller.hears(['solistprisvinnaren'], 'message_received', function(bot, message) {
-	let user = {};
-	controller.storage.users.get(message.user, function(err, u) {
-		user = u;
-	});
+	getUser(message.user).then(user => {
+		bot.startConversation(message, function(err, convo) {
+			if (!err) {
+				sendConcertInfo(convo); // Send info about concert before asking
+				askConcertInfo(message, convo);
 
-	bot.startConversation(message, function(err, convo) {
-		if (!err) {
-			sendConcertInfo(convo); // Send info about concert before asking
-			askConcertInfo(message, convo);
-
-			convo.on('end', function(convo) {
-				if (convo.status !== 'completed') {
-					// this happens if the conversation ended prematurely for some reason
-					sendDefaultQuickReplies(convo.source_message, 'Okej,'+user.nickname+'! Vi pratar om något annat :)');
-				} else {
-					sendDefaultQuickReplies(convo.source_message);
-				}
-			});
-		}
+				convo.on('end', function(convo) {
+					if (convo.status !== 'completed') {
+						// this happens if the conversation ended prematurely for some reason
+						sendDefaultQuickReplies(convo.source_message, 'Okej,'+user.nickname+'! Vi pratar om något annat :)');
+					} else {
+						sendDefaultQuickReplies(convo.source_message);
+					}
+				});
+			}
+		});
 	});
 });
 
 controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received', function(bot, message) {
-	let user = {};
-	controller.storage.users.get(message.user, function(err, u) {
-		user = u;
-	});
-
-	let error = false;
-	let artistText = 'artist';
-	if(message.match[message.match.length-1] == 'medverkande')
-		artistText = 'medverkande';
-	
-	let participantNames = [];
-	let participants = {};
-	for(let p of information.concert.participants) {
-		if(p.name.length > 20) {
-			participantNames.push(p.name.substr(0, 17)+'...');
-			p.payload = p.name;
-			participants[p.name.substr(0, 17)+'...'] = p;
-		} else {
-			participantNames.push(p.name);
-			p.payload = p.name;
-			participants[p.name] = p;
+	getUser(message.user).then(user => {
+		let error = false;
+		let artistText = 'artist';
+		if(message.match[message.match.length-1] == 'medverkande')
+			artistText = 'medverkande';
+		
+		let participantNames = [];
+		let participants = {};
+		for(let p of information.concert.participants) {
+			if(p.name.length > 20) {
+				participantNames.push(p.name.substr(0, 17)+'...');
+				p.payload = p.name;
+				participants[p.name.substr(0, 17)+'...'] = p;
+			} else {
+				participantNames.push(p.name);
+				p.payload = p.name;
+				participants[p.name] = p;
+			}
 		}
-	}
 
-	let quickReplies = [];
-	for(let n of participantNames) {
-		quickReplies.push({
-			content_type: 'text',
-			title: n,
-			image_url: participants[n].image,
-			payload: participants[n].payload
-		});
-	}
-
-	quickReplies.push(
-		{
-			content_type: 'text',
-			title: '🛑 Avsluta',
-			payload: 'stopp'
-		}
-	);
-	
-	bot.startConversation(message, function(err, convo) {
-		if (!err) {
-			convo.ask({
-				text: 'Vilken '+artistText+' vill du veta mer om,'+user.nickname+'?🤔',
-				quick_replies: quickReplies
-			}, [
-				{
-					pattern: new RegExp(participantNames.join('|'), 'i'),
-					callback: function(response, convo) {
-						sendParticipantInfo(participants[response.text], convo);
-						convo.next();
-					}
-				},
-				{
-					pattern: /(stopp|stop|nej|avsluta|ingen)/i,
-					callback: function(response, convo) {
-						// stop the conversation. this will cause it to end with status == 'stopped'
-						convo.stop();
-					}
-				},
-				{
-					default: true,
-					callback: function(response, convo) {
-						bot.startTyping(message, () => {
-							getArtistInfo(response.text).then(artist => {
-								console.log('Artist info is in, let\'s send it!');
-								sendArtistInfo(message, artist);
-								bot.stopTyping(message, () => {
-									convo.next();
-								});
-							}).catch(err => {
-								bot.stopTyping(message, () => {
-									console.error(err);
-									error = true;
-									convo.stop();
-								});
-							});
-						});
-					}
-				}
-			]);
-
-			convo.on('end', function(convo) {
-				if (convo.status !== 'completed') {
-					if(error) {
-						bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
-					}
-				}
-				
-				sendDefaultQuickReplies(message);
+		let quickReplies = [];
+		for(let n of participantNames) {
+			quickReplies.push({
+				content_type: 'text',
+				title: n,
+				image_url: participants[n].image,
+				payload: participants[n].payload
 			});
 		}
+
+		quickReplies.push(
+			{
+				content_type: 'text',
+				title: '🛑 Avsluta',
+				payload: 'stopp'
+			}
+		);
+		
+		bot.startConversation(message, function(err, convo) {
+			if (!err) {
+				convo.ask({
+					text: 'Vilken '+artistText+' vill du veta mer om,'+user.nickname+'?🤔',
+					quick_replies: quickReplies
+				}, [
+					{
+						pattern: new RegExp(participantNames.join('|'), 'i'),
+						callback: function(response, convo) {
+							sendParticipantInfo(participants[response.text], convo);
+							convo.next();
+						}
+					},
+					{
+						pattern: /(stopp|stop|nej|avsluta|ingen)/i,
+						callback: function(response, convo) {
+							// stop the conversation. this will cause it to end with status == 'stopped'
+							convo.stop();
+						}
+					},
+					{
+						default: true,
+						callback: function(response, convo) {
+							bot.startTyping(message, () => {
+								getArtistInfo(response.text).then(artist => {
+									console.log('Artist info is in, let\'s send it!');
+									sendArtistInfo(message, artist);
+									bot.stopTyping(message, () => {
+										convo.next();
+									});
+								}).catch(err => {
+									bot.stopTyping(message, () => {
+										console.error(err);
+										error = true;
+										convo.stop();
+									});
+								});
+							});
+						}
+					}
+				]);
+
+				convo.on('end', function(convo) {
+					if (convo.status !== 'completed') {
+						if(error) {
+							bot.reply(message, 'Kunde inte sammanställa informationen🙈 Försök gärna igen!');
+						}
+					}
+					
+					sendDefaultQuickReplies(message);
+				});
+			}
+		});
 	});
 });
 
@@ -874,62 +868,60 @@ function getUser(userId) {
 * CONCERT
 *******************/
 function askConcert(response, convo) {
-	let user = {};
-	controller.storage.users.get(message.user, function(err, u) {
-		user = u;
-	});
-	user.nickname = user.nickname;
+	getUser(convo.source_message.user).then(user => {
+		user.nickname = user.nickname;
 
-	let concert = information.concert;
-	let quickReplies = [
-		{
-			content_type: 'text',
-			title: concert.name,
-			payload: concert.name
-		},
-		{
-			content_type: 'text',
-			title: '🛑 Ingen',
-			payload: 'stopp'
-		}
-	];
+		let concert = information.concert;
+		let quickReplies = [
+			{
+				content_type: 'text',
+				title: concert.name,
+				payload: concert.name
+			},
+			{
+				content_type: 'text',
+				title: '🛑 Ingen',
+				payload: 'stopp'
+			}
+		];
 
-	convo.ask({
-		text: 'Här är dina kommande konserter, '+user.nickname+'. (Jag vet bara om Solistprisvinnaren under testperioden😉)\n'+
-				'Vilken vill du veta mer om?🤔', 
-		quick_replies: quickReplies
-	}, [
-		{
-			pattern: new RegExp(concert.name, 'i'),
-			callback: function(response, convo) {
-				sendConcertInfo(convo); // Send info about concert before asking
-				askConcertInfo(response, convo);
-				convo.next();
+		convo.ask({
+			text: 'Här är dina kommande konserter, '+user.nickname+'. (Jag vet bara om Solistprisvinnaren under testperioden😉)\n'+
+					'Vilken vill du veta mer om?🤔', 
+			quick_replies: quickReplies
+		}, [
+			{
+				pattern: new RegExp(concert.name, 'i'),
+				callback: function(response, convo) {
+					sendConcertInfo(convo); // Send info about concert before asking
+					askConcertInfo(response, convo);
+					convo.next();
+				}
+			},
+			{
+				pattern: /(stopp|stop|nej|avsluta|ingen)/i,
+				callback: function(response, convo) {
+					// stop the conversation. this will cause it to end with status == 'stopped'
+					convo.stop();
+				}
+			},
+			{
+				default: true,
+				callback: function(response, convo) {
+					convo.repeat();
+					convo.next();
+				}
 			}
-		},
-		{
-			pattern: /(stopp|stop|nej|avsluta|ingen)/i,
-			callback: function(response, convo) {
-				// stop the conversation. this will cause it to end with status == 'stopped'
-				convo.stop();
-			}
-		},
-		{
-			default: true,
-			callback: function(response, convo) {
-				convo.repeat();
-				convo.next();
-			}
-		}
-	]);
+		]);
 
-	convo.on('end', function(convo) {
-		if (convo.status !== 'completed') {
-			// this happens if the conversation ended prematurely for some reason
-			sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
-		} else {
-			sendDefaultQuickReplies(convo.source_message);
-		}
+		convo.on('end', function(convo) {
+			if (convo.status !== 'completed') {
+				// this happens if the conversation ended prematurely for some reason
+				sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
+			} else {
+				sendDefaultQuickReplies(convo.source_message);
+			}
+		});
 	});
 }
 
