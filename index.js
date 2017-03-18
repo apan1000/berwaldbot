@@ -169,33 +169,33 @@ let j = schedule.scheduleJob(infoDate, function(){
 		});
 	});
 
-	const users = controller.storage.users.all(function(err, users) {
-		if(err) {
-			return console.error('error getting users', err);
-		}
+	// const users = controller.storage.users.all(function(err, users) {
+	// 	if(err) {
+	// 		return console.error('error getting users', err);
+	// 	}
 
-		users.forEach((user) => {
-			bot.reply(user.first_message, {
-				text: 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
-					'\nTryck på knappen här nere för att få mer info om den.',
-				quick_replies: [
-					{
-						"content_type": "text",
-						"title": "🏆 Solistprisvinnaren",
-						"payload": "Solistprisvinnaren",
-					},
-					{
-						"content_type": "text",
-						"title": "🛑 Nej, tack!",
-						"payload": "hjälp",
-					}
-				]
-			}, (err, response) => {
-				if(err)
-					console.error(err);
-			});
-		});
-	});
+	// 	users.forEach((user) => {
+	// 		bot.reply(user.first_message, {
+	// 			text: 'Hörde att du ska gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
+	// 				'\nTryck på knappen här nere för att få mer info om den.',
+	// 			quick_replies: [
+	// 				{
+	// 					"content_type": "text",
+	// 					"title": "🏆 Solistprisvinnaren",
+	// 					"payload": "Solistprisvinnaren",
+	// 				},
+	// 				{
+	// 					"content_type": "text",
+	// 					"title": "🛑 Nej, tack!",
+	// 					"payload": "hjälp",
+	// 				}
+	// 			]
+	// 		}, (err, response) => {
+	// 			if(err)
+	// 				console.error(err);
+	// 		});
+	// 	});
+	// });
 });
 
 controller.api.thread_settings.greeting('Hej {{user_first_name}}, välkommen till Berwaldboten.');
