@@ -186,6 +186,7 @@ controller.hears(['^(Get Started Payload)'], 'message_received', function(bot, m
 	getFacebookUserInfo(user).then(data => {
 		user.first_name = data.first_name;
 		user.last_name = data.last_name;
+		user.nickname = data.first_name;
 
 		controller.storage.users.save(user, (err, id) => {
 			if (err) {
@@ -267,7 +268,7 @@ controller.hears(['^(http|www\.)'], 'message_received', function(bot, message) {
 controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
 		if (user && user.nickname) {
-			bot.reply(message, 'Hej, ' + user.nickname + '!😊');
+			sendDefaultQuickReplies(message, 'Hej, ' + user.nickname + '!😊');
 		} else {
 			user = {
 				id: message.user
@@ -275,7 +276,7 @@ controller.hears(['^(hej|hallå|tja|yo|hey|tjen)'], 'message_received', function
 
 			getUser(user.id).then(result => {
 				user = result;
-				bot.reply(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där😎');
+				sendDefaultQuickReplies(message, user.hasOwnProperty('nickname') ? 'Hej, ' + user.nickname + '!😊' : 'Hallå där😎');
 			}).catch(err => {
 				console.error('No user information:',err);
 			});
@@ -344,6 +345,11 @@ controller.hears(['(.*)konsert(er(na)?)?', 'tilllfällen'], 'message_received', 
 });
 
 controller.hears(['solistprisvinnaren'], 'message_received', function(bot, message) {
+	let user = {};
+	controller.storage.users.get(message.user, function(err, u) {
+		user = u;
+	});
+
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
 			sendConcertInfo(convo); // Send info about concert before asking
@@ -352,7 +358,7 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 			convo.on('end', function(convo) {
 				if (convo.status !== 'completed') {
 					// this happens if the conversation ended prematurely for some reason
-					sendDefaultQuickReplies(convo.source_message, 'Okej! Vi pratar om något annat :)');
+					sendDefaultQuickReplies(convo.source_message, 'Okej,'+user.nickname+'! Vi pratar om något annat :)');
 				} else {
 					sendDefaultQuickReplies(convo.source_message);
 				}
@@ -362,6 +368,11 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 });
 
 controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received', function(bot, message) {
+	let user = {};
+	controller.storage.users.get(message.user, function(err, u) {
+		user = u;
+	});
+
 	let error = false;
 	let artistText = 'artist';
 	if(message.match[message.match.length-1] == 'medverkande')
@@ -402,7 +413,7 @@ controller.hears(['artistinfo$', 'artist$', 'medverkande$'], 'message_received',
 	bot.startConversation(message, function(err, convo) {
 		if (!err) {
 			convo.ask({
-				text: 'Vilken '+artistText+' vill du veta mer om?🤔',
+				text: 'Vilken '+artistText+' vill du veta mer om,'+user.nickname+'?🤔',
 				quick_replies: quickReplies
 			}, [
 				{
@@ -505,7 +516,7 @@ controller.hears(['artistinfo (.*)', 'artist (.*)', 'grupp (.*)', 'medverkande (
 
 
 controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', function(bot, message) {
-	var name = message.match[1];
+	var name = message.match[1].substr(0, 100);
 	controller.storage.users.get(message.user, function(err, user) {
 		if(!user) {
 			user = {
@@ -515,7 +526,7 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 
 		// Insert into database
 		setNickname(user, name).then(newUser => {
-			sendDefaultQuickReplies(message, 'Okej, jag ska kalla dig ' + newUser.nickname + ' från och med nu.');
+			sendDefaultQuickReplies(message, 'Okej, jag ska kalla dig ' + user.nickname + ' från och med nu.');
 		}).catch(error => {
 			console.error(error);
 			sendDefaultQuickReplies(message, 'Oops, jag tror jag glömde, försök igen!');
@@ -554,10 +565,10 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 			bot.startConversation(message, function(err, convo) {
 				if (!err) {
-					bot.reply(message, 'Du heter ' + user.first_name + ' :)');
+					convo.say(message, 'Du heter ' + user.first_name + ' :)');
 					convo.say('Jag vet inte vad du vill bli kallad än!');
 					convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
-						convo.ask('Ska jag kalla dig `' + response.text + '`?😃', [
+						convo.ask('Ska jag kalla dig `' + response.text.substr(0, 100) + '`?😃', [
 							{
 								pattern: bot.utterances.yes,
 								callback: function(response, convo) {
@@ -598,7 +609,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 									};
 								}
 
-								setNickname(user, convo.extractResponse('nickname')).then(newUser => {
+								setNickname(user, convo.extractResponse('nickname').substr(0, 100)).then(newUser => {
 									setTimeout(() => {
 										sendDefaultQuickReplies(message, 'Sådär. Jag kommer kalla dig ' + newUser.nickname + ' från och med nu.👍'+
 											'\nSkriv "Kalla mig \'namn\'" för att byta smeknamn i framtiden :)');
@@ -863,6 +874,12 @@ function getUser(userId) {
 * CONCERT
 *******************/
 function askConcert(response, convo) {
+	let user = {};
+	controller.storage.users.get(message.user, function(err, u) {
+		user = u;
+	});
+	user.nickname = user.nickname;
+
 	let concert = information.concert;
 	let quickReplies = [
 		{
@@ -878,7 +895,7 @@ function askConcert(response, convo) {
 	];
 
 	convo.ask({
-		text: 'Här är dina kommande konserter. (Jag vet bara om Solistprisvinnaren under testperioden😉)\n'+
+		text: 'Här är dina kommande konserter, '+user.nickname+'. (Jag vet bara om Solistprisvinnaren under testperioden😉)\n'+
 				'Vilken vill du veta mer om?🤔', 
 		quick_replies: quickReplies
 	}, [
