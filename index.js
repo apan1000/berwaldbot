@@ -175,25 +175,29 @@ let j = schedule.scheduleJob(infoDate, function(){
 		}
 
 		users.forEach((user) => {
-			bot.reply(user.first_message, {
-				text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
-					'\nTryck gärna på knappen här under för att få mer info om den.',
-				quick_replies: [
-					{
-						'content_type': 'text',
-						'title': 'Solistprisvinnaren',
-						'payload': 'olistprisvinnaren'
-					},
-					{
-						'content_type': 'text',
-						'title': 'Nej, tack!',
-						'payload': 'nej'
-					}
-				]
-			}, (err, response) => {
-				if(err)
-					console.error(err);
-			});
+			let now = new Date();
+			let last_active = new Date(user.last_active);
+			if(now-last_active > 8*60*60*1000) {
+				bot.reply(user.first_message, {
+					text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
+						'\nTryck gärna på knappen här under för att få mer info om den.',
+					quick_replies: [
+						{
+							'content_type': 'text',
+							'title': 'Solistprisvinnaren',
+							'payload': 'olistprisvinnaren'
+						},
+						{
+							'content_type': 'text',
+							'title': 'Nej, tack!',
+							'payload': 'nej'
+						}
+					]
+				}, (err, response) => {
+					if(err)
+						console.error(err);
+				});
+			}
 		});
 	});
 });
