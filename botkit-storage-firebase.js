@@ -44,7 +44,7 @@ module.exports = function(config) {
             get: get(usersRef),
             save: save(usersRef),
             all: all(usersRef),
-            ref: usersRef
+            setLastActive: setLastActive(usersRef)
         }
     };
 };
@@ -99,5 +99,13 @@ function all(firebaseRef) {
 
             cb(null, list);
         }, cb);
+    };
+}
+
+function setLastActive(firebaseRef) {
+    return function(data, cb) {
+        var firebase_update = {};
+        firebase_update['last_active'] = new Date();
+        firebaseRef.child(''+data.id).update(firebase_update).then(cb);
     };
 }

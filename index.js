@@ -115,14 +115,11 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 
 controller.middleware.receive.use(function(bot, message, next) {
 	controller.storage.users.get(message.user, function(err, user) {
-		user.last_active = new Date();
-		if(controller.storage.users.ref) {
-			controller.storage.users.ref.child(''+message.user).update({'last_active': user.last_active}).then(id => {
-
-			}).catch(err => {
+		controller.storage.users.setLastActive(message.user, (err, id) => {
+			if (err) {
 				console.error('Error saving user.last_active:',err);
-			});
-		}
+			}
+		});
 	});
 	clearSavedTimeouts();
     next();
