@@ -144,33 +144,10 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 21, 20, 5)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
+const infoDate = new Date(Date.UTC(2017, 2, 21, 20, 13)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
-	// 'Hej!\nJag har hört att du ska gå på konserten Solistprisvinnaren. Vad kul!'
-	// controller.storage.users.get(1312989925454417, function(err, user) {
-	// 	bot.reply(user.first_message, {
-	// 		text: 'Hej, snart är det dags att gå på konserten Solistprisvinnaren😊 Vad kul! :)'+
-	// 			'\nTryck på knappen här under för att få mer info om den.',
-	// 		quick_replies: [
-	// 			{
-	// 				'content_type': 'text',
-	// 				'title': 'Solistprisvinnaren',
-	// 				'payload': 'solistprisvinnaren'
-	// 			},
-	// 			{
-	// 				'content_type': 'text',
-	// 				'title': 'Nej, tack!',
-	// 				'payload': 'nej'
-	// 			}
-	// 		]
-	// 	}, (err, response) => {
-	// 		if(err)
-	// 			console.error(err);
-	// 	});
-	// });
-
 	controller.storage.users.all(function(err, userList) {
 		if(err) {
 			return console.error('error getting users', err);
@@ -195,7 +172,7 @@ let j = schedule.scheduleJob(infoDate, function(){
 				let now = new Date();
 				let last_active = new Date(user.last_active);
 				console.log('Calculated:',now-last_active);
-				if(now-last_active < 2*60*60*1000) {
+				if(now.getTime() - last_active.getTime() < 2*60*60*1000) {
 					console.log('>>> Sending to:',user.first_name);
 					bot.reply(user.first_message, {
 						text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
