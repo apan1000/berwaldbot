@@ -24,8 +24,8 @@
   "homepage": "https://github.com/apan1000/berwaldbot#readme",
   "dependencies": {
     "botkit": "0.5.1",
-    "node-schedule": "^1.2.0",
-    "firebase": "^3.0.4"
+    "botkit-storage-firebase": "git://github.com/esjay/botkit-storage-firebase.git",
+    "node-schedule": "^1.2.0"
   },
   "engines": {
     "node": "6.9.1"

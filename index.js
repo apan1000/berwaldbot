@@ -37,6 +37,7 @@ const localtunnel = require('localtunnel');
 
 const request = require('request');
 const express = require('express');
+const usersRef = require('usersRef')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
 
 const schedule = require('node-schedule');
 const information = require('./info');
@@ -115,7 +116,7 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 
 controller.middleware.receive.use(function(bot, message, next) {
 	controller.storage.users.get(message.user, function(err, user) {
-		controller.storage.users.setLastActive(message.user, (err, id) => {
+		usersRef.setLastActive(message.user, (err, id) => {
 			if (err) {
 				console.error('Error saving user.last_active:',err);
 			}
