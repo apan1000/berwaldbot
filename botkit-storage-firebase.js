@@ -43,9 +43,9 @@ module.exports = function(config) {
         users: {
             get: get(usersRef),
             save: save(usersRef),
-            all: all(usersRef)
-        },
-        usersRef: usersRef
+            all: all(usersRef),
+            ref: usersRef
+        }
     };
 };
 
