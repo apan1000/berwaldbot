@@ -25,7 +25,7 @@ module.exports = function(config) {
     var app = firebase.initializeApp(config),
         database = app.database(),
         rootRef = database.ref(),
-        usersRef = rootRef.child('users'),;
+        usersRef = rootRef.child('users');
 
     return {
         setLastActive: setLastActive()
