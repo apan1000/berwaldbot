@@ -118,7 +118,7 @@ controller.middleware.receive.use(function(bot, message, next) {
 		id: message.user,
 		last_active: new Date()
 	};
-	controller.storage.teams.save(user, (err, id) => {
+	controller.storage.users.save(user, (err, id) => {
 		if (err) {
 			console.error('Error saving user.last_active:',err);
 		}
