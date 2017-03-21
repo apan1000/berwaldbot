@@ -37,7 +37,7 @@ const localtunnel = require('localtunnel');
 
 const request = require('request');
 const express = require('express');
-const usersRef = require('usersRef')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
+const usersRef = require('./usersRef.js')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
 
 const schedule = require('node-schedule');
 const information = require('./info');
