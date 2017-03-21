@@ -144,7 +144,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 21, 21, 8)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
+const infoDate = new Date(Date.UTC(2017, 2, 28, 11, 15)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
@@ -172,12 +172,8 @@ let j = schedule.scheduleJob(infoDate, function(){
 				let user = users[id];
 				let now = new Date();
 				let last_active = new Date(user.last_active);
-				console.log('user:',user);
-				console.log('now',now);
-				console.log('last_active',last_active);
-				console.log('Calculated hours:', now.getTime() - last_active.getTime());
-				if(now.getTime() - last_active.getTime() < 2*60*60*1000) {
-					console.log('>>> Sending to:',user.first_name);
+				if(now.getTime() - last_active.getTime() > 3*60*60*1000) {
+					console.log('\n>>> Sending to:',user.first_name);
 					bot.reply(user.first_message, {
 						text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
 							'\nTryck gärna på knappen här under för att få mer info om den.',
@@ -404,6 +400,15 @@ controller.hears(['solistprisvinnaren'], 'message_received', function(bot, messa
 			if (!err) {
 				sendConcertInfo(convo); // Send info about concert before asking
 				askConcertInfo(message, convo);
+
+				convo.on('end', function(convo) {
+					if (convo.status !== 'completed') {
+						// this happens if the conversation ended prematurely for some reason
+						sendDefaultQuickReplies(convo.source_message, 'Okej, '+user.nickname+'! Vi pratar om något annat :)');
+					} else {
+						sendDefaultQuickReplies(convo.source_message);
+					}
+				});
 			}
 		});
 	});
