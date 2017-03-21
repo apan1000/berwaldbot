@@ -22,8 +22,14 @@ module.exports = function(config) {
         configuration = config;
     }
 
-    var app = firebase.initializeApp(config),
-        database = app.database(),
+    var app;
+    try {
+        app = firebase.app();
+    }   
+    catch(e) {
+        app = firebase.initializeApp(config);
+    }
+    var database = app.database(),
         rootRef = database.ref(),
         usersRef = rootRef.child('users');
 
