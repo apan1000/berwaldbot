@@ -144,7 +144,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 21, 19, 23)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
+const infoDate = new Date(Date.UTC(2017, 2, 21, 19, 30)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
@@ -171,10 +171,15 @@ let j = schedule.scheduleJob(infoDate, function(){
 	// 	});
 	// });
 
-	controller.storage.users.all(function(err, users) {
+	controller.storage.users.all(function(err, userList) {
 		if(err) {
 			return console.error('error getting users', err);
 		}
+		let users = {};
+		userList.forEach(user => {
+			users[user.id] = user;
+		})
+
 		controller.storage.teams.all(function(err, lastActives) {
 			if(err) {
 				return console.error('error getting lastActives', err);
