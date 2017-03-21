@@ -144,7 +144,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 21, 19, 30)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
+const infoDate = new Date(Date.UTC(2017, 2, 21, 19, 34)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
@@ -184,14 +184,14 @@ let j = schedule.scheduleJob(infoDate, function(){
 			if(err) {
 				return console.error('error getting lastActives', err);
 			}
-
-			console.log('\n\nUsers:',users);
 			
 			lastActives.forEach(a => {
 				users[a.id].last_active = a.last_active;
 			});
 
-			users.forEach(user => {
+			console.log('\n\nUsers:',users);
+
+			for(let user of users) {
 				let now = new Date();
 				let last_active = new Date(user.last_active);
 				if(now-last_active < 2*60*60*1000) {
@@ -215,7 +215,7 @@ let j = schedule.scheduleJob(infoDate, function(){
 							console.error(err);
 					});
 				}
-			});
+			}
 		});
 	});
 });
