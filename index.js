@@ -574,7 +574,7 @@ controller.hears(['kalla mig (.*)', 'jag heter (.*)'], 'message_received', funct
 
 controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(bot, message) {
 	controller.storage.users.get(message.user, function(err, user) {
-		if (user && user.nickname) {
+		if (user && user.nickname && user.nickname_changed) {
 			sendDefaultQuickReplies(message, 'Du heter ' + user.nickname + '😉');
 		} else {
 			if(!user) {
@@ -863,6 +863,7 @@ function clearSavedTimeouts() {
 *******************/
 function setNickname(user, nickname) {
 	user.nickname = nickname;
+	user.nickname_changed = true;
 
 	return new Promise((resolve, reject) => {
 		controller.storage.users.save(user, function(err, id) {
