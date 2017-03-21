@@ -144,7 +144,7 @@ controller.middleware.capture.use(function(bot, message, convo, next) {
 });
 
 // Send information message about the concert after specified date and time
-const infoDate = new Date(Date.UTC(2017, 2, 29, 10, 15)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
+const infoDate = new Date(Date.UTC(2017, 2, 21, 19, 17)); // 11:15, den 29e mars Date.UTC(2017, 2, 29, 10, 15)
 console.info('>>infoDate:',infoDate);
 let j = schedule.scheduleJob(infoDate, function(){
 	console.log('\n>>Time to send information! Woohoo!.');
@@ -187,7 +187,7 @@ let j = schedule.scheduleJob(infoDate, function(){
 			users.forEach(user => {
 				let now = new Date();
 				let last_active = new Date(user.last_active);
-				if(now-last_active > 2*60*60*1000) {
+				if(now-last_active < 2*60*60*1000) {
 					bot.reply(user.first_message, {
 						text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
 							'\nTryck gärna på knappen här under för att få mer info om den.',
