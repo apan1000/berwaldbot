@@ -185,7 +185,7 @@ let j = schedule.scheduleJob(infoDate, function(){
 						{
 							'content_type': 'text',
 							'title': 'Solistprisvinnaren',
-							'payload': 'olistprisvinnaren'
+							'payload': 'solistprisvinnaren'
 						},
 						{
 							'content_type': 'text',
