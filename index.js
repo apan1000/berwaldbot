@@ -603,7 +603,7 @@ controller.hears(['vad heter jag', 'vem är jag'], 'message_received', function(
 
 			bot.startConversation(message, function(err, convo) {
 				if (!err) {
-					convo.say(message, 'Du heter ' + user.first_name + ' :)');
+					convo.say('Du heter ' + user.first_name + ' :)');
 					convo.say('Jag vet inte vad du vill bli kallad än!');
 					convo.ask('Vad kan jag kalla dig?🤔', function(response, convo) {
 						convo.ask('Ska jag kalla dig `' + response.text.substr(0, 100) + '`?😃', [
