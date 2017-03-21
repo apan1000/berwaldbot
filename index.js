@@ -37,7 +37,6 @@ const localtunnel = require('localtunnel');
 
 const request = require('request');
 const express = require('express');
-const usersRef = require('./usersRef.js')({databaseURL: 'https://berwaldboten.firebaseio.com/'});
 
 const schedule = require('node-schedule');
 const information = require('./info');
@@ -115,13 +114,16 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 });
 
 controller.middleware.receive.use(function(bot, message, next) {
-	controller.storage.users.get(message.user, function(err, user) {
-		usersRef.setLastActive(message.user, (err, id) => {
-			if (err) {
-				console.error('Error saving user.last_active:',err);
-			}
-		});
+	let user = {
+		id: message.user,
+		last_active: new Date()
+	};
+	controller.storage.teams.save(user, (err, id) => {
+		if (err) {
+			console.error('Error saving user.last_active:',err);
+		}
 	});
+	
 	clearSavedTimeouts();
     next();
 });
@@ -169,35 +171,42 @@ let j = schedule.scheduleJob(infoDate, function(){
 	// 	});
 	// });
 
-	const users = controller.storage.users.all(function(err, users) {
+	controller.storage.users.all(function(err, users) {
 		if(err) {
 			return console.error('error getting users', err);
 		}
-
-		users.forEach((user) => {
-			let now = new Date();
-			let last_active = new Date(user.last_active);
-			if(now-last_active > 8*60*60*1000) {
-				bot.reply(user.first_message, {
-					text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
-						'\nTryck gärna på knappen här under för att få mer info om den.',
-					quick_replies: [
-						{
-							'content_type': 'text',
-							'title': 'Solistprisvinnaren',
-							'payload': 'solistprisvinnaren'
-						},
-						{
-							'content_type': 'text',
-							'title': 'Nej, tack!',
-							'payload': 'nej'
-						}
-					]
-				}, (err, response) => {
-					if(err)
-						console.error(err);
-				});
+		controller.storage.teams.all(function(err, lastActives) {
+			if(err) {
+				return console.error('error getting lastActives', err);
 			}
+			//TODO: slå ihop users och lastActives
+
+
+			users.forEach((user) => {
+				let now = new Date();
+				let last_active = new Date(user.last_active);
+				if(now-last_active > 8*60*60*1000) {
+					bot.reply(user.first_message, {
+						text: 'Hej, nu är det inte alls lång tid kvar till konserten Solistprisvinnaren😊 Vad kul! :)'+
+							'\nTryck gärna på knappen här under för att få mer info om den.',
+						quick_replies: [
+							{
+								'content_type': 'text',
+								'title': 'Solistprisvinnaren',
+								'payload': 'solistprisvinnaren'
+							},
+							{
+								'content_type': 'text',
+								'title': 'Nej, tack!',
+								'payload': 'nej'
+							}
+						]
+					}, (err, response) => {
+						if(err)
+							console.error(err);
+					});
+				}
+			});
 		});
 	});
 });
