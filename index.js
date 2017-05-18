@@ -1,7 +1,13 @@
-/*
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN THE BOT:
   Follow the instructions here to set up your Facebook app and page:
     -> https://developers.facebook.com/docs/messenger-platform/implementation
+
+  Run your bot from the command line:
+
+    app_secret=<MY APP SECRET> page_token=<MY PAGE TOKEN> verify_token=<MY_VERIFY_TOKEN> node facebook_bot.js [--lt [--ltsubdomain LOCALTUNNEL_SUBDOMAIN]]
+
+  Use the --lt option to make your bot available on the web through localtunnel.me.
 
   Make sure to invite your bot into other channels using /invite @<my bot>!
 
